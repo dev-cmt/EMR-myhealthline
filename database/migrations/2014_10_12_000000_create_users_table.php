@@ -18,6 +18,19 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+
+            $table->string('unique_patient_id')->unique()->nullable();
+            $table->date('dob')->nullable();
+            $table->integer('age')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('religion')->nullable();
+            $table->string('blood_group')->nullable();
+            $table->decimal('height_feet', 2, 1)->nullable();
+            $table->decimal('height_inches', 2, 1)->nullable();
+            $table->decimal('weight_kg', 5, 2)->nullable();
+            $table->decimal('weight_pounds', 5, 2)->nullable();
+            $table->decimal('bmi', 4, 2)->nullable();
+            $table->string('emergency_contact')->nullable();
             $table->timestamps();
         });
     }

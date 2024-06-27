@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_product_pivot', function (Blueprint $table) {
+        Schema::create('doctor_appointments', function (Blueprint $table) {
             $table->id();
-            $table->integer('order_id')->unsigned()->nullable();
-            $table->integer('product_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_product_pivot');
+        Schema::dropIfExists('doctor_appointments');
     }
 };

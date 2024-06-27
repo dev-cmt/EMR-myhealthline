@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('blood_sugar_profilings', function (Blueprint $table) {
             $table->id();
-            $table->string('order_code',10)->unique()->nullable();
-            $table->double('total_amount',16,2)->nullable();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->time('time');
+            $table->decimal('reading', 5, 2); // Adjust precision and scale as needed
+            $table->string('dietary_information');
+            $table->string('remark');
+            $table->text('additional_note')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('blood_sugar_profilings');
     }
 };

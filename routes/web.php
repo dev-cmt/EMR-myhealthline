@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\PatientController;
+use App\Http\Controllers\PatientController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,17 +29,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// KEY : MULTIPERMISSION starts
 Route::group(['middleware' => ['auth']], function() {
-// Route::group(function() {
     Route::resource('roles', App\Http\Controllers\RoleController::class);
     Route::resource('users', App\Http\Controllers\UserController::class);
-    Route::resource('category', App\Http\Controllers\ParentCategoryController::class);
-    Route::resource('subcategory', App\Http\Controllers\SubCategoryController::class);
-    Route::resource('products', App\Http\Controllers\ProductController::class);
-    Route::resource('orders', App\Http\Controllers\OrderController::class);
 });
-// KEY : MULTIPERMISSION ends
 
 /**-------------------------------------------------------------------------
  * KEY : PATIENT REGISTATION PART
@@ -47,10 +40,25 @@ Route::group(['middleware' => ['auth']], function() {
  */
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/patient/info-general', [PatientController::class, 'generalProfile'])->name('info-general');
+    Route::get('/patient/info-general', [PatientController::class, 'generalProfile'])->name('info-general');
+
+    Route::post('/sensitive-information', [PatientController::class, 'sensitiveInformation'])->name('sensitive-information.store');
+    Route::post('/genetic-disease-profile', [PatientController::class, 'geneticDiseaseProfile'])->name('genetic-disease-profile.store');
+    Route::post('/other-personal-information', [PatientController::class, 'otherPersonalInformation'])->name('personal-information.store');
+    
+    
+    Route::post('/blood-sugar.store', [PatientController::class, 'bloodSugarProfiling'])->name('blood-sugar.store');
+    Route::post('/blood-pressure.store', [PatientController::class, 'bloodPressureProfiling'])->name('blood-pressure.store');
+
+
     Route::get('/patient/info-cases', [PatientController::class, 'cases'])->name('info-cases');
     Route::get('/patient/info-profiling-tool', [PatientController::class, 'profilingTool'])->name('info-profiling-tool');
+    
     Route::get('/patient/info-vaccination-record', [PatientController::class, 'vaccinationRecord'])->name('info-vaccination-record');
+    Route::post('/patient/vaccinations/store', [PatientController::class, 'saveVaccinations'])->name('vaccinations.store');
+    
     Route::get('/patient/info-random-uploader', [PatientController::class, 'randomUploaderTool'])->name('info-random-uploader');
+    Route::post('/patient/random-uploader-tool/store', [PatientController::class, 'saveRandomUploaderTool'])->name('random-uploader-tool.store');
 });
 
 require __DIR__.'/auth.php';

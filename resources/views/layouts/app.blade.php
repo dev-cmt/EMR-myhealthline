@@ -23,6 +23,8 @@
         <link href="{{asset('public/backend')}}/css/app.min.css" rel="stylesheet" type="text/css" />
         <!-- custom Css-->
         <link href="{{asset('public/backend')}}/css/custom.min.css" rel="stylesheet" type="text/css" />
+    
+        @stack('style')
     </head>
     <body>
         <!-- Begin page -->
@@ -84,6 +86,7 @@
 
         <!-- JAVASCRIPT -->
         <script src="{{asset('public/backend')}}/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="{{asset('public/backend')}}/libs/jQuery/jquery-3.6.0.min.js"></script>
         <script src="{{asset('public/backend')}}/libs/simplebar/simplebar.min.js"></script>
         <script src="{{asset('public/backend')}}/libs/node-waves/waves.min.js"></script>
         <script src="{{asset('public/backend')}}/libs/feather-icons/feather.min.js"></script>
@@ -92,22 +95,19 @@
 
         <!-- apexcharts -->
         <script src="{{asset('public/backend')}}/libs/apexcharts/apexcharts.min.js"></script>
-
         <!-- Vector map-->
         <script src="{{asset('public/backend')}}/libs/jsvectormap/js/jsvectormap.min.js"></script>
         <script src="{{asset('public/backend')}}/libs/jsvectormap/maps/world-merc.js"></script>
-
         <!--Swiper slider js-->
         <script src="{{asset('public/backend')}}/libs/swiper/swiper-bundle.min.js"></script>
-        
         <!-- Dashboard init -->
         <script src="{{asset('public/backend')}}/js/pages/dashboard-analytics.init.js"></script>
-        
         <!-- form wizard init -->
         <script src="{{asset('public/backend')}}/js/pages/form-wizard.init.js"></script>
-
         <!-- App js -->
         <script src="{{asset('public/backend')}}/js/app.js"></script>
+        
+        @stack('scripts')
     </body>
 </html>
 

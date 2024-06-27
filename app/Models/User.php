@@ -22,6 +22,19 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+
+        'unique_patient_id',
+        'dob',
+        'age',
+        'gender',
+        'religion',
+        'blood_group',
+        'height_feet',
+        'height_inches',
+        'weight_kg',
+        'weight_pounds',
+        'bmi',
+        'emergency_contact',
     ];
 
     /**
