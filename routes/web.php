@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AppointController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\vaccineController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,9 +40,10 @@ Route::group(['middleware' => ['auth']], function() {
  * KEY : PATIENT REGISTATION PART
  * -------------------------------------------------------------------------
  */
+Route::get('/patient/info-general', [PatientController::class, 'generalProfile'])->name('info-general');
+Route::post('/patient-registry/store', [PatientController::class, 'patientRegistry'])->name('patient-registry.store');
+
 Route::group(['middleware' => ['auth']], function() {
-    Route::get('/patient/info-general', [PatientController::class, 'generalProfile'])->name('info-general');
-    Route::get('/patient/info-general', [PatientController::class, 'generalProfile'])->name('info-general');
 
     Route::post('/sensitive-information', [PatientController::class, 'sensitiveInformation'])->name('sensitive-information.store');
     Route::post('/genetic-disease-profile', [PatientController::class, 'geneticDiseaseProfile'])->name('genetic-disease-profile.store');
@@ -54,11 +57,16 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/patient/info-cases', [PatientController::class, 'cases'])->name('info-cases');
     Route::get('/patient/info-profiling-tool', [PatientController::class, 'profilingTool'])->name('info-profiling-tool');
     
-    Route::get('/patient/info-vaccination-record', [PatientController::class, 'vaccinationRecord'])->name('info-vaccination-record');
-    Route::post('/patient/vaccinations/store', [PatientController::class, 'saveVaccinations'])->name('vaccinations.store');
+    Route::get('/patient/info-vaccination-record', [vaccineController::class, 'vaccinationRecord'])->name('info-vaccination-record');
+    Route::post('/patient/vaccinations/store', [vaccineController::class, 'saveVaccinations'])->name('vaccinations.store');
     
+
     Route::get('/patient/info-random-uploader', [PatientController::class, 'randomUploaderTool'])->name('info-random-uploader');
     Route::post('/patient/random-uploader-tool/store', [PatientController::class, 'saveRandomUploaderTool'])->name('random-uploader-tool.store');
+    
+    Route::get('/patient/info-doctor-appointment', [AppointController::class, 'doctorAppointMent'])->name('info-doctor-appointment');
+    Route::post('/patient/info-doctor-appointment/store', [AppointController::class, 'saveDoctorAppointment'])->name('info-doctor-appointment.store');
+
 });
 
 require __DIR__.'/auth.php';

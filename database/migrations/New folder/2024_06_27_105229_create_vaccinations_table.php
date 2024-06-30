@@ -27,9 +27,6 @@ return new class extends Migration
             $table->string('certificate_number')->nullable();
             $table->text('side_effects')->nullable();
             $table->string('upload_tool')->nullable();
-
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

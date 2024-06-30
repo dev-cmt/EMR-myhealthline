@@ -30,8 +30,8 @@ return new class extends Migration
             $table->enum('drug_abuse_history', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
             $table->text('drug_abuse_details')->nullable();
 
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->unsignedBigInteger('user_id');
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

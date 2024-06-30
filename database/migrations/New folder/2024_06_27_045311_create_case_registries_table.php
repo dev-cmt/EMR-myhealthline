@@ -13,12 +13,6 @@ return new class extends Migration
     {
         Schema::create('case_registries', function (Blueprint $table) {
             $table->id();
-            $table->date('date_primary_identification');
-            $table->date('date_first_visit');
-            $table->string('recurrence');
-            $table->integer('duration_before_visit');
-            $table->string('area_of_problem');
-            $table->string('type_of_ailment');
             $table->timestamps();
         });
     }

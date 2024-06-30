@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
+use App\Models\User;
 use App\Models\Information\SensitiveInformation;
 use App\Models\Information\GeneticDiseaseProfile;
 use App\Models\Information\OtherPersonalInformation;
@@ -13,9 +18,14 @@ use App\Models\Information\BloodSugarProfiling;
 use App\Models\Information\BloodPressureProfile;
 use App\Models\Information\Vaccination;
 use App\Models\Information\PaidVaccination;
+use App\Models\Information\RandomUploaderTool;
+
+use App\Models\Information\DoctorAppointment;
+use Exception;
 
 class PatientController extends Controller
 {
+   
 
     public function generalProfile()
     {
@@ -27,55 +37,95 @@ class PatientController extends Controller
      */
     public function patientRegistry(Request $request)
     {
-        $request->validate([
-            'unique_patient_id' => 'required|unique:patients',
-            'full_name' => 'required',
-            'dob' => 'required|date',
-            'gender' => 'required',
-            'religion' => 'required',
-            'blood_group' => 'required',
-            'height_feet' => 'required|numeric',
-            'height_inches' => 'required|numeric',
-            'weight_kg' => 'required|numeric',
-            'emergency_contact' => 'required',
-            'email' => 'nullable|email|unique:patients',
-            'password' => 'required|min:6',
+        // Validate request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'dob' => 'nullable|date',
+            'age' => 'nullable|integer|min:0',
+            'gender' => 'nullable|string|in:Male,Female,Other',
+            'religion' => 'nullable|string|max:255',
+            'blood_group' => 'nullable|string|max:3',
+            'height_feet' => 'nullable|numeric|min:0',
+            'height_inches' => 'nullable|numeric|min:0',
+            'weight_kg' => 'nullable|numeric|min:0',
+            'weight_pounds' => 'nullable|numeric|min:0',
+            'bmi' => 'nullable|numeric|min:0',
+            'emergency_contact' => 'nullable|string|max:255',
+            'marital_status' => 'nullable|string|in:Single,Married,Married with Kids,Divorced,Widowed,Unwilling to Disclose',
         ]);
 
-        $patient = new Patient([
-            'unique_patient_id' => $request->unique_patient_id,
-            'full_name' => $request->full_name,
-            'dob' => $request->dob,
-            'gender' => $request->gender,
-            'religion' => $request->religion,
-            'blood_group' => $request->blood_group,
-            'height_feet' => $request->height_feet,
-            'height_inches' => $request->height_inches,
-            'weight_kg' => $request->weight_kg,
-            'weight_pounds' => $request->weight_kg * 2.20462, // Convert kg to pounds
-            'bmi' => $this->calculateBMI($request->height_feet, $request->height_inches, $request->weight_kg),
-            'emergency_contact' => $request->emergency_contact,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
-        $patient->save();
+        // Generate unique_patient_id
+        $uniquePatientId = $this->generateUniquePatientId($request);
 
-        return redirect()->back()->with('success', 'Patient information saved successfully!');
+        // If unique_patient_id already exists, add error
+        if (User::where('unique_patient_id', $uniquePatientId)->exists()) {
+            return redirect()->back()->withErrors(['unique_patient_id' => 'The unique patient ID already exists.'])->withInput();
+        }
+
+        // If validation passes, create and save the user
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->input('password'));
+        $user->dob = $request->input('dob');
+        $user->age = $request->input('age');
+        $user->gender = $request->input('gender');
+        $user->religion = $request->input('religion');
+        $user->blood_group = $request->input('blood_group');
+        $user->height_feet = $request->input('height_feet');
+        $user->height_inches = $request->input('height_inches');
+        $user->weight_kg = $request->input('weight_kg');
+        $user->weight_pounds = $request->input('weight_pounds');
+
+        // Calculate BMI if height and weight are provided
+        if ($request->input('height_feet') && $request->input('height_inches') && $request->input('weight_kg')) {
+            $user->bmi = $this->calculateBMI($request->input('height_feet'), $request->input('height_inches'), $request->input('weight_kg'));
+        }
+
+        $user->emergency_contact = $request->input('emergency_contact');
+        $user->marital_status = $request->input('marital_status');
+        $user->unique_patient_id = $uniquePatientId;
+
+        // Save the user
+        $user->save();
+        Auth::login($user);
+
+        // Redirect or return response as needed
+        return redirect()->back()->with('success', 'User created successfully.');
     }
 
-    private function calculateBMI($height_feet, $height_inches, $weight_kg)
+    private function generateUniquePatientId($request)
     {
-        $height_meters = (($height_feet * 12) + $height_inches) * 0.0254;
-        return $weight_kg / ($height_meters * $height_meters);
+        $firstNameInitial = strtoupper(substr($request->input('name'), 0, 1));
+        $lastNameInitial = strtoupper(substr(strrchr($request->input('name'), ' '), 1));
+        $genderInitial = strtoupper(substr($request->input('gender'), 0, 1));
+        $bloodGroupConnotation = strtoupper(substr($request->input('blood_group'), 0, 1));
+        $maritalStatusInitial = strtoupper(substr($request->input('marital_status'), 0, 1));
+        $uniquePatientId = $firstNameInitial . $lastNameInitial . $genderInitial . $bloodGroupConnotation . Str::random(7) . $maritalStatusInitial;
+        return $uniquePatientId;
     }
+
+    private function calculateBMI($feet, $inches, $weightKg)
+    {
+        $heightInMeters = (($feet * 12) + $inches) * 0.0254;
+        return $weightKg / ($heightInMeters * $heightInMeters);
+    }
+    
 
     /**------------------------------
      * Store => sensitive_information
      */
     public function sensitiveInformation(Request $request)
     {
-        $request->validate([
+        // Validate the request
+        $validatedData = $request->validate([
             'sexually_active' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
             'diabetic' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
             'allergies' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
@@ -95,9 +145,14 @@ class PatientController extends Controller
             'drug_abuse_details' => 'nullable|string',
         ]);
 
-        SensitiveInformation::create($request->all());
+        // Add the authenticated user's ID as patient_id
+        $validatedData['patient_id'] = auth()->user()->id;
 
-        return redirect()->back()->with('success', 'Health record saved successfully.');
+        // Create and save the sensitive information record
+        SensitiveInformation::create($validatedData);
+
+        // Redirect or respond as needed
+        return redirect()->back()->with('success', 'Sensitive information saved successfully.');
     }
     /**---------------------------------
      * Store => genetic_disease_profiles
@@ -106,68 +161,58 @@ class PatientController extends Controller
     {
         // Validate the request
         $validatedData = $request->validate([
-            'diabetes' => 'boolean',
-            'stroke' => 'boolean',
-            'heart_diseases' => 'boolean',
-            'hyper_excitation' => 'boolean',
-            'blood_pressure' => 'boolean',
-            'balding' => 'boolean',
-            'vitiligo' => 'boolean',
-            'disability' => 'boolean',
-            'psoriasis' => 'boolean',
-            'other_diseases' => 'nullable|string',
-            'comments' => 'nullable|string',
+            'disease_diabetes' => 'boolean',
+            'disease_stroke' => 'boolean',
+            'disease_heart' => 'boolean',
+            'disease_hyper' => 'boolean',
+            'disease_pressure' => 'boolean',
+            'disease_balding' => 'boolean',
+            'disease_vitiligo' => 'boolean',
+            'disease_disability' => 'boolean',
+            'disease_psoriasis' => 'boolean',
+            'additional_comments' => 'nullable|string',
         ]);
 
+        // Assuming you have authenticated user and patient_id
+        $validatedData['patient_id'] = auth()->user()->id;
+
+        // Create and save the genetic disease profile record
         GeneticDiseaseProfile::create($validatedData);
 
-        // Redirect back with success message or to a confirmation page
-        return redirect()->back()->with('success', 'Genetic Disease Profile saved successfully!');
+        // Redirect or respond as needed
+        return redirect()->route('dashboard')->with('success', 'Genetic disease profile saved successfully.');
     }
     /**------------------------
      * Store => other_personal_information
      */
     public function otherPersonalInformation(Request $request)
     {
-        $request->validate([
-            'marital_status' => 'required',
-            'home_address' => 'required|string|max:255',
-            'office_address' => 'nullable|string|max:255',
-            'email_address' => 'nullable|email|max:255',
-            'phone_number' => 'nullable|string|max:20',
+        // Validate the request
+        $validatedData = $request->validate([
+            'marital_status' => 'nullable|in:Single,Married,Married with Kids,Divorced,Widowed,Unwilling to Disclose',
+            'home_address' => 'nullable|string',
+            'office_address' => 'nullable|string',
+            'email_address' => 'nullable|email',
+            'phone_number' => 'nullable|string',
             'last_blood_donated' => 'nullable|date',
-            'health_insurance_number' => 'nullable|string|max:50',
-            'family_physician' => 'nullable|string|max:255',
-            'physician_contact' => 'nullable|string|max:20',
-            'pregnancy_status' => 'required|in:1,2',
-            'menstrual_cycle' => 'required|in:1,2,3',
-            'activity_status' => 'required|in:1,2,3,4,5',
-            'hereditary_disease' => 'nullable|string|max:1000',
+            'health_insurance_number' => 'nullable|string',
+            'family_physician' => 'nullable|string',
+            'physician_contact' => 'nullable|string',
+            'pregnancy_status' => 'nullable|in:Yes,No',
+            'menstrual_cycle' => 'nullable|in:Regular,Irregular,Menopaused',
+            'activity_status' => 'nullable|in:Immobile/Paralyzed,Disabled,Not Very Active,Moderately Active,Highly Active',
+            'hereditary_disease' => 'nullable|string',
         ]);
-        
-        // Save data to the database
-        $info = new OtherPersonalInformation();
-        $info->marital_status = $request->input('marital_status');
-        $info->home_address = $request->input('home_address');
-        $info->office_address = $request->input('office_address');
-        $info->email_address = $request->input('email_address');
-        $info->phone_number = $request->input('phone_number');
-        $info->last_blood_donated = $request->input('last_blood_donated');
-        $info->health_insurance_number = $request->input('health_insurance_number');
-        $info->family_physician = $request->input('family_physician');
-        $info->physician_contact = $request->input('physician_contact');
-        $info->pregnancy_status = $request->input('pregnancy_status');
-        $info->menstrual_cycle = $request->input('menstrual_cycle');
-        $info->activity_status = $request->input('activity_status');
-        $info->hereditary_disease = $request->input('hereditary_disease');
-        $info->save();
 
-        // Optionally, redirect back or to a success page
-        return redirect()->back()->with('success', 'Personal Information saved successfully!');
+        // Assuming you have authenticated user and patient_id
+        $validatedData['patient_id'] = auth()->user()->id;
+
+        // Create and save the other personal information record
+        OtherPersonalInformation::create($validatedData);
+
+        // Redirect or respond as needed
+        return redirect()->route('dashboard')->with('success', 'Other personal information saved successfully.');
     }
-
-
-
 
 
     /**--------------------------------------------------------------------------------------------
@@ -190,7 +235,7 @@ class PatientController extends Controller
     {
         return view('pages.info-profiling-tool');
     }
-    
+
     /**------------------------
      * Store => blood_sugar_profilings
      */
@@ -262,105 +307,9 @@ class PatientController extends Controller
      * VACCINATION RECORD
      * --------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
-     */
-    public function vaccinationRecord()
-    {
-        return view('pages.info-vaccination-record');
-    }
-    public function saveVaccinations(Request $request)
-    {
-        $vaccines = ['BCG', 'Pentavalent', 'HepB', 'HiB', 'MR', 'PCV', 'IPV', 'fIPV', 'T-d'];
-        $dose01 = $request->input('dose_01');
-        $dose02 = $request->input('dose_02');
-        $dose03 = $request->input('dose_03');
-        $boosters = $request->input('booster');
-        $uploadTools = $request->file('uploader_tool');
 
-        foreach ($vaccines as $index => $vaccine) {
-            $vaccination = new Vaccination();
-            $vaccination->vaccine = $vaccine;
-            $vaccination->dose_01 = $dose01[$index] ?? null;
-            $vaccination->dose_02 = $dose02[$index] ?? null;
-            $vaccination->dose_03 = $dose03[$index] ?? null;
-            $vaccination->booster = $boosters[$index] ?? null;
 
-            if (isset($uploadTools[$index])) {
-                $file = $uploadTools[$index];
-                $filePath = $file->store('uploads', 'public');
-                $vaccination->uploader_tool = $filePath;
-            }
-
-            $vaccination->save();
-        }
-
-        // Process Paid vaccinations
-        $paidVaccines = [
-            ['InfluVax Tetra', 'Flu/Influenza'],
-            ['Rabix-Vc', 'Rabies'],
-            ['IngoVax ACWY', 'Meningitis'],
-            ['Hepa B', 'Hepatitis B'],
-            ['Vaxphoid', 'Typhoid'],
-            ['Vaxitet', 'Tetanus'],
-            ['PrevaHAV', 'Hepatitis A'],
-            ['ChloVax', 'Cholera'],
-            ['PapiloVax', 'Cervical Cancer'],
-            ['Varizost', 'Chicken Pox'],
-            ['PrenoVax 23', 'Pneumonia']
-        ];
-        $paidDose01 = $request->input('paid_dose_01');
-        $paidDose02 = $request->input('paid_dose_02');
-        $paidDose03 = $request->input('paid_dose_03');
-        $paidBoosters = $request->input('paid_booster');
-        $paidUploadTools = $request->file('paid_uploader_tool');
-
-        foreach ($paidVaccines as $index => $vaccine) {
-            $paidVaccination = new PaidVaccination();
-            $paidVaccination->market_name = $vaccine[0];
-            $paidVaccination->applicable_for = $vaccine[1];
-            $paidVaccination->dose_01 = $paidDose01[$index] ?? null;
-            $paidVaccination->dose_02 = $paidDose02[$index] ?? null;
-            $paidVaccination->dose_03 = $paidDose03[$index] ?? null;
-            $paidVaccination->booster = $paidBoosters[$index] ?? null;
-
-            if (isset($paidUploadTools[$index])) {
-                $file = $paidUploadTools[$index];
-                $filePath = $file->store('uploads', 'public');
-                $paidVaccination->uploader_tool = $filePath;
-            }
-
-            $paidVaccination->save();
-        }
-
-        // Process Covid-19 section
-        $vaccination = new Vaccination();
-        $vaccination->location = $request->input('location');
-        $vaccination->covid_date = $request->input('covid_date');
-        $vaccination->manufacturer = $request->input('manufacturer');
-        $vaccination->dose_01 = $request->input('covid_dose_01');
-        $vaccination->dose_02 = $request->input('covid_dose_02');
-        $vaccination->dose_03 = $request->input('covid_dose_03');
-        $vaccination->booster = $request->input('covid_booster');
-        $vaccination->certificate_number = $request->input('certificate_number');
-        $vaccination->antibody_test = $request->input('antibody_test');
-
-        $covidUploadTools = [
-            $request->file('covid_uploader_tool_01'),
-            $request->file('covid_uploader_tool_02'),
-            $request->file('covid_uploader_tool_03'),
-            $request->file('covid_uploader_tool_booster')
-        ];
-
-        foreach ($covidUploadTools as $file) {
-            if ($file) {
-                $filePath = $file->store('uploads', 'public');
-                $vaccination->uploader_tool = $filePath;
-            }
-        }
-
-        $vaccination->save();
-
-        return redirect()->back()->with('success', 'Vaccination records saved successfully!');
-    }
+  
     /**--------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
      * RANDOM UPLOADER TOOL
@@ -399,125 +348,28 @@ class PatientController extends Controller
         }
         return redirect()->back()->with('success', 'Documents uploaded successfully.');
     }
-
-
-
-
-
-
-    /**
-     * Display a listing of the resource.
+    /**--------------------------------------------------------------------------------------------
+     * --------------------------------------------------------------------------------------------
+     * Doctor's Appointment Setup Tool
+     * --------------------------------------------------------------------------------------------
+     * --------------------------------------------------------------------------------------------
      */
-    
-    public function index()
+    public function doctorAppointMent()
     {
-        $categories = Category::where('status', Category::STATUS_ACTIVE)->orderBy('updated_at', 'desc')->get();
-        return view('category.index', compact('categories'));
+        return view('pages.info-doctor-appointment');
+    }
+    /**------------------------
+     * Store => random_uploader_tools
+     */
+
+    public function saveDoctorAppointment(Request $request)
+    {
+        $user = new DoctorAppointment();
+        $user->full_name = $request->input('full_name');
+        $user->designation = $request->input('designation');
+        $user->save();
+
+        return redirect()->route('dashboard')->with('success', 'Other personal information saved successfully.');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('pages.information-patient.registry-form');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CategoryStoreRequest $request)
-    {
-        try {
-            $created = Category::firstOrCreate(['name' => $request->name, 'description' => $request->description, 'user_id' => auth()->user()->id]);
-
-            if ($created) { // inserted success
-                \Log::info(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Success inserting data : " . json_encode([request()->all()]));
-                return redirect()->route('category.index')
-                    ->withSuccess('created successfully...!');
-            }
-            throw new \Exception('fails not created..!', 403);
-        } catch (\Illuminate\Database\QueryException $e) { // Handle query exception
-            \Log::error(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Error Query inserting data : " . $e->getMessage() . '');
-            // You can also return a response to the user
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', "error occurs failed to proceed...! " . $e->getMessage());
-        } catch (\Exception $e) { // Handle any runtime exception
-            \Log::error(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Error inserting data : " . $e->getMessage() . '');
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', "error occurs failed to proceed...! " . $e->getMessage());
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        return view('category.show', compact('category'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
-    {
-        return view('category.edit', compact('category'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(CategoryUpdateRequest $request, Category $category)
-    {
-        try {
-            $category->updateOrFail(['name' => $request->name, 'description' => $request->description, 'user_id' => auth()->user()->id]);
-            \Log::info(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Success updating data : " . json_encode([request()->all(), $category]));
-            return redirect()->route('category.index')
-                ->withSuccess('Updated Successfully...!');
-        } catch (\Illuminate\Database\QueryException $e) { // Handle query exception
-            \Log::error(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Error Query updating data : " . $e->getMessage());
-            // You can also return a response to the user
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', "error occurs failed to proceed...! " . $e->getMessage());
-        } catch (\Exception $e) { // Handle any runtime exception
-            \Log::error(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Error updating data : " . $e->getMessage() . '');
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', "error occurs failed to proceed...! " . $e->getMessage());
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Category $category)
-    {
-        try {
-            $category->delete();
-            \Log::info(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Success deleting data : " . json_encode([request()->all(), $category]));
-            return redirect()->route('category.index')
-                ->withSuccess('Deleted Successfully.');
-        } catch (\Illuminate\Database\QueryException $e) { // Handle query exception
-            \Log::error(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Error Query deleting data : " . $e->getMessage() . '');
-            // You can also return a response to the user
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', "error occurs failed to proceed...! " . $e->getMessage());
-        } catch (\Exception $e) { // Handle any runtime exception
-            \Log::error(" file '" . __CLASS__ . "' , function '" . __FUNCTION__ . "' , Message : Error deleting data : " . $e->getMessage() . '');
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', "error occurs failed to proceed...! " . $e->getMessage());
-        }
-    }
 }

@@ -25,12 +25,13 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->string('religion')->nullable();
             $table->string('blood_group')->nullable();
-            $table->decimal('height_feet', 2, 1)->nullable();
-            $table->decimal('height_inches', 2, 1)->nullable();
-            $table->decimal('weight_kg', 5, 2)->nullable();
-            $table->decimal('weight_pounds', 5, 2)->nullable();
-            $table->decimal('bmi', 4, 2)->nullable();
+            $table->decimal('height_feet', 3, 1)->nullable();
+            $table->decimal('height_inches', 3, 1)->nullable();
+            $table->decimal('weight_kg', 6, 2)->nullable();
+            $table->decimal('weight_pounds', 6, 2)->nullable();
+            $table->decimal('bmi', 5, 2)->nullable();
             $table->string('emergency_contact')->nullable();
+            $table->string('marital_status')->nullable();
             $table->timestamps();
         });
     }

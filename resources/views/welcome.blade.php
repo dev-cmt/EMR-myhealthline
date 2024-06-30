@@ -66,18 +66,14 @@
                             <a class="nav-link fs-15 fw-semibold" href="#contact">Contact</a>
                         </li>
                     </ul>
-                    @if (Route::has('login'))
-                        <div class="">
-                            @auth
-                                <a href="{{ url('/dashboard') }}" class="btn btn-link fw-medium text-decoration-none text-body">Dashboard</a>
-                            @else
-                                <a href="{{ route('login') }}" class="btn btn-link fw-medium text-decoration-none text-body">Login</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="btn btn-primary">Register</a>
-                                @endif
-                            @endauth
-                        </div>
-                    @endif
+                    <div class="">
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="btn btn-link fw-medium text-decoration-none text-body">Dashboard</a>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-link fw-medium text-decoration-none text-body">Login</a>
+                            <a href="{{ route('info-general') }}" class="btn btn-primary">Register</a>
+                        @endauth
+                    </div>
                 </div>
 
             </div>

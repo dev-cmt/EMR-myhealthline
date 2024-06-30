@@ -22,10 +22,8 @@ return new class extends Migration
             $table->boolean('disease_vitiligo')->default(false);
             $table->boolean('disease_disability')->default(false);
             $table->boolean('disease_psoriasis')->default(false);
+            $table->text('other_diseases')->nullable();
             $table->text('additional_comments')->nullable();
-
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

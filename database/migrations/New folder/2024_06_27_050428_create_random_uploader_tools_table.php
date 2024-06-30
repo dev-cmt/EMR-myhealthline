@@ -18,9 +18,6 @@ return new class extends Migration
             $table->date('date');
             $table->text('additional_note')->nullable();
             $table->string('upload_tool');
-            
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

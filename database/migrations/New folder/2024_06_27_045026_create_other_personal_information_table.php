@@ -26,9 +26,6 @@ return new class extends Migration
             $table->enum('menstrual_cycle', ['Regular', 'Irregular', 'Menopaused'])->nullable();
             $table->enum('activity_status', ['Immobile/Paralyzed', 'Disabled', 'Not Very Active', 'Moderately Active', 'Highly Active'])->nullable();
             $table->text('hereditary_disease')->nullable();
-
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -1,138 +1,146 @@
 <x-app-layout>
     
     <div class="row">
-        <div class="col-md-12">
-            <div class="row mb-1">
-                <div class="col-lg-4">
-                    <label for="nameInput" class="form-label">Date of Primary Identification of Issue</label>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Case Data Entry</h4>
                 </div>
-                <div class="col-lg-4">
-                    <input type="date" class="form-control" id="nameInput" placeholder="Enter your name">
-                </div>
-            </div>
-            <div class="row mb-1">
-                <div class="col-lg-4">
-                    <label for="websiteUrl" class="form-label">Date of First Visit to Physician</label>
-                </div>
-                <div class="col-lg-4">
-                    <input type="date" class="form-control" id="websiteUrl" placeholder="Enter your url">
-                </div>
-            </div>
-            <div class="row mb-1">
-                <div class="col-lg-4">
-                    <label for="dateInput" class="form-label">Reccurence</label>
-                </div>
-                <div class="col-lg-4">
-                    <select class="form-select" id="inputGroupSelect01">
-                                            
-                        <option value="1">Genetic</option>
-                        <option value="2">First Time</option>
-                        <option value="3">Repetition</option>
-                    </select>
-                </div>
-            </div>
+                <div class="card-body">
+            
+                    <div class="row mb-1">
+                        <div class="col-lg-4">
+                            <label for="nameInput" class="form-label">Date of Primary Identification of Issue</label>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="date" class="form-control" id="nameInput" placeholder="Enter your name">
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-lg-4">
+                            <label for="websiteUrl" class="form-label">Date of First Visit to Physician</label>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="date" class="form-control" id="websiteUrl" placeholder="Enter your url">
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-lg-4">
+                            <label for="dateInput" class="form-label">Reccurence</label>
+                        </div>
+                        <div class="col-lg-4">
+                            <select class="form-select" id="inputGroupSelect01">
+                                                    
+                                <option value="1">Genetic</option>
+                                <option value="2">First Time</option>
+                                <option value="3">Repetition</option>
+                            </select>
+                        </div>
+                    </div>
            
-            <div class="row mb-1">
-                <div class="col-md-4">
-                    
-                    <label for="" >Duration of Suffering (Prior to Physician Visit)</label>
-                </div>
-                <div class="col-md-2">
-                    <select class="form-select form-control" id="inputGroupSelect01">
-                        <option value="1">4</option>
-                        <option value="2">5</option>
-                        <option value="3">6</option>
-                    </select>
-                           
-                </div>
-                <div class="col-md-2">
-                    <select class="form-select" id="inputGroupSelect01">
-                
-                        <option value="1">Hour(s)</option>
-                        <option value="2">Day(s)</option>
-                        <option value="3">Week(s)</option>
-                        <option value="3">Month(s)</option>
-                        <option value="3">Year(s)</option>
-                    </select>
-                </div>
-                   
-              
-               
-            </div>
+                    <div class="row mb-1">
+                        <div class="col-md-4">
+                            
+                            <label for="" >Duration of Suffering (Prior to Physician Visit)</label>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select form-control" id="inputGroupSelect01">
+                                <option value="1">4</option>
+                                <option value="2">5</option>
+                                <option value="3">6</option>
+                            </select>
+                                
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="inputGroupSelect01">
+                                <option value="1">Hour(s)</option>
+                                <option value="2">Day(s)</option>
+                                <option value="3">Week(s)</option>
+                                <option value="3">Month(s)</option>
+                                <option value="3">Year(s)</option>
+                            </select>
+                        </div>
+                    </div>
 
-            <div class="row mb-1">
-                <div class="col-lg-4">
-                    <label for="leaveemails" class="form-label">Area of Problem Identifified</label>
-                </div>
-                <div class="col-lg-4">
-                    <input type="text" class="form-control" id="leaveemails" placeholder="">
+                    <div class="row mb-1">
+                        <div class="col-lg-4">
+                            <label for="leaveemails" class="form-label">Area of Problem Identifified</label>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="text" class="form-control" id="leaveemails" placeholder="">
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-lg-4">
+                            <label for="contactNumber" class="form-label">Type of Ailment</label>
+                        </div>
+                        <div class="col-lg-4">
+                            <select class="form-select" id="inputGroupSelect01">
+                                                    
+                                <option value="1">Neurological</option>
+                                <option value="2">Eye/Visual</option>
+                                <option value="3">Orthopedic</option>
+                                <option value="4">Abdomen</option>
+                                <option value="3">Gastrology</option>
+                                <option value="3">Dermatology</option>
+                                <option value="3">Oncology</option>
+                                <option value="3">Reproductive</option>
+                                <option value="3">Other</option>
+                                <option value="3">Hand</option>
+                                <option value="3">Nail</option>
+                                <option value="3">Knee</option>
+                                <option value="3">Joints/Muscle</option>
+                                <option value="3">Psychometric</option>
+                                <option value="3">Functional Rehabilitation</option>
+                                <option value="3">Drug Abuse/Rehabilitation</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row mb-1">
-                <div class="col-lg-4">
-                    <label for="contactNumber" class="form-label">Type of Ailment</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            
+            <div class="card">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Complaint(s) - Click all that applies</h4>
                 </div>
-                <div class="col-lg-4">
-                    <select class="form-select" id="inputGroupSelect01">
-                                            
-                        <option value="1">Neurological</option>
-                        <option value="2">Eye/Visual</option>
-                        <option value="3">Orthopedic</option>
-                        <option value="4">Abdomen</option>
-                        <option value="3">Gastrology</option>
-                        <option value="3">Dermatology</option>
-                        <option value="3">Oncology</option>
-                        <option value="3">Reproductive</option>
-                        <option value="3">Other</option>
-                        <option value="3">Hand</option>
-                        <option value="3">Nail</option>
-                        <option value="3">Knee</option>
-                        <option value="3">Joints/Muscle</option>
-                        <option value="3">Psychometric</option>
-                        <option value="3">Functional Rehabilitation</option>
-                        <option value="3">Drug Abuse/Rehabilitation</option>
-                    </select>
-                </div>
-            </div>
-            <h4>Complaint(s) - Click all that applies</h4>
-            <div class="row gy-4">
+                <div class="card-body">
+
+                     
+                    <h4 class="card-title mb-0 flex-grow-1"></h4>
+                    <div class="card-header align-items-center d-flex">
+            
+                        
                 <div class="col-xxl-3 col-md-3">
+                
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">Fever</label>
+                    </div>
                     
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                          Fever
-                        </label>
-                      </div>
-                      
+                        <label class="form-check-label" for="flexCheckDefault">Shortness of Breath</label>
+                    </div>
 
-                      <div class="form-check">
+                    <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Shortness of Breath
-                        </label>
-                      </div>   
-                      
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Vomiting
-                        </label>
-                      </div>
+                        <label class="form-check-label" for="flexCheckDefault">Vomiting</label>
+                    </div>
 
-                      <div class="form-check">
+                    <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Nausea
-                        </label>
-                      </div>
+                        <label class="form-check-label" for="flexCheckDefault">Nausea</label>
+                    </div>
 
-                      <div class="form-check">
+                    <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Fatigue
-                        </label>
-                      </div>
+                        <label class="form-check-label" for="flexCheckDefault">Fatigue</label>
+                    </div>
 
                       <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
@@ -249,6 +257,7 @@
                         </label>
                         </div>
                         </div>
+                        
                         <div class="col-xxl-3 col-md-3">
                             <div>
                                 <div class="form-check">
@@ -401,6 +410,8 @@
                         </div>
                     </div>
             </div>
+        </div>
+        </div>
     </div>
             <div class="row">
                 <div class="col-lg-12">
@@ -755,7 +766,7 @@
 </div>
 </div>
 </div>
-{{-- Recommended Pathological/Lab Test --}}
+<!-- {{-- Recommended Pathological/Lab Test --}} -->
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -865,7 +876,12 @@
             <option value="1">On Empty Stomach</option>                             
            
       </td>
-       <td></td>
+       <td> <select class="form-select" id="inputGroupSelect01">
+        <option value="1">Yes</option>
+        <option value="1">No</option>
+        <option value="1">Not Sure</option>
+         </select>
+        </td>
     </tr>
     <tr>
       <th scope="row">2</th>
@@ -946,14 +962,25 @@
         </select>
       </td>
       <td></td>
-      <td style="width: 16%;">
-        <select class="form-select" id="inputGroupSelect01">
-            <option value="1">Before meal</option>
-            <option value="1">After meal</option>
-            <option value="1">On Empty Stomach</option>                             
+
+      <td >
+                                   
            
-      </td></td>
-      
+      </td>
+       <td style="width: 16%;">
+         <select class="form-select" id="inputGroupSelect01">
+        <option value="1">Before meal</option>
+        <option value="1">After meal</option>
+        <option value="1">On Empty Stomach</option>
+         </select>
+     </td>
+     <td>
+        <select class="form-select" id="inputGroupSelect01">
+            <option value="1">Yes</option>
+            <option value="1">No</option>
+            <option value="1">Not Sure</option>
+             </select>
+     </td>
     </tr>
     <tr>
         <th scope="row">3</th>
@@ -963,7 +990,7 @@
       <td></td>
       <td></td>
       <td></td>
-      <td><input type="file" class="form-control" id="inputGroupFile01"></td>
+      <td></td>
       </tr>
       <tr>
        
@@ -977,11 +1004,351 @@
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+
+<!-- Surgical/Fixed Intervention(s) -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Surgical/Fixed Intervention(s)</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-1" >
+                    <table class="table table-bordered border-dark">
+                       <thead >
+    <tr>
+      <th scope="col">SL</th>
+      <th scope="col">Intervention</th>
+      <th scope="col">Due Time</th>
+      <th scope="col">Other Important Details</th>
+      <th scope="col">Cost</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td style="width: 19%;"> 
+        <select class="form-select" id="inputGroupSelect01">
+        <option value="1">Prosthesis</option>
+        <option value="1">Orthosis</option>
+        <option value="1">Surgery (Minor)</option>                             
+        <option value="1">Surgery (Major)</option>
+        <option value="1">Stiches</option>
+        <option value="1">Amputation</option>                                   
+        <option value="1">Dismembering</option>
+        <option value="2">Hearing Aid</option>
+        <option value="3">Plaster (Short Term)</option>
+        <option value="4">Paster (Long Term)</option>
+        <option value="3">Nebulization</option>
+      
+    </select>
+</td>
+      <td style="width: 18%;">
+        <select class="form-select" id="inputGroupSelect01">
+            <option value="3">ASAP</option>
+            <option value="3">Within 24 Hours </option>
+            <option value="3">Within 2 Days</option>
+            <option value="3">Within 3 Days</option>
+            <option value="3">Within 4 Days</option>
+            <option value="3">Within 1 Week</option>
+            <option value="3">Within 10 Days</option> 
+            <option value="3">Within 2 Weeks</option> 
+            <option value="3">Within 3 Weeks</option>                                    
+            <option value="3">Within 1 Month</option> 
+            <option value="3">Within 2 Months</option> 
+            <option value="3">Within 3 Months</option> 
+            <option value="3">Within 4 Months</option>
+            <option value="3">Within 6 Months</option>  
+            <option value="3">No time limit</option> 
+
+            </select>
+      </td>
+      <td >
+       
+      </td>
+      <td >
+       
+      </td>
+      
+      
+     
+
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td >
+        <select class="form-select" id="inputGroupSelect01">
+            <option value="1">Prosthesis</option>
+            <option value="1">Orthosis</option>
+            <option value="1">Surgery (Minor)</option>                             
+            <option value="1">Surgery (Major)</option>
+            <option value="1">Stiches</option>
+            <option value="1">Amputation</option>                                   
+            <option value="1">Dismembering</option>
+            <option value="2">Hearing Aid</option>
+            <option value="3">Plaster (Short Term)</option>
+            <option value="4">Paster (Long Term)</option>
+            <option value="3">Nebulization</option>
+          
+        </select>
+      </td>
+      <td >  
+       
+            <select class="form-select" id="inputGroupSelect01">
+                <option value="3">ASAP</option>
+                <option value="3">Within 24 Hours </option>
+                <option value="3">Within 2 Days</option>
+                <option value="3">Within 3 Days</option>
+                <option value="3">Within 4 Days</option>
+                <option value="3">Within 1 Week</option>
+                <option value="3">Within 10 Days</option> 
+                <option value="3">Within 2 Weeks</option> 
+                <option value="3">Within 3 Weeks</option>                                    
+                <option value="3">Within 1 Month</option> 
+                <option value="3">Within 2 Months</option> 
+                <option value="3">Within 3 Months</option> 
+                <option value="3">Within 4 Months</option>
+                <option value="3">Within 6 Months</option>  
+                <option value="3">No time limit</option> 
+    
+                </select>
+     </td>
+      <td>
+       
+      
+        
+        </select>
+      </td>
+      <td>
+       
+      </td>
+      
+    </tr>
+    <tr>
+        <th scope="row">3</th>
+        <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      
+     
+      </tr>
+      <tr>
+       
+            
+        </tr>
+  </tbody>
+ </table>
+ <div class="card-footer d-flex justify-content-between">
+    <button type="button" id="addRowPressure" class="btn btn-secondary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Row</button>
+    <button type="button" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button> 
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- sdsd -->
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Other Optionsal Question(s)</h4>
+            </div>
+            
+                            <div class="row mb-1">
+                                <div class="col-lg-8">
+                                    <label for="nameInput" class="form-label">Were you admitted in hospital/Clinic following the diagnosis?</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <select class="form-select" id="inputGroupSelect01">
+                                                            
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                       
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-lg-8">
+                                    <label for="websiteUrl" class="form-label">1A  If the answer is yes for Q1, how long?</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <select class="form-select" id="inputGroupSelect01">
+                                                            
+                                        <option value="1">3 Days</option>
+                                        <option value="2">7 Days</option>
+                                        <option value="2">10 Days</option>
+                                        <option value="2">14 Days</option>
+                                        <option value="2">21 Days</option>
+                                        <option value="2">28 Days</option>
+                                        <option value="2">1 Month</option>
+                                        <option value="2">2 Months</option>
+                                        <option value="2">3 Months</option>
+                                        <option value="2">6 Months</option>
+                                        <option value="2">Extensive (Undecided)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-lg-8">
+                                    <label for="dateInput" class="form-label">1B  Total Costs incurred during hospitalization</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="text" class="form-control" id="leaveemails" placeholder="">
+                                </div>
+                            </div>
+                           
+                            <div class="row mb-1">
+                                <div class="col-md-8">
+                                    
+                                    <label for="" >2  Did the medication and/or interventions cure the problem completely?</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" id="inputGroupSelect01">
+                                                            
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                        <option value="2"> Not Sure</option>
+                                        <option value="2"> Not Curable</option>
+                                        <option value="2"> Long Term Intervention Required</option>
+                                    </select>
+                                           
+                                </div>
+                                
+                              
+                               
+                            </div>
+                
+                            <div class="row mb-1">
+                                <div class="col-lg-8">
+                                    <label for="leaveemails" class="form-label">3 Are you satisfied with how you were treated (overall)?</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <select class="form-select" id="inputGroupSelect01" >
+                                                            
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                       
+                                    </select>
+                                </div>
+
+                           
+                    
+                               
 
 </div>
-</div>
+<div class="row mb-1">
+    <div class="col-lg-8">
+        <label for="leaveemails" class="form-label">4 Would you recommend your physician/doctor to others?</label>
+    </div>
+    <div class="col-lg-3">
+        <select class="form-select" id="inputGroupSelect01" >
+                                
+            <option value="1">Yes</option>
+            <option value="2">No</option>
+           
+        </select>
+    </div>
+
+
+
    
+
 </div>
+<div class="card-footer d-flex justify-content-end">
+   
+    <button type="button" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-7"></i> Save</button> 
+</div>
+</div>
+
+</div>
+
+<!-- sdd -->
+
+
+<div class="col-lg-5">
+    <div class="card">
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1">Restriction(s) if any</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-1" >
+                <table class="table table-bordered border-dark">
+                   <thead >
+<tr>
+  <th scope="col" style="width: 10%;">SL</th>
+  <th scope="col">Type</th>
+  <th scope="col">Details</th>
+  
+</tr>
+</thead>
+<tbody>
+<tr>
+  <th scope="row">1</th>
+  <td style="width: 19%;"> 
+   
+</td>
+  <td style="width: 18%;">
+   
+  </td>
+  
+ 
+  
+  
+ 
+
+</tr>
+<tr>
+  <th scope="row">2</th>
+  <td >
+
+      
+    </select>
+  </td>
+  <td >  
+   
+ </td>
+ 
+ 
+  
+</tr>
+<tr>
+    <th scope="row">3</th>
+    <td></td>
+  <td></td>
+  
+  
+ 
+  </tr>
+  <tr>
+   
+        
+    </tr>
+</tbody>
+</table>
+<div class="card-footer d-flex justify-content-between">
+<button type="button" id="addRowPressure" class="btn btn-secondary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Row</button>
+<button type="button" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button> 
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="card-footer d-flex justify-content-between">
+    <button type="button" class="btn btn-warning btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i>  Save Draft</button> 
+    <button type="button" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Review</button> 
+    <button type="button" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i>  Save & Complete</button> 
+    <button type="button" class="btn btn-secondary btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Next</button> 
+
+    </div>
 
 
 </x-app-layout>

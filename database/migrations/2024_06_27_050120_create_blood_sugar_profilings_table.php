@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('dietary_information');
             $table->string('remark');
             $table->text('additional_note')->nullable();
+
+            $table->unsignedBigInteger('patient_id');
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

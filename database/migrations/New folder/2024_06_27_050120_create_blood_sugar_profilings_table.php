@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('random_uploader_tools', function (Blueprint $table) {
+        Schema::create('blood_sugar_profilings', function (Blueprint $table) {
             $table->id();
-            $table->string('document_name');
-            $table->string('sub_type')->nullable();
-            $table->date('date');
+            $table->time('time');
+            $table->decimal('reading', 5, 2); // Adjust precision and scale as needed
+            $table->string('dietary_information');
+            $table->string('remark');
             $table->text('additional_note')->nullable();
-            $table->string('upload_tool');
-            
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('random_uploader_tools');
+        Schema::dropIfExists('blood_sugar_profilings');
     }
 };
