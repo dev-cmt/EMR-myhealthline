@@ -21,5 +21,6 @@ class GeneticDiseaseProfile extends Model
         'disease_psoriasis',
         'other_diseases',
         'additional_comments',
+        'patient_id',
     ];
 }

@@ -7,95 +7,117 @@
                     <h4 class="card-title mb-0 flex-grow-1">Case Data Entry</h4>
                 </div>
                 <div class="card-body">
-            
-                    <div class="row mb-1">
-                        <div class="col-lg-4">
-                            <label for="nameInput" class="form-label">Date of Primary Identification of Issue</label>
+                    <form action="{{ route('case_registry.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="patient_id" value="{{ Auth::user()->id }}">
+                        <div class="row mb-1">
+                            <div class="col-lg-4">
+                                <label for="date_of_primary_identification" class="form-label">Date of Primary Identification of Issue</label>
+                            </div>
+                            <div class="col-lg-4">
+                                <input type="date" name="date_of_primary_identification" id="date_of_primary_identification" class="form-control" required>
+                            </div>
                         </div>
-                        <div class="col-lg-4">
-                            <input type="date" class="form-control" id="nameInput" placeholder="Enter your name">
+                        <div class="row mb-1">
+                            <div class="col-lg-4">
+                                <label for="date_of_first_visit" class="form-label">Date of First Visit to Physician</label>
+                            </div>
+                            <div class="col-lg-4">
+                                <input type="date" name="date_of_first_visit" id="date_of_first_visit" class="form-control" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mb-1">
-                        <div class="col-lg-4">
-                            <label for="websiteUrl" class="form-label">Date of First Visit to Physician</label>
+                        <div class="row mb-1">
+                            <div class="col-lg-4">
+                                <label for="recurrence" class="form-label">Recurrence</label>
+                            </div>
+                            <div class="col-lg-4">
+                                <select name="recurrence" class="form-select" id="recurrence">
+                                    <option value="Genetic">Genetic</option>
+                                    <option value="First Time">First Time</option>
+                                    <option value="Repetition">Repetition</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-lg-4">
-                            <input type="date" class="form-control" id="websiteUrl" placeholder="Enter your url">
+                        <div class="row mb-1">
+                            <div class="col-lg-4">
+                                <label for="duration_of_suffering" class="form-label">Duration of Suffering (Prior to Physician Visit)</label>
+                            </div>
+                            <div class="col-lg-2">
+                                <select class="form-select" name="duration">
+                                    @foreach (range(1, 29) as $value)
+                                        <option value="{{ $value }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                <select name="duration_unit" class="form-select">
+                                    <option value="Hour(s)">Hour(s)</option>
+                                    <option value="Day(s)">Day(s)</option>
+                                    <option value="Week(s)">Week(s)</option>
+                                    <option value="Month(s)">Month(s)</option>
+                                    <option value="Year(s)">Year(s)</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mb-1">
-                        <div class="col-lg-4">
-                            <label for="dateInput" class="form-label">Reccurence</label>
+                        <div class="row mb-1">
+                            <div class="col-lg-4">
+                                <label for="area_of_problem" class="form-label">Area of Problem Identified</label>
+                            </div>
+                            <div class="col-lg-4">
+                                <input type="text" name="area_of_problem" id="area_of_problem" class="form-control" required>
+                            </div>
                         </div>
-                        <div class="col-lg-4">
-                            <select class="form-select" id="inputGroupSelect01">
-                                                    
-                                <option value="1">Genetic</option>
-                                <option value="2">First Time</option>
-                                <option value="3">Repetition</option>
-                            </select>
+                        <div class="row mb-1">
+                            <div class="col-lg-4">
+                                <label for="type_of_ailment" class="form-label">Type of Ailment</label>
+                            </div>
+                            <div class="col-lg-4">
+                                <select name="type_of_ailment" id="type_of_ailment" class="form-select">
+                                    <option value="Neurological">Neurological</option>
+                                    <option value="Eye/Visual">Eye/Visual</option>
+                                    <option value="Orthopedic">Orthopedic</option>
+                                    <option value="Abdomen">Abdomen</option>
+                                    <option value="Gastrology">Gastrology</option>
+                                    <option value="Dermatology">Dermatology</option>
+                                    <option value="Oncology">Oncology</option>
+                                    <option value="Reproductive">Reproductive</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Hand">Hand</option>
+                                    <option value="Nail">Nail</option>
+                                    <option value="Knee">Knee</option>
+                                    <option value="Joints/Muscle">Joints/Muscle</option>
+                                    <option value="Psychometric">Psychometric</option>
+                                    <option value="Functional Rehabilitation">Functional Rehabilitation</option>
+                                    <option value="Drug Abuse/Rehabilitation">Drug Abuse/Rehabilitation</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-           
-                    <div class="row mb-1">
-                        <div class="col-md-4">
-                            
-                            <label for="" >Duration of Suffering (Prior to Physician Visit)</label>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 class="card-title my-4 flex-grow-1">Complaint(s) - Click all that applies</h4>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="row">
+                                    @foreach($complaints as $complaint)
+                                        <div class="col-md-3">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="complaints[]" value="{{ $complaint->id }}" id="complaint_{{ $complaint->id }}" class="form-check-input">
+                                                <label for="complaint_{{ $complaint->id }}" class="form-check-label">{{ $complaint->name }}</label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <textarea class="form-control" name="additional_complaints" rows="12" placeholder="Enter your message"></textarea>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-select form-control" id="inputGroupSelect01">
-                                <option value="1">4</option>
-                                <option value="2">5</option>
-                                <option value="3">6</option>
-                            </select>
-                                
+                        <div class="row mt-3">
+                            <div class="col-md-12 text-start">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-select" id="inputGroupSelect01">
-                                <option value="1">Hour(s)</option>
-                                <option value="2">Day(s)</option>
-                                <option value="3">Week(s)</option>
-                                <option value="3">Month(s)</option>
-                                <option value="3">Year(s)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row mb-1">
-                        <div class="col-lg-4">
-                            <label for="leaveemails" class="form-label">Area of Problem Identifified</label>
-                        </div>
-                        <div class="col-lg-4">
-                            <input type="text" class="form-control" id="leaveemails" placeholder="">
-                        </div>
-                    </div>
-                    <div class="row mb-1">
-                        <div class="col-lg-4">
-                            <label for="contactNumber" class="form-label">Type of Ailment</label>
-                        </div>
-                        <div class="col-lg-4">
-                            <select class="form-select" id="inputGroupSelect01">
-                                                    
-                                <option value="1">Neurological</option>
-                                <option value="2">Eye/Visual</option>
-                                <option value="3">Orthopedic</option>
-                                <option value="4">Abdomen</option>
-                                <option value="3">Gastrology</option>
-                                <option value="3">Dermatology</option>
-                                <option value="3">Oncology</option>
-                                <option value="3">Reproductive</option>
-                                <option value="3">Other</option>
-                                <option value="3">Hand</option>
-                                <option value="3">Nail</option>
-                                <option value="3">Knee</option>
-                                <option value="3">Joints/Muscle</option>
-                                <option value="3">Psychometric</option>
-                                <option value="3">Functional Rehabilitation</option>
-                                <option value="3">Drug Abuse/Rehabilitation</option>
-                            </select>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -103,669 +125,181 @@
 
     <div class="row">
         <div class="col-lg-12">
-            
-            <div class="card">
-                <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">Complaint(s) - Click all that applies</h4>
-                </div>
-                <div class="card-body">
-
-                     
-                    <h4 class="card-title mb-0 flex-grow-1"></h4>
+            <form action="{{ route('treatment-lab-test.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="card">
                     <div class="card-header align-items-center d-flex">
-            
-                        
-                <div class="col-xxl-3 col-md-3">
-                
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Fever</label>
+                        <h4 class="card-title mb-0 flex-grow-1">Examination & Treatment Profile</h4>
                     </div>
-                    
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Shortness of Breath</label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Vomiting</label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Nausea</label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Fatigue</label>
-                    </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Headache
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Chest Burn
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Nerve Pain
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Lymph Nodes
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Blurry Vision
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Eye Pain
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Watery Eyes
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Excessive Sweating
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Joint Pain
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Anxiety
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Yellowish
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Anguish
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Constipation
-                        </label>
-                      </div>
-
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Loose Motion
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Excess Bleeding
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Blocked Nose
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Bloody Cough
-                        </label>
-                        </div>
-                        </div>
-                        
-                        <div class="col-xxl-3 col-md-3">
-                            <div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        Secretion
-                                    </label>
-                                    </div>
-                                    <div class="form-check">
-                                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault">
-                                            Excessive Thirst
-                                        </label>
-                                        </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                            <label class="form-check-label" for="flexCheckDefault">
-                                                Swelling
-                                            </label>
-                                            </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                        <label class="form-check-label" for="flexCheckDefault">
-                                                    Numbness
-                                                </label>
-                                                </div>
-                                                
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                    <label class="form-check-label" for="flexCheckDefault">
-                                                        Dizziness
-                                                    </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                            High Blood Pressure
-                                                        </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                            <label class="form-check-label" for="flexCheckDefault">
-                                                                Low Blood Pressure
-                                                            </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    High Blood Sugar
-                                                                </label>
-                                                                </div> 
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                    <label class="form-check-label" for="flexCheckDefault">
-                                                                        Low Blood Sugar
-                                                                    </label>
-                                                                    </div>
-
-                                                                    <div class="form-check">
-                                                                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                    <label class="form-check-label" for="flexCheckDefault">
-                                                                            Sleeplessness
-                                                                    </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                            <label class="form-check-label" for="flexCheckDefault">
-                                                                                Anemia
-                                                                            </label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                                    Difficulty to Stand
-                                                                                </label>
-                                                                                </div>
-                                                                                <div class="form-check">
-                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                    <label class="form-check-label" for="flexCheckDefault">
-                                                                                        Difficulty to Sit/Lay
-                                                                                    </label>
-                                                                                    </div>
-                                                                                    <div class="form-check">
-                                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                                            Difficulty to Talk
-                                                                                        </label>
-                                                                                        </div>
-                                                                                        <div class="form-check">
-                                                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                            <label class="form-check-label" for="flexCheckDefault">
-                                                                                                Depression
-                                                                                            </label>
-                                                                                            </div>
-                                                                                            <div class="form-check">
-                                                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                                                    Suicidal
-                                                                                                </label>
-                                                                                                </div>
-                                                                                                <div class="form-check">
-                                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                                    <label class="form-check-label" for="flexCheckDefault">
-                                                                                                        Imaginary Entity
-                                                                                                    </label>
-                                                                                                    </div>
-                                                                                                    <div class="form-check">
-                                                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                                                            Urinary Difficulty
-                                                                                                        </label>
-                                                                                                        </div>
-                                                                                                        <div class="form-check">
-                                                                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                                            <label class="form-check-label" for="flexCheckDefault">
-                                                                                                                Dry Cough
-                                                                                                            </label>
-                                                                                                            </div>
-                                                                                                            <div class="form-check">
-                                                                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                                                                    Mucas Cough
-                                                                                                                </label>
-                                                                                                                </div>
-
-                                                                                                                <div class="form-check">
-                                                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                                                    <label class="form-check-label" for="flexCheckDefault">
-                                                                                                                        Cyst
-                                                                                                                    </label>
-                                                                                                                    </div>
-                                                                                                                    <div class="form-check">
-                                                                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                                                                            Bloody Urine
-                                                                                                                        </label>
-                                                                                                                        </div>   
-
-                            </div>
-                        </div>
-                        <div class="col-xxl-3 col-md-6">
-                            <div>
-                                <div class="col-lg-9">
-                                    <textarea class="form-control" id="meassageInput" rows="3" placeholder="Enter your message"></textarea>
-                                 
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Doctor's Information -->
+                            <div class="col-md-6">
+                                <div class="row mb-1">
+                                    <label for="doctorName" class="form-label col-lg-5">Name of Doctor</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" name="doctor_name" id="doctorName" placeholder="">
                                     </div>
                                 </div>
-        
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-1">
+                                    <label for="designation" class="form-label col-lg-5">Designation</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" name="designation" id="designation" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-1">
+                                    <label for="chamberAddress" class="form-label col-lg-5">Chamber Address</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" name="chamber_address" id="chamberAddress">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-1">
+                                    <label for="lastVisitDate" class="form-label col-lg-5">Date of Last Visit</label>
+                                    <div class="col-lg-7">
+                                        <input type="date" class="form-control" name="last_visit_date" id="lastVisitDate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-1">
+                                    <label for="fees" class="form-label col-lg-5">Fees (Optional)</label>
+                                    <div class="col-lg-7">
+                                        <input type="number" class="form-control" name="fees" id="fees" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-1">
+                                    <label for="comments" class="form-label col-lg-5">Doctor's Comment</label>
+                                    <div class="col-lg-7">
+                                        <textarea class="form-control" name="comments" id="comments" rows="1" placeholder="Enter your message"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-1">
+                                    <label for="diseaseDiagnosis" class="form-label col-lg-5">Disease/Diagnosis</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" name="disease_diagnosis" id="diseaseDiagnosis" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-1">
+                                    <label for="prescription" class="form-label col-lg-5">Prescription</label>
+                                    <div class="col-lg-7">
+                                        <input type="file" class="form-control" name="prescription" id="prescription">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-            </div>
-        </div>
+                </div>
+    
+                <div class="card">
+                    <div class="card-header align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1">Recommended Pathological/Lab Test(s)</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive table-card">
+                            <table id="dataTableUploadTool" class="table table-nowrap table-striped mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">SL</th>
+                                        <th scope="col">Name of Test</th>
+                                        <th scope="col">Type</th>
+                                        <th scope="col">Organ</th>
+                                        <th scope="col">Comments</th>
+                                        <th scope="col">Cost</th>
+                                        <th scope="col">Lab</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>
+                                            <select class="form-select" name="document_name[]">
+                                                @foreach ($tests as $item)
+                                                <option value="{{ $item->id }}">{{ $item->test_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select" name="type[]">
+                                                <option value="1">Blood sample</option>
+                                                <option value="2">Urine Sample</option>
+                                                <option value="3">Stool Sample</option>
+                                                <option value="4">Imaging</option>
+                                                <option value="5">Genetic</option>
+                                                <option value="6">Biopsy</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select" name="organ[]">
+                                                @foreach ($organs as $item)
+                                                <option value="{{ $item->id }}">{{ $item->organ_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td><textarea name="comments[]" rows="1" class="form-control"></textarea></td>
+                                        <td><input type="text" name="cost[]" class="form-control"></td>
+                                        <td><input type="text" name="lab[]" class="form-control"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td colspan="7"><button type="button" id="addRow" class="btn btn-secondary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Row</button></td>
+                                        <td><button type="submit" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header align-items-center d-flex">
-                            <h4 class="card-title mb-0 flex-grow-1">Examination & Treatment Profile</h4>
-                        </div>
-                        <div class="card-body">
-                <div class="row mb-1">
-                    <div class="col-lg-2">
-                        <label for="nameInput" class="form-label">Name of Doctor</label>
-                    </div>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" id="nameInput" placeholder="">
-                    </div>
-                </div>
-                <div class="row mb-1">
-                    <div class="col-lg-2">
-                        <label for="designationInput" class="form-label">Designation</label>
-                    </div>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" id="designationInput" placeholder="">
-                    </div>
-                </div>
-                <div class="row mb-1">
-                    <div class="col-lg-2">
-                        <label for=" AddressInput" class="form-label">Chamber Address</label>
-                    </div>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" id=" addressInput">
-                    </div>
-                </div>
-                <div class="row mb-1">
-                    <div class="col-lg-2">
-                        <label for="dateInput" class="form-label">Date of Last Visit</label>
-                    </div>
-                    <div class="col-lg-4">
-                        <input type="date" class="form-control" id="dateInput">
-                    </div>
-                </div>
-                <div class="row mb-1">
-                    <div class="col-lg-2">
-                        <label for="fees" class="form-label">Fees (Optional)</label>
-                    </div>
-                    <div class="col-lg-4">
-                        <input type="number" class="form-control" id="fees" placeholder="">
-                    </div>
-                </div>
-                
-                <div class="row mb-1">
-                    <div class="col-lg-2">
-                        <label for="meassageInput" class="form-label">Doctor's Comment</label>
-                    </div>
-                    <div class="col-lg-4">
-                        <textarea class="form-control" id="meassageInput" rows="3" placeholder="Enter your message"></textarea>
-                    </div>
-                </div>
+    
+    @push('scripts')
+    <script>
+        $(document).ready(function() {
+            // Add new row
+            $('#addRow').click(function() {
+                var newRow = '<tr>' +
+                    '<th scope="row"></th>' +
+                    '<td><select class="form-select" name="document_name[]">@foreach ($tests as $item)<option value="{{ $item->id }}">{{ $item->test_name }}</option>@endforeach</select></td>' +
+                    '<td><select class="form-select" name="type[]"><option value="1">Blood sample</option><option value="2">Urine Sample</option><option value="3">Stool Sample</option><option value="4">Imaging</option><option value="5">Genetic</option><option value="6">Biopsy</option></select></td>' +
+                    '<td><select class="form-select" name="organ[]">@foreach ($organs as $item)<option value="{{ $item->id }}">{{ $item->organ_name }}</option>@endforeach</select></td>' +
+                    '<td><textarea name="comments[]" rows="1" class="form-control"></textarea></td>' +
+                    '<td><input type="text" name="cost[]" class="form-control"></td>' +
+                    '<td><input type="text" name="lab[]" class="form-control"></td>' +
+                    '<td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>' +
+                    '</tr>';
+    
+                $('#dataTableUploadTool tbody').append(newRow);
+            });
+    
+            // Remove row
+            $(document).on('click', '.remove-row', function() {
+                $(this).closest('tr').remove();
+            });
+        });
+    </script>
+    @endpush
+    
 
-                <div class="row mb-1">
-                    <div class="col-lg-2">
-                        <label for="disesase" class="form-label">Disease/Diagnosis</label>
-                    </div>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control" id="disesase" placeholder="">
-                    </div>
-                </div>
 
-                <div class="row mb-1">
-                    <div class="col-lg-2">
-                        <label for="disesase" class="form-label">Prescription</label>
-                    </div>
-                    <div class="col-lg-3"style="width: 33%">
-                        <input type="file" class="form-control" id="inputGroupFile01">
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        </div>
-<!-- right -->
-			
 
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Recommended Pathological/Lab Test(s)</h4>
-            </div>
-            <div class="card-body">
-                <div class="row mb-1" >
-                    <table class="table table-bordered border-dark">
-                       <thead >
-    <tr>
-      <th scope="col">SL</th>
-      <th scope="col">Name of Test</th>
-      <th scope="col">Type</th>
-      <th scope="col">Organ</th>
-      <th scope="col">Comments</th>
-      <th scope="col">Cost </th>
-      <th scope="col">Lab</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td > 
-        <select class="form-select" id="inputGroupSelect01">
-        <option value="1">CBC  (Complete Blood Count)</option>
-        <option value="1">LP (Lipid Panel/Profile)</option>
-        <option value="1">RBS (Random Blood Sugar - Fasting)</option>                             
-        <option value="1">TFT/ (Thyroid Function Test)</option>
-        <option value="1">S-Cretanine (Kidney/Renal Function Test)</option>
-        <option value="1">Urine Examination</option>                                   
-        <option value="1">X-Ray (Radiology)</option>
-        <option value="2">MRI (Magnetic Reasonance Imagine)</option>
-        <option value="3">CT (Computed Tomography)</option>
-        <option value="4">Genetic Testing</option>
-        <option value="3">Stool Examination</option>
-        <option value="3">Dermatology</option>
-        <option value="3">Sperm Count Test (Potency Test)</option>
-        <option value="3">ECG (Eco Cardiogram)</option>
-        <option value="3">EGG (ElectroGastrogram)</option>
-        <option value="3">Functionality Test</option>
-        <option value="3">Physiotherapy</option>
-        <option value="3">Audiotherapy</option>
-        <option value="3">Covid-19 (Antigen)</option>
-        <option value="3">Covid-19 (RT-PCR)</option>
-        <option value="3">HIV Screening</option>
-        <option value="3">HPV Screening</option>
-        <option value="3">HbA</option>
-        <option value="3">HbAg+</option>
-        <option value="3">HbC</option>
-        <option value="3">USG-A</option>
-        <option value="3">USG-C</option>
-        <option value="3">H1N1</option>
-        <option value="3">ETT (Exercise Tolerance Test)</option>
-        <option value="3">ETT (Exercise Tolerance Test)</option>
-        <option value="3">HbC</option>
-        <option value="3">Angiogram</option>
-        <option value="3">Mammography</option>
-        <option value="3">Urography</option>
-        <option value="3">PFT (Pulmonary Function Test)</option>
-        <option value="3">MRS (Magnetic Reasonance Spectography)</option>
-        <option value="3">Prenatal/Pregnancy Test</option>
-        <option value="3">Endoscopy</option>
-        <option value="3">Cerebral Angiography</option>
-    </select>
-</td>
-      <td style="width: 17%;">
-        <select class="form-select" id="inputGroupSelect01">
-                                            
-            <option value="1">Blood sample</option>
-            <option value="2">Urine Sample</option>
-            <option value="3">Stool Sample</option>
-            <option value="4">Imaging</option>
-            <option value="3">Genetic</option>
-            <option value="3">Biopsy</option>
-        </select>
-      </td>
-      <td style="width: 19%;">
-        <select class="form-select" id="inputGroupSelect01">
-        <option value="3">Scalp</option>
-        <option value="3">Brain</option>
-        <option value="3">Forehead</option>
-        <option value="3">Eye (right)</option>
-        <option value="3">Eye (left)</option>
-        <option value="3">Nostrail</option>
-        <option value="3">Ear (Right)</option> 
-        <option value="3">Ear (Left)</option> 
-        <option value="3">Lip (Upper)</option>                                    
-        <option value="3">Lip (Lower)</option> 
-        <option value="3">Tongue</option> 
-        <option value="3">Tonsilitis</option> 
-        <option value="3">Trachia/Airway</option>
-        <option value="3">Heart</option>  
-        <option value="3">Lung (Right)</option> 
-        <option value="3">Lung (Left)</option> 
-        <option value="3">Intestine (Large)</option> 
-        <option value="3">Intenstine (Small)</option> 
-        <option value="3">Kidney (Right)</option> 
-        <option value="3">Kidney (Left)</option> 
-        <option value="3">Thyroid Gland</option> 
-        <option value="3">Appendix</option> 
-        <option value="3">Bladder</option> 
-        <option value="3">Pancreas</option> 
-        <option value="3">Endocrine Systems</option> 
-        <option value="3">Lymphatic </option> 
-        <option value="3">Nerve/Nervous System</option> 
-        <option value="1">Skeletal</option>
-        <option value="2">Anal</option>
-        <option value="3">Esophagus</option>
-        <option value="4">Penis</option>
-        <option value="3">Navel</option>
-        <option value="3">Vagina</option>
-        <option value="3">Hip Joint</option>
-        <option value="3">Anus</option>
-        <option value="3">Nails</option>
-        <option value="3">Skin</option>
-        <option value="3">Bone</option>
-        <option value="3">Hair</option>
-        <option value="3">Thigh (Upper)</option>
-        <option value="3">Thigh (Lower)</option>
-        <option value="3">Knee</option>
-        <option value="3">Buttcheeks</option>
-        <option value="3">Toe</option>
-        <option value="3">Finger(s) (Right Hand)</option>
-        <option value="3">Finger(s) (Left hand)</option>
-        <option value="3">Finger(s) (Right Toe)</option>
-        <option value="3">Finger(s) (Left Toe)</option>
-        <option value="3">Ovary (Right)</option>
-        <option value="3">Ovary (Left)</option>
-        <option value="3">Breast (Right)</option>
-        <option value="3">Breast (Left)</option>
-        <option value="3">Testicle (Right)</option>
-        <option value="3">Testicle (Left)</option>
-      
-        
-        </select>
-      </td>
-      <td>ANTB</td>
-      <td></td>
-      <td></td>
-      <td><input type="file" class="form-control" id="inputGroupFile01"></td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td >
-        <select class="form-select" id="inputGroupSelect01">   
-        <option value="1">CBC  (Complete Blood Count)</option>
-        <option value="1">LP (Lipid Panel/Profile)</option>
-        <option value="1">RBS (Random Blood Sugar - Fasting)</option>                             
-        <option value="1">TFT/ (Thyroid Function Test)</option>
-        <option value="1">S-Cretanine (Kidney/Renal Function Test)</option>
-        <option value="1">Urine Examination</option>
-        <option value="1">X-Ray (Radiology)</option>
-        <option value="2">MRI (Magnetic Reasonance Imagine)</option>
-        <option value="3">CT (Computed Tomography)</option>
-        <option value="4">Genetic Testing</option>
-        <option value="3">Stool Examination</option>
-        <option value="3">Dermatology</option>
-        <option value="3">Sperm Count Test (Potency Test)</option>
-        <option value="3">ECG (Eco Cardiogram)</option>
-        <option value="3">EGG (ElectroGastrogram)</option>
-        <option value="3">Functionality Test</option>
-        <option value="3">Physiotherapy</option>
-        <option value="3">Audiotherapy</option>
-        <option value="3">Covid-19 (Antigen)</option>
-        <option value="3">Covid-19 (RT-PCR)</option>
-        <option value="3">HIV Screening</option>
-        <option value="3">HPV Screening</option>
-        <option value="3">HbA</option>
-        <option value="3">HbAg+</option>
-        <option value="3">HbC</option>
-        <option value="3">USG-A</option>
-  </select>
-      </td>
-      <td >  
-        <select class="form-select" id="inputGroupSelect01">                                   
-        <option value="1">Blood sample</option>
-        <option value="2">Urine Sample</option>
-        <option value="3">Stool Sample</option>
-        <option value="4">Imaging</option>
-        <option value="3">Genetic</option>
-        <option value="3">Biopsy</option>
-    </select>
-     </td>
-      <td>
-        <select class="form-select" id="inputGroupSelect01">
-        <option value="3">Scalp</option>
-        <option value="3">Brain</option>
-        <option value="3">Forehead</option>
-        <option value="3">Eye (right)</option>
-        <option value="3">Eye (left)</option>
-        <option value="3">Nostrail</option>
-        <option value="3">Ear (Right)</option> 
-        <option value="3">Ear (Left)</option> 
-        <option value="3">Lip (Upper)</option>                                    
-        <option value="3">Lip (Lower)</option> 
-        <option value="3">Tongue</option> 
-        <option value="3">Tonsilitis</option> 
-        <option value="3">Trachia/Airway</option>
-        <option value="3">Heart</option>  
-        <option value="3">Lung (Right)</option> 
-        <option value="3">Lung (Left)</option> 
-        <option value="3">Intestine (Large)</option> 
-        <option value="3">Intenstine (Small)</option> 
-        <option value="3">Kidney (Right)</option> 
-        <option value="3">Kidney (Left)</option> 
-        <option value="3">Thyroid Gland</option> 
-        <option value="3">Appendix</option> 
-        <option value="3">Bladder</option> 
-        <option value="3">Pancreas</option> 
-        <option value="3">Endocrine Systems</option> 
-        <option value="3">Lymphatic </option> 
-        <option value="3">Nerve/Nervous System</option> 
-        <option value="1">Skeletal</option>
-        <option value="2">Anal</option>
-        <option value="3">Esophagus</option>
-        <option value="4">Penis</option>
-        <option value="3">Navel</option>
-        <option value="3">Vagina</option>
-        <option value="3">Hip Joint</option>
-        <option value="3">Anus</option>
-        <option value="3">Nails</option>
-        <option value="3">Skin</option>
-        <option value="3">Bone</option>
-        <option value="3">Hair</option>
-        <option value="3">Thigh (Upper)</option>
-        <option value="3">Thigh (Lower)</option>
-        <option value="3">Knee</option>
-        <option value="3">Buttcheeks</option>
-        <option value="3">Toe</option>
-        <option value="3">Finger(s) (Right Hand)</option>
-        <option value="3">Finger(s) (Left hand)</option>
-        <option value="3">Finger(s) (Right Toe)</option>
-        <option value="3">Finger(s) (Left Toe)</option>
-        <option value="3">Ovary (Right)</option>
-        <option value="3">Ovary (Left)</option>
-        <option value="3">Breast (Right)</option>
-        <option value="3">Breast (Left)</option>
-        <option value="3">Testicle (Right)</option>
-        <option value="3">Testicle (Left)</option>
-      
-        
-        </select>
-      </td>
-      <td>ANTB</td>
-      <td></td>
-      <td></td>
-      <td style="width: 12%"> <input type="file" class="form-control" id="inputGroupFile01"></td>
-    </tr>
-    <tr>
-        <th scope="row">3</th>
-        <td></td>
-      <td></td>
-      <td></td>
-      <td>ANTB</td>
-      <td></td>
-      <td></td>
-      <td><input type="file" class="form-control" id="inputGroupFile01"></td>
-      </tr>
-      
-  </tbody>
- </table>
- <div class="card-footer d-flex justify-content-between">
-    <button type="button" id="addRowPressure" class="btn btn-secondary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Row</button>
-    <button type="button" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button> 
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+
+    
 <!-- {{-- Recommended Pathological/Lab Test --}} -->
 <div class="row">
     <div class="col-lg-12">

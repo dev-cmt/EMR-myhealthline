@@ -23,5 +23,6 @@ class OtherPersonalInformation extends Model
         'menstrual_cycle',
         'activity_status',
         'hereditary_disease',
+        'patient_id',
     ];
 }

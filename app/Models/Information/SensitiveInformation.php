@@ -27,6 +27,7 @@ class SensitiveInformation extends Model
         'alcohol_frequency',
         'drug_abuse_history',
         'drug_abuse_details',
+        'patient_id',
     ];
 
     // If you want to cast the enum fields to specific values, you can use casts

@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('lab_tests', function (Blueprint $table) {
             $table->id();
+            $table->string('test_name')->nullable();
+            $table->string('type')->nullable();
+            $table->string('organ')->nullable();
+            $table->text('comments')->nullable();
+            $table->decimal('cost', 8, 2)->nullable();
+            $table->string('lab')->nullable();
+
+            $table->unsignedBigInteger('treatment_profile_id');
+            $table->foreign('treatment_profile_id')->references('id')->on('treatment_profiles')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -49,16 +49,23 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/genetic-disease-profile', [PatientController::class, 'geneticDiseaseProfile'])->name('genetic-disease-profile.store');
     Route::post('/other-personal-information', [PatientController::class, 'otherPersonalInformation'])->name('personal-information.store');
     
-    
-    Route::post('/blood-sugar.store', [PatientController::class, 'bloodSugarProfiling'])->name('blood-sugar.store');
-    Route::post('/blood-pressure.store', [PatientController::class, 'bloodPressureProfiling'])->name('blood-pressure.store');
-
-
     Route::get('/patient/info-cases', [PatientController::class, 'cases'])->name('info-cases');
+    Route::post('/patient/case_registry/store', [PatientController::class, 'caseRegistry'])->name('case_registry.store');
+    Route::post('/patient/treatment-lab-test/store', [PatientController::class, 'treatmentLabTest'])->name('treatment-lab-test.store');
+    
     Route::get('/patient/info-profiling-tool', [PatientController::class, 'profilingTool'])->name('info-profiling-tool');
+    Route::post('/blood-sugar-profiling/store', [PatientController::class, 'bloodSugarProfiling'])->name('blood-sugar-profiling.store');
+    Route::post('/blood-pressure-profiling/store', [PatientController::class, 'bloodPressureProfiling'])->name('blood-pressure-profiling.store');
+
+
     
     Route::get('/patient/info-vaccination-record', [vaccineController::class, 'vaccinationRecord'])->name('info-vaccination-record');
     Route::post('/patient/vaccinations/store', [vaccineController::class, 'saveVaccinations'])->name('vaccinations.store');
+    Route::get('/get_section_one_data', [vaccineController::class, 'getSectionOneData'])->name('get_section_one_data');
+    Route::get('/get_section_two_data', [vaccineController::class, 'getSectionTwoData'])->name('get_section_two_data');
+    Route::get('/get_section_three_data', [vaccineController::class, 'getSectionThreeData'])->name('get_section_three_data');
+    Route::post('/store_covid_19_vaccine', [vaccineController::class, 'storeCovid19Vaccine'])->name('store_covid_19_vaccine');
+    Route::post('/store_covid_file_upload', [vaccineController::class, 'storeCovidFileUpload'])->name('store_covid_file_upload');
     
 
     Route::get('/patient/info-random-uploader', [PatientController::class, 'randomUploaderTool'])->name('info-random-uploader');
@@ -66,6 +73,7 @@ Route::group(['middleware' => ['auth']], function() {
     
     Route::get('/patient/info-doctor-appointment', [AppointController::class, 'doctorAppointMent'])->name('info-doctor-appointment');
     Route::post('/patient/info-doctor-appointment/store', [AppointController::class, 'saveDoctorAppointment'])->name('info-doctor-appointment.store');
+    Route::get('/patient/info-doctor-appointment/edit', [AppointController::class, 'editDoctorAppointment'])->name('info-doctor-appointment.edit');
 
 });
 

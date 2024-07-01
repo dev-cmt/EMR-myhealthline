@@ -15,5 +15,6 @@ class BloodSugarProfiling extends Model
         'dietary_information',
         'remark',
         'additional_note',
+        'patient_id',
     ];
 }

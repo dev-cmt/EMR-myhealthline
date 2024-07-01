@@ -9,10 +9,15 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Master\MastTest;
+use App\Models\Master\MastOrgan;
 use App\Models\User;
 use App\Models\Information\SensitiveInformation;
 use App\Models\Information\GeneticDiseaseProfile;
 use App\Models\Information\OtherPersonalInformation;
+
+use App\Models\Information\Complaint;
+use App\Models\Information\CaseRegistry;
 
 use App\Models\Information\BloodSugarProfiling;
 use App\Models\Information\BloodPressureProfile;
@@ -25,7 +30,6 @@ use Exception;
 
 class PatientController extends Controller
 {
-   
 
     public function generalProfile()
     {
@@ -152,7 +156,7 @@ class PatientController extends Controller
         SensitiveInformation::create($validatedData);
 
         // Redirect or respond as needed
-        return redirect()->back()->with('success', 'Sensitive information saved successfully.');
+        return redirect()->route('dashboard')->with('success', 'Sensitive information saved successfully.');
     }
     /**---------------------------------
      * Store => genetic_disease_profiles
@@ -223,7 +227,94 @@ class PatientController extends Controller
      */
     public function cases()
     {
-        return view('pages.info-cases');
+        $complaints = Complaint::all();
+        $tests = MastTest::all();
+        $organs = MastOrgan::all();
+        
+        return view('pages.info-cases', compact('complaints', 'tests', 'organs'));
+    }
+
+    /**------------------------
+     * Store => blood_sugar_profilings
+     */
+    public function caseRegistry(Request $request)
+    {
+        $data = $request->validate([
+            'patient_id' => 'required|integer',
+            'date_of_primary_identification' => 'required|date',
+            'date_of_first_visit' => 'required|date',
+            'recurrence' => 'required|string|max:255',
+            'duration' => 'required|integer',
+            'duration_unit' => 'required|string|max:10',
+            'area_of_problem' => 'required|string|max:255',
+            'type_of_ailment' => 'required|string|max:255',
+            'additional_complaints' => 'nullable|string',
+            'complaints' => 'array',
+            'complaints.*' => 'integer|exists:complaints,id',
+        ]);
+
+        $caseRegistry = CaseRegistry::create([
+            'patient_id' => $data['patient_id'],
+            'date_of_primary_identification' => $data['date_of_primary_identification'],
+            'date_of_first_visit' => $data['date_of_first_visit'],
+            'recurrence' => $data['recurrence'],
+            'duration_of_suffering' => $data['duration'] . ' ' . $data['duration_unit'],
+            'area_of_problem' => $data['area_of_problem'],
+            'type_of_ailment' => $data['type_of_ailment'],
+            'additional_complaints' => $data['additional_complaints'] ?? null,
+        ]);
+
+        if (isset($data['complaints'])) {
+            $caseRegistry->complaints()->sync($data['complaints']);
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Case registry created successfully!');
+    }
+
+    /**------------------------
+     * Store => blood_sugar_profilings
+     */
+    public function treatmentLabTest(Request $request)
+    {
+        // Validate request data
+        $validatedData = $request->validate([
+            'doctor_name' => 'nullable|string',
+            'designation' => 'nullable|string',
+            'chamber_address' => 'nullable|string',
+            'last_visit_date' => 'nullable|date',
+            'fees' => 'nullable|numeric',
+            'comments' => 'nullable|string',
+            'disease_diagnosis' => 'required|string',
+            'prescription' => 'nullable|string',
+            'patient_id' => 'required|exists:users,id',
+            'document_name.*' => 'required|exists:tests,id', // Adjust based on your actual validation needs
+            'type.*' => 'required',
+            'organ.*' => 'required|exists:organs,id',
+            'comments.*' => 'nullable|string',
+            'cost.*' => 'nullable|numeric',
+            'lab.*' => 'nullable|string',
+        ]);
+
+        // Create treatment profile
+        $treatmentProfile = TreatmentProfile::create($validatedData);
+
+        // Process lab tests
+        if (isset($validatedData['document_name'])) {
+            foreach ($validatedData['document_name'] as $key => $testId) {
+                $labTest = new LabTest([
+                    'test_name' => $validatedData['document_name'][$key],
+                    'type' => $validatedData['type'][$key],
+                    'organ' => $validatedData['organ'][$key],
+                    'comments' => $validatedData['comments'][$key] ?? null,
+                    'cost' => $validatedData['cost'][$key] ?? null,
+                    'lab' => $validatedData['lab'][$key] ?? null,
+                ]);
+                $treatmentProfile->labTests()->save($labTest);
+            }
+        }
+
+        // Redirect or return response as needed
+        return redirect()->route('dashboard')->with('success', 'Created successfully!');
     }
     /**--------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
@@ -241,33 +332,26 @@ class PatientController extends Controller
      */
     public function bloodSugarProfiling(Request $request)
     {
-        // Validate the incoming request data for blood sugar
-        $validatedData = $request->validate([
-            'time.*' => 'required',
+        $data = $request->validate([
+            'time.*' => 'required|date_format:H:i',
             'reading.*' => 'required|numeric',
-            'dietary_information.*' => 'required',
-            'remark.*' => 'required',
-            'additional_note.*' => 'nullable',
+            'dietary_information.*' => 'required|string',
+            'remark.*' => 'required|string',
+            'additional_note.*' => 'nullable|string',
         ]);
 
-        try {
-            // Process each blood sugar reading and store in the database
-            foreach ($validatedData['time'] as $key => $value) {
-                BloodSugarProfile::create([
-                    'time' => $validatedData['time'][$key],
-                    'reading' => $validatedData['reading'][$key],
-                    'dietary_information' => $validatedData['dietary_information'][$key],
-                    'remark' => $validatedData['remark'][$key],
-                    'additional_note' => $validatedData['additional_note'][$key] ?? null,
-                ]);
-            }
-
-            // Optionally, you can redirect or respond with a success message
-            return redirect()->back()->with('success', 'Blood sugar readings saved successfully!');
-        } catch (\Exception $e) {
-            // Handle any exceptions or errors that occur during saving
-            return redirect()->back()->with('error', 'Failed to save blood sugar readings. Please try again.');
+        foreach ($data['time'] as $index => $time) {
+            BloodSugarProfiling::create([
+                'time' => $time,
+                'reading' => $data['reading'][$index],
+                'dietary_information' => $data['dietary_information'][$index],
+                'remark' => $data['remark'][$index],
+                'additional_note' => $data['additional_note'][$index] ?? null,
+                'patient_id' => Auth::user()->id,
+            ]);
         }
+
+        return redirect()->route('dashboard')->with('success', 'Blood sugar data saved successfully.');
     }
     /**------------------------
      * Store => blood_pressure_profilings
@@ -325,29 +409,42 @@ class PatientController extends Controller
      */
     public function saveRandomUploaderTool(Request $request)
     {
-        $documentNames = $request->input('document_name');
-        $subTypes = $request->input('sub_type');
-        $dates = $request->input('date');
-        $additionalNotes = $request->input('additional_note');
-        $uploadTools = $request->file('upload_tool');
+        // Validate incoming requests if needed
+        $request->validate([
+            'document_name.*' => 'required',
+            'date.*' => 'required|date',
+            'upload_tool.*' => 'required|file',
+        ]);
 
-        foreach ($documentNames as $index => $documentName) {
-            $document = new RandomUploaderTool();
-            $document->document_name = $documentName;
-            $document->sub_type = $subTypes[$index];
-            $document->date = $dates[$index];
-            $document->additional_note = $additionalNotes[$index];
+        try {
+            // Loop through each row submitted in the form
+            foreach ($request->document_name as $key => $value) {
+                $tool = new RandomUploaderTool();
+                $tool->document_name = $request->document_name[$key];
+                $tool->sub_type = $request->sub_type[$key] ?? null;
+                $tool->date = $request->date[$key];
+                $tool->additional_note = $request->additional_note[$key] ?? null;
 
-            if (isset($uploadTools[$index])) {
-                $file = $uploadTools[$index];
-                $filePath = $file->store('uploads', 'public');
-                $document->upload_tool = $filePath;
+                // Handle file upload
+                if ($request->hasFile('upload_tool')) {
+                    $file = $request->file('upload_tool')[$key];
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('uploads', $fileName); // Adjust the storage path as needed
+                    $tool->upload_tool = $fileName;
+                }
+
+                // Assuming patient_id is authenticated user ID
+                $tool->patient_id = auth()->user()->id;
+                $tool->save();
             }
 
-            $document->save();
+            return redirect()->back()->with('success', 'Data saved successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to save data. ' . $e->getMessage());
         }
-        return redirect()->back()->with('success', 'Documents uploaded successfully.');
     }
+
+    
     /**--------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
      * Doctor's Appointment Setup Tool

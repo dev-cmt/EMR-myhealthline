@@ -7,5 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class RandomUploaderTool extends Model
 {
-    use HasFactory;
+    protected $fillable = [
+        'patient_id', 
+        'document_name',
+        'sub_type',
+        'date',
+        'additional_note',
+        'upload_tool',
+    ];
 }

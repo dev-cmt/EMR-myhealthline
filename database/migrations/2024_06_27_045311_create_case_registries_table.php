@@ -13,12 +13,16 @@ return new class extends Migration
     {
         Schema::create('case_registries', function (Blueprint $table) {
             $table->id();
-            $table->date('date_primary_identification');
-            $table->date('date_first_visit');
+            $table->date('date_of_primary_identification');
+            $table->date('date_of_first_visit');
             $table->string('recurrence');
-            $table->integer('duration_before_visit');
+            $table->string('duration_of_suffering');
             $table->string('area_of_problem');
             $table->string('type_of_ailment');
+            $table->text('additional_complaints')->nullable();
+            
+            $table->unsignedBigInteger('patient_id');
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

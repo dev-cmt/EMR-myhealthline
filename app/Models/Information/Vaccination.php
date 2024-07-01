@@ -24,5 +24,6 @@ class Vaccination extends Model
         'certificate_number',
         'side_effects',
         'upload_tool',
+        'patient_id',
     ];
 }

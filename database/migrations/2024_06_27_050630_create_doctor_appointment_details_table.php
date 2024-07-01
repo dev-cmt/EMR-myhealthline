@@ -14,12 +14,11 @@ return new class extends Migration
         Schema::create('doctor_appointment_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('doctor_appointment_id');
-            $table->string('appointment_type');
-            $table->dateTime('appointment_datetime');
+            $table->string('appointment');
+            $table->string('day');
+            $table->string('time_date_tool');
             $table->decimal('fee', 8, 2)->nullable();
-            $table->text('note')->nullable();
-            $table->string('star_rating')->nullable();
-            $table->text('additional_comments')->nullable();
+            $table->string('note')->nullable();
             $table->timestamps();
 
             $table->foreign('doctor_appointment_id')->references('id')->on('doctor_appointments')->onDelete('cascade');

@@ -241,7 +241,7 @@
                                 <select class="form-select" name="sexually_active" id="sexually_active">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -254,7 +254,7 @@
                                 <select class="form-select" name="diabetic" id="diabetic">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -267,7 +267,7 @@
                                 <select class="form-select" name="allergies" id="allergies">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -287,7 +287,7 @@
                                 <select class="form-select" name="thyroid" id="thyroid">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -307,7 +307,7 @@
                                 <select class="form-select" name="hypertension" id="hypertension">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -320,7 +320,7 @@
                                 <select class="form-select" name="cholesterol" id="cholesterol">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -339,7 +339,7 @@
                                 <select class="form-select" name="s_creatinine" id="s_creatinine">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -358,7 +358,7 @@
                                 <select class="form-select" name="smoking" id="smoking">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -377,7 +377,7 @@
                                 <select class="form-select" name="alcohol_intake" id="alcohol_intake">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>
@@ -403,7 +403,7 @@
                                 <select class="form-select" name="drug_abuse_history" id="drug_abuse_history">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                    <option value="Don't Know">Don't Know</option>
+                                    <option value="Do Not Know">Don't Know</option>
                                     <option value="Unwilling to Disclose">Unwilling to Disclose</option>
                                 </select>
                             </div>

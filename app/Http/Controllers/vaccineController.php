@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Information\Vaccination;
+use App\Models\Information\VaccinationCovid;
+use App\Models\Information\CovidCertificate;
 use Illuminate\Support\Facades\Auth;
 
 class vaccineController extends Controller
@@ -13,9 +15,16 @@ class vaccineController extends Controller
     public function vaccinationRecord(Request $request)
     {
         
-        $vaccinationRecords = Vaccination::all();
+        $vaccinationRecords = Vaccination::where('type','section one')->get();
+        $user = Auth::user();
+        $savedVaccines = Vaccination::where('patient_id', $user->id)->pluck('vaccine_name')->toArray();
+        $marketName = Vaccination::where('patient_id', $user->id)->pluck('market_name')->toArray();
+        $applicableFor = Vaccination::where('patient_id', $user->id)->pluck('applicable_for')->toArray();
+
+        $coviddata = VaccinationCovid::where('patient_id', $user->id)->get();
+        $validdataforcovid = VaccinationCovid::where('patient_id', $user->id)->pluck('dose_type')->toArray();
     
-        return view('pages.info-vaccination-record', compact('vaccinationRecords'));
+        return view('pages.info-vaccination-record', compact('vaccinationRecords', 'savedVaccines', 'marketName', 'applicableFor', 'coviddata','validdataforcovid'));
     }
 
 
@@ -56,6 +65,8 @@ class vaccineController extends Controller
                 $vaccinestore->dose_01 = $request->doseone;
                 $vaccinestore->dose_02 = $request->dosetwo;
                 $vaccinestore->dose_03 = $request->dosethree;
+                $vaccinestore->dose_04 = $request->dosetfour;
+                $vaccinestore->dose_05 = $request->dosefive;
                 $vaccinestore->booster = $request->booster;
                 $vaccinestore->upload_tool = self::uploadImage($request);
                 $vaccinestore->patient_id = Auth::user()->id;
@@ -67,12 +78,16 @@ class vaccineController extends Controller
                 $vaccinestore->dose_01 = $request->doseone;
                 $vaccinestore->dose_02 = $request->dosetwo;
                 $vaccinestore->dose_03 = $request->dosethree;
+                $vaccinestore->dose_04 = $request->dosetfour;
+                $vaccinestore->dose_05 = $request->dosefive;
                 $vaccinestore->booster = $request->booster;
                 $vaccinestore->location = $request->location;
                 $vaccinestore->certificate_number = $request->certificate;
                 $vaccinestore->upload_tool = self::uploadImage($request);
                 $vaccinestore->patient_id = Auth::user()->id;
                 $vaccinestore->save();
+                // $notification = ['message' => 'Vaccination record saved successfully.', 'alert-type' => 'success'];
+                // return redirect()->route('info-vaccination-record', ['section' => 'section2'])->with($notification);
             }else{
                 $vaccinestore = new Vaccination;
                 $vaccinestore->type = $request->hidden_section;
@@ -81,6 +96,8 @@ class vaccineController extends Controller
                 $vaccinestore->dose_01 = $request->doseone;
                 $vaccinestore->dose_02 = $request->dosetwo;
                 $vaccinestore->dose_03 = $request->dosethree;
+                $vaccinestore->dose_04 = $request->dosetfour;
+                $vaccinestore->dose_05 = $request->dosefive;
                 $vaccinestore->booster = $request->booster;
                 $vaccinestore->upload_tool = self::uploadImage($request);
                 $vaccinestore->patient_id = Auth::user()->id;
@@ -95,5 +112,50 @@ class vaccineController extends Controller
             return redirect()->back()->with($notification);
         }
        
+    }
+
+
+    public function getSectionOneData(Request $request)
+    {
+        $sectiononedata = Vaccination::where('type',$request->section_one)->get();
+        return view('pages.info-vaccination-record.get_section_one_data', compact('sectiononedata'));
+    }
+
+    public function getSectionTwoData(Request $request)
+    {
+        $sectiontwodata = Vaccination::where('type',$request->section_two)->get();
+        return view('pages.info-vaccination-record.get_section_two_data', compact('sectiontwodata'));
+    }
+
+    public function getSectionThreeData(Request $request)
+    {
+        $sectionthreedata = Vaccination::where('type',$request->section_three)->get();
+        return view('pages.info-vaccination-record.get_section_three_data', compact('sectionthreedata'));
+    }
+
+
+    public function storeCovid19Vaccine(Request $request)
+    {
+
+        $storecoviddata = new VaccinationCovid;
+        $storecoviddata->dose_type = $request->vaccine_name;
+        $storecoviddata->location = $request->location;
+        $storecoviddata->date = $request->date;
+        $storecoviddata->manufacturer = $request->manufacturer;
+        $storecoviddata->patient_id = Auth::user()->id;
+        $storecoviddata->save();
+        return redirect()->back();
+
+    }
+
+
+    public function storeCovidFileUpload(Request $request)
+    {
+        $storecovidfile = new CovidCertificate;
+        $storecovidfile->certificate_number = $request->certificateNo;
+        $storecovidfile->uploader_tool = self::uploadImage($request);
+        $storecovidfile->patient_id = Auth::user()->id;
+        $storecovidfile->save();
+        return redirect()->back();
     }
 }

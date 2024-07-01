@@ -14,7 +14,8 @@ class BloodPressureProfiling extends Model
         'systolic', 
         'diastolic', 
         'heart_rate_bpm', 
-        'additional_note'
+        'additional_note',
+        'patient_id'
     ];
 
 }

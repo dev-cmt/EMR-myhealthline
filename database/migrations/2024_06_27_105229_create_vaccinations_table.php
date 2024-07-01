@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('dose_01')->nullable();
             $table->string('dose_02')->nullable();
             $table->string('dose_03')->nullable();
+            $table->string('dose_04')->nullable();
+            $table->string('dose_05')->nullable();
             $table->string('booster')->nullable();
             $table->string('market_name')->nullable();
             $table->string('applicable_for')->nullable();
