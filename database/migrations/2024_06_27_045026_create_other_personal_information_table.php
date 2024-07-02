@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('other_personal_information', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
             $table->enum('marital_status', ['Single', 'Married', 'Married with Kids', 'Divorced', 'Widowed', 'Unwilling to Disclose'])->nullable();
             $table->string('home_address')->nullable();
             $table->string('office_address')->nullable();
@@ -26,10 +27,10 @@ return new class extends Migration
             $table->enum('menstrual_cycle', ['Regular', 'Irregular', 'Menopaused'])->nullable();
             $table->enum('activity_status', ['Immobile/Paralyzed', 'Disabled', 'Not Very Active', 'Moderately Active', 'Highly Active'])->nullable();
             $table->text('hereditary_disease')->nullable();
-
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -13,16 +13,17 @@ return new class extends Migration
     {
         Schema::create('doctor_appointments', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
-            $table->string('designation');
-            $table->string('specialization');
-            $table->string('chamber_address');
-            $table->string('availability_hours');
-            $table->string('contact_number');
-
             $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('full_name')->nullable();
+            $table->string('designation')->nullable();
+            $table->string('specialization')->nullable();
+            $table->string('chamber_address')->nullable();
+            $table->string('availability_hours')->nullable();
+            $table->string('contact_number')->nullable();
             $table->timestamps();
+
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

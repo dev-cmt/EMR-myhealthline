@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Restriction extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'type',
+        'details',
+        'patient_id',
+    ];
 }

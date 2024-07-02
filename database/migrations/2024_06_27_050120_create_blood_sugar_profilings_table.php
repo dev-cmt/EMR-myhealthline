@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('blood_sugar_profilings', function (Blueprint $table) {
             $table->id();
-            $table->time('time');
-            $table->decimal('reading', 5, 2); // Adjust precision and scale as needed
-            $table->string('dietary_information');
-            $table->string('remark');
-            $table->text('additional_note')->nullable();
-
             $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->time('time')->nullable();
+            $table->decimal('reading', 5, 2)->nullable(); // Adjust precision and scale as needed
+            $table->string('dietary_information')->nullable();
+            $table->string('remark')->nullable();
+            $table->text('additional_note')->nullable();
             $table->timestamps();
+
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -15,59 +15,54 @@ class CreateImportSeeder extends Seeder
     public function run(): void
     {
         $complaints = [
-            'Fever',
-            'Shortness of Breath',
-            'Vomiting',
-            'Nausea',
-            'Fatigue',
-            'Headache',
-            'Chest Burn',
-            'Nerve Pain',
-            'Lymph Nodes',
-            'Blurry Vision',
-            'Eye Pain',
-            'Watery Eyes',
-            'Excessive Sweating',
-            'Joint Pain',
-            'Anxiety',
-            'Yellowish',
-            'Anguish',
-            'Constipation',
-            'Loose Motion',
-            'Excess Bleeding',
-            'Blocked Nose',
-            'Bloody Cough',
-            'Secretion',
-            'Excessive Thirst',
-            'Swelling',
-            'Numbness',
-            'Dizziness',
-            'High Blood Pressure',
-            'Low Blood Pressure',
-            'High Blood Sugar',
-            'Low Blood Sugar',
-            'Sleeplessness',
-            'Anemia',
-            'Difficulty to Stand',
-            'Difficulty to Sit/Lay',
-            'Difficulty to Talk',
-            'Depression',
-            'Suicidal',
-            'Imaginary Entity',
-            'Urinary Difficulty',
-            'Dry Cough',
-            'Mucas Cough',
-            'Cyst',
-            'Bloody Urine'
+            ['name' => 'Fever'],
+            ['name' => 'Shortness of Breath'],
+            ['name' => 'Vomiting'],
+            ['name' => 'Nausea'],
+            ['name' => 'Fatigue'],
+            ['name' => 'Headache'],
+            ['name' => 'Chest Burn'],
+            ['name' => 'Nerve Pain'],
+            ['name' => 'Lymph Nodes'],
+            ['name' => 'Blurry Vision'],
+            ['name' => 'Eye Pain'],
+            ['name' => 'Watery Eyes'],
+            ['name' => 'Excessive Sweating'],
+            ['name' => 'Joint Pain'],
+            ['name' => 'Anxiety'],
+            ['name' => 'Yellowish'],
+            ['name' => 'Anguish'],
+            ['name' => 'Constipation'],
+            ['name' => 'Loose Motion'],
+            ['name' => 'Excess Bleeding'],
+            ['name' => 'Blocked Nose'],
+            ['name' => 'Bloody Cough'],
+            ['name' => 'Secretion'],
+            ['name' => 'Excessive Thirst'],
+            ['name' => 'Swelling'],
+            ['name' => 'Numbness'],
+            ['name' => 'Dizziness'],
+            ['name' => 'High Blood Pressure'],
+            ['name' => 'Low Blood Pressure'],
+            ['name' => 'High Blood Sugar'],
+            ['name' => 'Low Blood Sugar'],
+            ['name' => 'Sleeplessness'],
+            ['name' => 'Anemia'],
+            ['name' => 'Difficulty to Stand'],
+            ['name' => 'Difficulty to Sit/Lay'],
+            ['name' => 'Difficulty to Talk'],
+            ['name' => 'Depression'],
+            ['name' => 'Suicidal'],
+            ['name' => 'Imaginary Entity'],
+            ['name' => 'Urinary Difficulty'],
+            ['name' => 'Dry Cough'],
+            ['name' => 'Mucas Cough'],
+            ['name' => 'Cyst'],
+            ['name' => 'Bloody Urine']
         ];
-
-        foreach ($complaints as $complaint) {
-            DB::table('complaints')->insert([
-                'name' => $complaint,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        
+        // Insert into database
+        DB::table('mast_complaints')->insert($complaints);
 
         /**
          * 
@@ -182,5 +177,76 @@ class CreateImportSeeder extends Seeder
         ];
 
         DB::table('mast_organs')->insert($organs);
+
+
+        /**
+         * 
+         * 
+         * 
+         */
+        $data = [
+            ['name' => '5 mg'],
+            ['name' => '10 mg'],
+            ['name' => '20 mg'],
+            ['name' => '25 mg'],
+            ['name' => '40 mg'],
+            ['name' => '50 mg'],
+            ['name' => '60 mg'],
+            ['name' => '70 mg'],
+            ['name' => '75 mg'],
+            ['name' => '80 mg'],
+            ['name' => '100 mg'],
+            ['name' => '120 mg'],
+            ['name' => '150 mg'],
+            ['name' => '180 mg'],
+            ['name' => '200 mg'],
+            ['name' => '250 mg'],
+            ['name' => '300 mg'],
+            ['name' => '350 mg'],
+            ['name' => '400 mg'],
+            ['name' => '450 mg'],
+            ['name' => '500 mg'],
+            ['name' => '600 mg'],
+            ['name' => '700 mg'],
+            ['name' => '800 mg'],
+            ['name' => '1000 mg'],
+            ['name' => '1200 mg'],
+            ['name' => '1500 mg'],
+            ['name' => '2000 mg'],
+        ];
+
+        DB::table('mast_powers')->insert($data);
+
+
+
+        /***
+         * 
+         * 
+         * 
+         */
+
+         $data = [
+            ['name' => 'Capsule'],
+            ['name' => 'Tablet'],
+            ['name' => 'Ointment'],
+            ['name' => 'Droplet'],
+            ['name' => 'Saline (Oral)'],
+            ['name' => 'Saline (IV)'],
+            ['name' => 'Injection (IV)'],
+            ['name' => 'Injection (IM)'],
+            ['name' => 'Vaccination'],
+            ['name' => 'Powder'],
+            ['name' => 'Physiotherapy'],
+            ['name' => 'Audiotherapy'],
+            ['name' => 'Aromatherapy'],
+            ['name' => 'Speech & Language Therapy'],
+            ['name' => 'Occupational Therapy'],
+            ['name' => 'Radiotherapy'],
+            ['name' => 'Psychotherapy'],
+            ['name' => 'Psycho Social Counselling'],
+            ['name' => 'Couple Counselling'],
+        ];
+
+        DB::table('mast_equipment')->insert($data);
     }
 }

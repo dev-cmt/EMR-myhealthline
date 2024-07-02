@@ -14,8 +14,6 @@ class VaccinationCovid extends Model
         'location',
         'date',
         'manufacturer',
-        'certificate_number',
-        'uploader_tool',
         'patient_id',
     ];
 }

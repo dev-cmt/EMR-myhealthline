@@ -9,21 +9,30 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Master\MastComplaint;
 use App\Models\Master\MastTest;
 use App\Models\Master\MastOrgan;
+use App\Models\Master\MastEquipment;
+use App\Models\Master\MastPower;
 use App\Models\User;
+
 use App\Models\Information\SensitiveInformation;
 use App\Models\Information\GeneticDiseaseProfile;
 use App\Models\Information\OtherPersonalInformation;
 
-use App\Models\Information\Complaint;
 use App\Models\Information\CaseRegistry;
 
 use App\Models\Information\BloodSugarProfiling;
-use App\Models\Information\BloodPressureProfile;
+use App\Models\Information\BloodPressureProfiling;
 use App\Models\Information\Vaccination;
-use App\Models\Information\PaidVaccination;
+use App\Models\Information\VaccinationCovid;
 use App\Models\Information\RandomUploaderTool;
+use App\Models\Information\TreatmentProfile;
+use App\Models\Information\LabTest;
+use App\Models\Information\MedicationSchedule;
+use App\Models\Information\SurgicalIntervention;
+use App\Models\Information\OptionsalQuestion;
+use App\Models\Information\Restriction;
 
 use App\Models\Information\DoctorAppointment;
 use Exception;
@@ -33,8 +42,20 @@ class PatientController extends Controller
 
     public function generalProfile()
     {
-        return view('pages.info-general');
+        $user = Auth::user();
+        $sensitiveInformation = null;
+        $geneticDiseaseProfile = null;
+        $otherPersonalInformation = null;
+
+        if ($user) {
+            $sensitiveInformation = SensitiveInformation::where('patient_id', $user->id)->first();
+            $geneticDiseaseProfile = GeneticDiseaseProfile::where('patient_id', $user->id)->first();
+            $otherPersonalInformation = OtherPersonalInformation::where('patient_id', $user->id)->first();
+        }
+        
+        return view('pages.info-general', compact('user', 'sensitiveInformation', 'geneticDiseaseProfile', 'otherPersonalInformation'));
     }
+
 
     /**-----------------------
      * Store Patient Registry
@@ -130,30 +151,36 @@ class PatientController extends Controller
     {
         // Validate the request
         $validatedData = $request->validate([
-            'sexually_active' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
-            'diabetic' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
-            'allergies' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
+            'sexually_active' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
+            'diabetic' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
+            'allergies' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
             'allergy_details' => 'nullable|string',
-            'thyroid' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
+            'thyroid' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
             'thyroid_details' => 'nullable|string',
-            'hypertension' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
-            'cholesterol' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
+            'hypertension' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
+            'cholesterol' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
             'cholesterol_details' => 'nullable|string',
-            's_creatinine' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
+            's_creatinine' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
             's_creatinine_details' => 'nullable|string',
-            'smoking' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
+            'smoking' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
             'smoking_quantity' => 'nullable|integer',
-            'alcohol_intake' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
+            'alcohol_intake' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
             'alcohol_frequency' => 'nullable|string',
-            'drug_abuse_history' => 'required|in:Yes,No,Don\'t Know,Unwilling to Disclose',
+            'drug_abuse_history' => 'required|in:Yes,Do Not Know,Unwilling to Disclose',
             'drug_abuse_details' => 'nullable|string',
         ]);
 
         // Add the authenticated user's ID as patient_id
         $validatedData['patient_id'] = auth()->user()->id;
 
-        // Create and save the sensitive information record
-        SensitiveInformation::create($validatedData);
+        // Determine if it's an update or create operation
+        if ($request->id) {
+            // Update existing record
+            SensitiveInformation::where('id', $request->id)->update($validatedData);
+        } else {
+            // Create new record
+            SensitiveInformation::create($validatedData);
+        }
 
         // Redirect or respond as needed
         return redirect()->route('dashboard')->with('success', 'Sensitive information saved successfully.');
@@ -180,8 +207,14 @@ class PatientController extends Controller
         // Assuming you have authenticated user and patient_id
         $validatedData['patient_id'] = auth()->user()->id;
 
-        // Create and save the genetic disease profile record
-        GeneticDiseaseProfile::create($validatedData);
+        // Determine if it's an update or create operation
+        if ($request->id) {
+            // Update existing record
+            GeneticDiseaseProfile::where('id', $request->id)->update($validatedData);
+        } else {
+            // Create new record
+            GeneticDiseaseProfile::create($validatedData);
+        }
 
         // Redirect or respond as needed
         return redirect()->route('dashboard')->with('success', 'Genetic disease profile saved successfully.');
@@ -227,11 +260,13 @@ class PatientController extends Controller
      */
     public function cases()
     {
-        $complaints = Complaint::all();
+        $complaints = MastComplaint::all();
         $tests = MastTest::all();
         $organs = MastOrgan::all();
+        $equipments = MastEquipment::all();
+        $powers = MastPower::all();
         
-        return view('pages.info-cases', compact('complaints', 'tests', 'organs'));
+        return view('pages.info-cases', compact('complaints', 'tests', 'organs', 'equipments', 'powers'));
     }
 
     /**------------------------
@@ -271,50 +306,154 @@ class PatientController extends Controller
         return redirect()->route('dashboard')->with('success', 'Case registry created successfully!');
     }
 
-    /**------------------------
-     * Store => blood_sugar_profilings
+    /**-----------------------------------------
+     * Store => treatment_profiles OR lab_tests
      */
     public function treatmentLabTest(Request $request)
     {
-        // Validate request data
-        $validatedData = $request->validate([
+        // Validate the request data
+        $request->validate([
             'doctor_name' => 'nullable|string',
             'designation' => 'nullable|string',
             'chamber_address' => 'nullable|string',
             'last_visit_date' => 'nullable|date',
             'fees' => 'nullable|numeric',
             'comments' => 'nullable|string',
-            'disease_diagnosis' => 'required|string',
-            'prescription' => 'nullable|string',
-            'patient_id' => 'required|exists:users,id',
-            'document_name.*' => 'required|exists:tests,id', // Adjust based on your actual validation needs
-            'type.*' => 'required',
-            'organ.*' => 'required|exists:organs,id',
-            'comments.*' => 'nullable|string',
-            'cost.*' => 'nullable|numeric',
-            'lab.*' => 'nullable|string',
+            'disease_diagnosis' => 'nullable|string',
+            'prescription' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+            'data.mast_test_id.*' => 'required|integer|exists:lab_tests,id',
+            'data.type.*' => 'required|string',
+            'data.organ.*' => 'required|integer|exists:organs,id',
+            'data.comments.*' => 'nullable|string',
+            'data.cost.*' => 'nullable|numeric',
+            'data.lab.*' => 'nullable|string',
         ]);
 
-        // Create treatment profile
-        $treatmentProfile = TreatmentProfile::create($validatedData);
+        // Save the treatment profile
+        $treatmentProfile = new TreatmentProfile();
+        $treatmentProfile->doctor_name = $request->doctor_name;
+        $treatmentProfile->designation = $request->designation;
+        $treatmentProfile->chamber_address = $request->chamber_address;
+        $treatmentProfile->last_visit_date = $request->last_visit_date;
+        $treatmentProfile->fees = $request->fees;
+        $treatmentProfile->comments = $request->comments;
+        $treatmentProfile->disease_diagnosis = $request->disease_diagnosis;
+        
+        if ($request->hasFile('prescription')) {
+            $treatmentProfile->prescription = $request->file('prescription')->store('prescriptions');
+        }
+        
+        $treatmentProfile->patient_id = auth()->id(); // or set the patient_id as required
+        $treatmentProfile->save();
 
-        // Process lab tests
-        if (isset($validatedData['document_name'])) {
-            foreach ($validatedData['document_name'] as $key => $testId) {
-                $labTest = new LabTest([
-                    'test_name' => $validatedData['document_name'][$key],
-                    'type' => $validatedData['type'][$key],
-                    'organ' => $validatedData['organ'][$key],
-                    'comments' => $validatedData['comments'][$key] ?? null,
-                    'cost' => $validatedData['cost'][$key] ?? null,
-                    'lab' => $validatedData['lab'][$key] ?? null,
-                ]);
-                $treatmentProfile->labTests()->save($labTest);
-            }
+       // Save the lab tests
+        foreach ($request->data['mast_test_id'] as $key => $mast_test_id) {
+            $labTest = new LabTest();
+            $labTest->mast_test_id = $mast_test_id;
+            $labTest->type = $request->data['type'][$key];
+            $labTest->mast_organ_id = $request->data['mast_organ_id'][$key];
+            $labTest->comments = $request->data['comments'][$key];
+            $labTest->cost = $request->data['cost'][$key];
+            $labTest->lab = $request->data['lab'][$key];
+            $labTest->treatment_profile_id = $treatmentProfile->id;
+            $labTest->save();
         }
 
-        // Redirect or return response as needed
-        return redirect()->route('dashboard')->with('success', 'Created successfully!');
+        return redirect()->back()->with('success', 'Treatment profile and lab tests saved successfully!');
+    }
+    /**-----------------------------
+     * Store => medication_schedules
+     */
+    public function medicationSchedule(Request $request)
+    {
+        $validatedData = $request->validate([
+            'data.*.mast_equipment_id' => 'required|exists:mast_equipment,id',
+            'data.*.full_name' => 'nullable|string',
+            'data.*.mast_power_id' => 'required|exists:mast_powers,id',
+            'data.*.duration' => 'nullable|string',
+            'data.*.frequency' => 'nullable|string',
+            'data.*.cost' => 'nullable|string',
+            'data.*.timing' => 'nullable|string',
+            'data.*.antibiotic' => 'nullable|string',
+        ]);
+
+        foreach ($validatedData['data'] as $data) {
+            MedicationSchedule::create([
+                'patient_id' => auth()->id(),
+                'mast_equipment_id' => $data['mast_equipment_id'],
+                'full_name' => $data['full_name'],
+                'mast_power_id' => $data['mast_power_id'],
+                'duration' => $data['duration'],
+                'frequency' => $data['frequency'],
+                'cost' => $data['cost'],
+                'timing' => $data['timing'],
+                'antibiotic' => $data['antibiotic'],
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Medication schedules saved successfully.');
+    }
+    /**-----------------------------
+     * Store => surgical_interventions
+     */
+    public function surgicalIntervention(Request $request)
+    {
+        $data = $request->input('data');
+
+        foreach ($data as $row) {
+            SurgicalIntervention::create([
+                'patient_id' => auth()->id(),
+                'intervention' => $row['intervention'],
+                'due_time' => $row['due_time'],
+                'details' => $row['details'],
+                'cost' => $row['cost'],
+            ]);
+        }
+
+        // Optionally, you can return a response or redirect
+        return redirect()->back()->with('success', 'Surgical interventions saved successfully.');
+    }
+    /**-----------------------------
+     * Store => surgical_interventions
+     */
+    public function optionsalQuestion(Request $request)
+    {
+        // Create a new optional question record
+        $question = OptionsalQuestion::create([
+            'patient_id' => auth()->id(),
+            'admitted_following_diagnosis' => $request->input('admitted_following_diagnosis'),
+            'hospitalization_duration' => $request->input('hospitalization_duration'),
+            'total_cost_incurred' => $request->input('total_cost_incurred'),
+            'medication_effectiveness' => $request->input('medication_effectiveness'),
+            'satisfied_with_treatment' => $request->input('satisfied_with_treatment'),
+            'recommend_physician' => $request->input('recommend_physician'),
+        ]);
+
+        // Optionally, return a response or redirect
+        return redirect()->back()->with('success', 'Optional questions saved successfully.');
+    }
+    /**-----------------------------
+     * Store => surgical_interventions
+     */
+    public function restriction(Request $request)
+    {
+        // Validate incoming requests
+        $request->validate([
+            'types.*' => 'required|string',
+            'details.*' => 'nullable|string',
+        ]);
+
+        // Loop through submitted data and store in database
+        foreach ($request->types as $index => $type) {
+            $restriction = new Restriction();
+            $restriction->patient_id = auth()->id();
+            $restriction->type = $type;
+            $restriction->details = $request->details[$index] ?? null;
+            $restriction->save();
+        }
+
+        // Optionally, redirect to a success page or back with a success message
+        return redirect()->back()->with('success', 'Restrictions saved successfully.');
     }
     /**--------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
@@ -324,7 +463,9 @@ class PatientController extends Controller
      */
     public function profilingTool()
     {
-        return view('pages.info-profiling-tool');
+        $sugarData = BloodSugarProfiling::where('patient_id', Auth::user()->id)->get();
+        $pressureData = BloodPressureProfiling::where('patient_id', Auth::user()->id)->get();
+        return view('pages.info-profiling-tool', compact('sugarData', 'pressureData'));
     }
 
     /**------------------------
@@ -351,7 +492,7 @@ class PatientController extends Controller
             ]);
         }
 
-        return redirect()->route('dashboard')->with('success', 'Blood sugar data saved successfully.');
+        return redirect()->back()->with('success', 'Blood sugar data saved successfully.');
     }
     /**------------------------
      * Store => blood_pressure_profilings
@@ -367,32 +508,110 @@ class PatientController extends Controller
             'additional_note.*' => 'nullable',
         ]);
 
-        try {
-            // Process each blood pressure reading and store in the database
-            foreach ($validatedData['time'] as $key => $value) {
-                BloodPressureProfile::create([
-                    'time' => $validatedData['time'][$key],
-                    'systolic' => $validatedData['systolic'][$key],
-                    'diastolic' => $validatedData['diastolic'][$key],
-                    'heart_rate_bpm' => $validatedData['heart_rate_bpm'][$key],
-                    'additional_note' => $validatedData['additional_note'][$key] ?? null,
-                ]);
-            }
-
-            // Optionally, you can redirect or respond with a success message
-            return redirect()->back()->with('success', 'Blood pressure readings saved successfully!');
-        } catch (\Exception $e) {
-            // Handle any exceptions or errors that occur during saving
-            return redirect()->back()->with('error', 'Failed to save blood pressure readings. Please try again.');
+        // Process each blood pressure reading and store in the database
+        foreach ($validatedData['time'] as $key => $value) {
+            BloodPressureProfiling::create([
+                'time' => $validatedData['time'][$key],
+                'systolic' => $validatedData['systolic'][$key],
+                'diastolic' => $validatedData['diastolic'][$key],
+                'heart_rate_bpm' => $validatedData['heart_rate_bpm'][$key],
+                'additional_note' => $validatedData['additional_note'][$key] ?? null,
+                'patient_id' => Auth::user()->id,
+            ]);
         }
+
+        // Optionally, you can redirect or respond with a success message
+        return redirect()->back()->with('success', 'Blood pressure readings saved successfully!');
     }
     /**--------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
      * VACCINATION RECORD
      * --------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
+    */
+    public function vaccinationRecord(Request $request)
+    {
+        $data = Vaccination::where('patient_id', Auth::user()->id)->get();
+        $dataCovid = VaccinationCovid::where('patient_id', Auth::user()->id)->get();
 
+        return view('pages.info-vaccination-record', compact('data', 'dataCovid'));
+    }
 
+    public function vaccinationStore(Request $request)
+    {
+        if($request->hidden_section == 'section one')
+        {
+            $vaccinestore = new Vaccination;
+            $vaccinestore->type = $request->hidden_section;
+            $vaccinestore->vaccine_name = $request->vaccine_name;
+            $vaccinestore->dose_01 = $request->doseone;
+            $vaccinestore->dose_02 = $request->dosetwo;
+            $vaccinestore->dose_03 = $request->dosethree;
+            $vaccinestore->dose_04 = $request->dosetfour;
+            $vaccinestore->dose_05 = $request->dosefive;
+            $vaccinestore->booster = $request->booster;
+            $vaccinestore->upload_tool = self::uploadImage($request);
+            $vaccinestore->patient_id = Auth::user()->id;
+            $vaccinestore->save();
+        }else if($request->hidden_section == 'section two'){
+            $vaccinestore = new Vaccination;
+            $vaccinestore->type = $request->hidden_section;
+            $vaccinestore->manufacturer = $request->manufacturer;
+            $vaccinestore->dose_01 = $request->doseone;
+            $vaccinestore->dose_02 = $request->dosetwo;
+            $vaccinestore->dose_03 = $request->dosethree;
+            $vaccinestore->dose_04 = $request->dosetfour;
+            $vaccinestore->dose_05 = $request->dosefive;
+            $vaccinestore->booster = $request->booster;
+            $vaccinestore->location = $request->location;
+            $vaccinestore->certificate_number = $request->certificate;
+            $vaccinestore->upload_tool = self::uploadImage($request);
+            $vaccinestore->patient_id = Auth::user()->id;
+            $vaccinestore->save();
+            // $notification = ['message' => 'Vaccination record saved successfully.', 'alert-type' => 'success'];
+            // return redirect()->route('info-vaccination-record', ['section' => 'section2'])->with($notification);
+        }else{
+            $vaccinestore = new Vaccination;
+            $vaccinestore->type = $request->hidden_section;
+            $vaccinestore->market_name = $request->market_name;
+            $vaccinestore->applicable_for = $request->applicable_name;
+            $vaccinestore->dose_01 = $request->doseone;
+            $vaccinestore->dose_02 = $request->dosetwo;
+            $vaccinestore->dose_03 = $request->dosethree;
+            $vaccinestore->dose_04 = $request->dosetfour;
+            $vaccinestore->dose_05 = $request->dosefive;
+            $vaccinestore->booster = $request->booster;
+            $vaccinestore->upload_tool = self::uploadImage($request);
+            $vaccinestore->patient_id = Auth::user()->id;
+            $vaccinestore->save();
+        }
+        
+        $notification = ['messege' => 'Data has been saved successfully', 'alert-type' => 'success'];
+        return redirect()->back()->with($notification);
+    }
+
+    public function vaccinationCovid(Request $request)
+    {
+        $storecoviddata = new VaccinationCovid;
+        $storecoviddata->dose_type = $request->vaccine_name;
+        $storecoviddata->location = $request->location;
+        $storecoviddata->date = $request->date;
+        $storecoviddata->manufacturer = $request->manufacturer;
+        $storecoviddata->patient_id = Auth::user()->id;
+        $storecoviddata->save();
+        return redirect()->back();
+    }
+    public function covidCertificate(Request $request)
+    {
+        $storecovidfile = new CovidCertificate;
+        $storecovidfile->certificate_number = $request->certificateNo;
+        $storecovidfile->uploader_tool = self::uploadImage($request);
+        $storecovidfile->vaccination_covid_id = $request->vaccination_covid_id;
+        $storecovidfile->save();
+
+        return redirect()->back();
+    }
+    
   
     /**--------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
@@ -402,7 +621,8 @@ class PatientController extends Controller
      */
     public function randomUploaderTool()
     {
-        return view('pages.info-random-uploader');
+        $data = RandomUploaderTool::where('patient_id', Auth::user()->id)->get();
+        return view('pages.info-random-uploader', compact('data'));
     }
     /**------------------------
      * Store => random_uploader_tools
@@ -451,22 +671,59 @@ class PatientController extends Controller
      * --------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
      */
-    public function doctorAppointMent()
+    
+     public function doctorAppointment()
     {
-        return view('pages.info-doctor-appointment');
+        $info = DoctorAppointment::where('patient_id', auth()->id())->get();
+        return view('pages.info-doctor-appointment', compact('info'));
     }
-    /**------------------------
+    /**-----------------------------
      * Store => random_uploader_tools
      */
-
     public function saveDoctorAppointment(Request $request)
     {
-        $user = new DoctorAppointment();
-        $user->full_name = $request->input('full_name');
-        $user->designation = $request->input('designation');
-        $user->save();
+        // Save or update DoctorAppointment record
+        if ($request->appointment_id) {
+            $doctorAppointment = DoctorAppointment::find($request->appointment_id);
+        } else {
+            $doctorAppointment = new DoctorAppointment();
+        }
 
-        return redirect()->route('dashboard')->with('success', 'Other personal information saved successfully.');
+        // Populate DoctorAppointment fields
+        $doctorAppointment->full_name = $request->full_name;
+        $doctorAppointment->designation = $request->designation;
+        $doctorAppointment->specialization = $request->specialization;
+        $doctorAppointment->chamber_address = $request->chamber_address;
+        $doctorAppointment->availability_hours = $request->availability_hours;
+        $doctorAppointment->contact_number = $request->contact_number;
+        $doctorAppointment->patient_id = auth()->id();
+        $doctorAppointment->save();
+
+        // Process each appointment detail
+        if ($request->has('moreFile')) {
+            foreach ($request->moreFile as $appointmentData) {
+                $doctorAppointmentDetail = new DoctorAppointmentDetails();
+                $doctorAppointmentDetail->doctor_appointment_id = $doctorAppointment->id;
+                // Populate DoctorAppointmentDetails fields
+                $doctorAppointmentDetail->appointment = $appointmentData['appointment'];
+                $doctorAppointmentDetail->day = $appointmentData['day'];
+                $doctorAppointmentDetail->time_date_tool = $appointmentData['time_date_tool'];
+                $doctorAppointmentDetail->fee = $appointmentData['fee'];
+                $doctorAppointmentDetail->note = $appointmentData['note'];
+                $doctorAppointmentDetail->save();
+            }
+        }
+
+        // Redirect back or return a response as needed
+        return redirect()->back()->with('success', 'Appointment details saved successfully!');
+    }
+    /**------------------------
+     * GET => random_uploader_tools
+     */
+    public function editDoctorAppointment(Request $request)
+    {
+        $data = DoctorAppointment::with('appointmentDetails')->find($request->id)->toArray();
+        return response()->json($data);
     }
 
 }

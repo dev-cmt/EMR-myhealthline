@@ -11,7 +11,7 @@ class LabTest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'test_name', 'type', 'organ', 'comments', 'cost', 'lab', 'treatment_profile_id'
+        'mast_test_id', 'type', 'mast_organ_id', 'comments', 'cost', 'lab', 'treatment_profile_id'
     ];
 
     public function treatmentProfile()

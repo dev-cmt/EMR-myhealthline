@@ -13,17 +13,18 @@ return new class extends Migration
     {
         Schema::create('case_registries', function (Blueprint $table) {
             $table->id();
-            $table->date('date_of_primary_identification');
-            $table->date('date_of_first_visit');
-            $table->string('recurrence');
-            $table->string('duration_of_suffering');
-            $table->string('area_of_problem');
-            $table->string('type_of_ailment');
-            $table->text('additional_complaints')->nullable();
-            
             $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->date('date_of_primary_identification')->nullable();
+            $table->date('date_of_first_visit')->nullable();
+            $table->string('recurrence')->nullable();
+            $table->string('duration_of_suffering')->nullable();
+            $table->string('area_of_problem')->nullable();
+            $table->string('type_of_ailment')->nullable();
+            $table->text('additional_complaints')->nullable();
             $table->timestamps();
+
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

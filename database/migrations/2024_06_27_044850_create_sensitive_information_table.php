@@ -12,6 +12,7 @@ return new class extends Migration
     {
         Schema::create('sensitive_information', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
             $table->enum('sexually_active', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
             $table->enum('diabetic', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
             $table->enum('allergies', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
@@ -29,10 +30,10 @@ return new class extends Migration
             $table->string('alcohol_frequency')->nullable();
             $table->enum('drug_abuse_history', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
             $table->text('drug_abuse_details')->nullable();
-
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

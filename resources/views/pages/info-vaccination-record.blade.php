@@ -24,132 +24,174 @@
                     </ul>
                     <div class="tab-content text-muted">
                         <div class="tab-pane active" id="nav-border-justified-home" role="tabpanel">
-                            <h6 style="margin: 0px">Section-01-EPI  VPD (Vaccination for Preventable Diseases)</h6>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="float: inline-end;margin-bottom: -6px;margin-top: -20px;">
-                                Create
-                            </button>
-
-                            <div class="table-responsive" id="sectiononetable">
-                               
+                            <!--Grid Data-->
+                            <div class="card-header align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Section-01-EPI  VPD (Vaccination for Preventable Diseases)</h4>
+                                <div class="flex-shrink-0">
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        <i class="ri-add-line align-middle me-1"></i> Add Vaccination
+                                    </button>
+                                </div>
                             </div>
-                            <div class="table-responsive" id="sectiononehide" style="margin-top: 30px">
-                                <table id="example3" class="display " style="min-width: 1019px">
+                            <div class="card-body">
+                                <div class="table-responsive table-card">
+                                    <table class="table table-nowrap table-striped mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th scope="col">#SL</th>
+                                                <th scope="col">Vaccine Name</th>
+                                                <th scope="col">Dose 1</th>
+                                                <th scope="col">Dose 2</th>
+                                                <th scope="col">Dose 3</th>
+                                                <th scope="col">Dose 4</th>
+                                                <th scope="col">Dose 5</th>
+                                                <th scope="col">Booster</th>
+                                                <th scope="col">Document</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($data as $row)
+                                                @if($row->type == 'section one')
+                                                    <tr>
+                                                        <td>{{$loop->iteration}}</td>
+                                                        <td>{{$row->vaccine_name}}</td>
+                                                        <td>{{$row->dose_01}}</td>
+                                                        <td>{{$row->dose_02}}</td>
+                                                        <td>{{$row->dose_03}}</td>
+                                                        <td>{{$row->dose_04}}</td>
+                                                        <td>{{$row->dose_05}}</td>
+                                                        <td>{{$row->booster}}</td>
+                                                        <td>
+                                                            <a href="#" class="btn btn-soft-info btn-sm">
+                                                                <i class="ri-file-list-3-line align-middle"></i> Download File
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
 
-                                    <thead>
-                                        <tr style="height: 35px;border: 1px solid;background: #2e1919;color: white;">
-                                            <th>SL.NO</th>
-                                            <th>Vaccine Name</th>
-                                            <th>Dose 1</th>
-                                            <th>Dose 2</th>
-                                            <th>Dose 3</th>
-                                            <th>Dose 4</th>
-                                            <th>Dose 5</th>
-                                            <th>Booster</th>
-                                            <th>file</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                       @foreach($vaccinationRecords as $data)
-                                         <tr>
-                                             <td>{{$loop->iteration}}</td>
-                                             <td>{{$data->vaccine_name}}</td>
-                                             <td>{{$data->dose_01}}</td>
-                                             <td>{{$data->dose_02}}</td>
-                                             <td>{{$data->dose_03}}</td>
-                                             <td>{{$data->dose_04}}</td>
-                                             <td>{{$data->dose_05}}</td>
-                                             <td>{{$data->booster}}</td>
-                                             <td>
-                                                    <img src="{{asset($data->upload_tool)}}" alt="" style="width: 50px;height: 50px">
-                                             </td>
-                                         </tr>
-                                 
-                                       @endforeach
-                                           
-                                    </tbody>
-                                 </table>
-                                 </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+
                         </div>
                         <div class="tab-pane" id="nav-border-justified-profile" role="tabpanel">
-                            @if(session('notification'))
-                                <div class="alert alert-{{ session('notification')['alert-type'] }}">
-                                    {{ session('notification')['message'] }}
+                            
+                            <!--Grid Data-->
+                            <div class="card-header align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Section-02 (Covid-19)</h4>
+                                <div class="flex-shrink-0">
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModalcovid">
+                                        <i class="ri-add-line align-middle me-1"></i> Add Vaccination
+                                    </button>
                                 </div>
-                            @endif
-                            <h6 style="margin: 0px">Section-02 (Covid-19)</h6>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalcovid" style="float: inline-end;margin-bottom: -6px;margin-top: -20px;">
-                                Create
-                            </button>
+                            </div>
+                            <div class="card-body">
 
-                            {{-- <div class="table-responsive" style="margin-top:40px" id="sectiontwotable">
-                               
-                            </div> --}}
-
-                            <table id="example3" class="display " style="min-width: 1019px;margin-top:30px">
-                                <thead>
-                                    <tr style="height: 35px;border: 1px solid;background: #2e1919;color: white;">
-                                        <th>SL.NO</th>
-                                        <th>Vaccine</th>
-                                        <th>Manufacturer</th>
-                                        <th>Location</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                   @foreach($coviddata as $data)
-                                     <tr>
-                                         <td>{{$loop->iteration}}</td>
-                                         <td>{{$data->dose_type}}</td>
-                                         <td>{{$data->manufacturer}}</td>
-                                         <td>{{$data->location}}</td>
-                                         <td>{{$data->date}}</td>
-                                     </tr>
-                             
-                                   @endforeach 
-                                </tbody>
-                             </table>
-
-                             <div style="margin-top: 35px;">
-                                <form action="{{route('store_covid_file_upload')}}" method="POST" enctype="multipart/form-data">
-                                    @csrf
                                 <div class="row">
-                                        <div class="col-md-5">
-                                            <div class="row">
-                                                <label for="manufacturer" class="col-md-6" style="margin-top: 7px">Certificate No : </label>
-                                                <div class="col-md-6">
-                                                    <input type="text" name="certificateNo" style="margin-left: -83px" id="" value="" class="form-control">
-                                                </div>
-                                            </div>
+                                    <div class="col-md-7">
+                                        <div class="table-responsive table-card">
+                                            <table class="table table-nowrap table-striped mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th scope="col">Vaccine</th>
+                                                        <th scope="col">Manufacturer</th>
+                                                        <th scope="col">Location</th>
+                                                        <th scope="col">Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($dataCovid as $row)
+                                                        <tr>
+                                                            <td><input type="hidden" id="vaccination_covid_id" value="{{$row->dose_type}}"></td>
+                                                            <td>{{$row->dose_type}}</td>
+                                                            <td>{{$row->location}}</td>
+                                                            <td>{{$row->date}}</td>
+                                                            <td>{{$row->manufacturer}}</td>
+                                                        </tr>
+                                                    @endforeach
+        
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <div class="col-md-5">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <input type="file" name="image" id="file" class="form-control" style="margin-left: -83px">
-                                                </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-3">
+                                        <form action="{{route('covid-certificate.upload')}}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row mb-2">
+                                                <label class="form-label mb-2">Certificate No :</label>
+                                                <input type="text" name="certificate_number" id="" value="" class="form-control mb-2">
+                                                <input type="file" name="uploader_tool" id="file" class="form-control mb-2">
                                             </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="row">
-                                                <div style="margin-left: -300px;">
-                                                    <button type="submit" class="btn btn-primary" id="fileUploadButton">File Upload</button>
-                                                    <button type="button" class="btn btn-success hidden" id="viewButton" style="margin-right: -35px">View</button>
-                                                </div>
+                                            <div class="text-end">
+                                                <button type="submit" class="btn btn-primary">File Upload</button>
+                                                <button type="button" class="btn btn-success">View</button>
                                             </div>
-                                        </div>
+                                        </form>
+
+                                    </div>
                                 </div>
-                            </form>
-                             </div>
+                            </div>
+
+
                         </div>
                         <div class="tab-pane" id="nav-border-justified-messages" role="tabpanel">
-                            <h6 style="margin: 0px">Section-03 (Paid Ones)</h6>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="float: inline-end;margin-bottom: -6px;margin-top: -20px;">
-                                Create
-                            </button>
 
-                            <div class="table-responsive" style="margin-top:40px" id="sectionthreetable">
-                               
+                            <!--Grid Data-->
+                            <div class="card-header align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Section-03 (Paid Ones)</h4>
+                                <div class="flex-shrink-0">
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        <i class="ri-add-line align-middle me-1"></i> Add Vaccination
+                                    </button>
+                                </div>
                             </div>
+                            <div class="card-body">
+                                <div class="table-responsive table-card">
+                                    <table class="table table-nowrap table-striped mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th scope="col">#SL</th>
+                                                <th scope="col">Market Name</th>
+                                                <th scope="col">Applicable For</th>
+                                                <th scope="col">Dose 1</th>
+                                                <th scope="col">Dose 2</th>
+                                                <th scope="col">Dose 3</th>
+                                                <th scope="col">Dose 4</th>
+                                                <th scope="col">Dose 5</th>
+                                                <th scope="col">Booster</th>
+                                                <th scope="col">Document</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($data as $row)
+                                                @if($row->type == 'section three')
+                                                    <tr>
+                                                        <td>{{$loop->iteration}}</td>
+                                                        <td>{{$row->market_name}}</td>
+                                                        <td>{{$row->applicable_for}}</td>
+                                                        <td>{{$row->dose_01}}</td>
+                                                        <td>{{$row->dose_02}}</td>
+                                                        <td>{{$row->dose_03}}</td>
+                                                        <td>{{$row->dose_04}}</td>
+                                                        <td>{{$row->dose_05}}</td>
+                                                        <td>{{$row->booster}}</td>
+                                                        <td>
+                                                            <a href="#" class="btn btn-soft-info btn-sm">
+                                                                <i class="ri-file-list-3-line align-middle"></i> Download File
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -159,8 +201,8 @@
         </div>
     </div>
 
-    <!-- create modal open -->
 
+    <!-- create modal open -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -189,12 +231,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row mt-2" id="Manufacturer" style="display: none;">
-                            <label for="manufacturer" class="col-md-6">Manufacturer</label>
-                            <div class="col-md-6">
-                                <input type="text" value="" name="manufacturer" id="manufacturer" class="form-control">
-                            </div>
-                        </div>
                         <div class="row mt-2" id="marketName" style="display: none">
                             <label for="" class="col-md-6">Market Name</label>
                             <div class="col-md-6">
@@ -217,7 +253,7 @@
                         <div class="row mt-2" id="applicablefor" style="display: none">
                             <label for="" class="col-md-6">Applicable for</label>
                             <div class="col-md-6">
-                                <select name="applicable_name" id="applicableFor" class="form-control">
+                                <select name="applicable_name" id="applicable_name" class="form-control">
                                     <option value="" selected disabled>Select</option>
                                     <option value="Flu/Influenza">Flu/Influenza</option>
                                     <option value="Rabies">Rabies</option>
@@ -236,49 +272,37 @@
                         <div class="row mt-2">
                             <label for="dose01" class="col-md-6">Dose 01</label>
                             <div class="col-md-6">
-                                <input type="date" name="doseone" id="dose01" class="form-control">
+                                <input type="date" name="doseone" class="form-control">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <label for="dose02" class="col-md-6">Dose 02</label>
                             <div class="col-md-6">
-                                <input type="date" name="dosetwo" id="dose02" class="form-control">
+                                <input type="date" name="dosetwo" class="form-control">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <label for="dose03" class="col-md-6">Dose 03</label>
                             <div class="col-md-6">
-                                <input type="date" name="dosethree" id="dose03" class="form-control">
+                                <input type="date" name="dosethree" class="form-control">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <label for="dose03" class="col-md-6">Dose 04</label>
                             <div class="col-md-6">
-                                <input type="date" name="dosetfour" id="dose03" class="form-control">
+                                <input type="date" name="dosetfour" class="form-control">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <label for="dose03" class="col-md-6">Dose 05</label>
                             <div class="col-md-6">
-                                <input type="date" name="dosefive" id="dose03" class="form-control">
+                                <input type="date" name="dosefive" class="form-control">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <label for="booster" class="col-md-6">Booster</label>
                             <div class="col-md-6">
-                                <input type="date" name="booster" id="booster" class="form-control">
-                            </div>
-                        </div>
-                        <div class="row mt-2" id="location" style="display: none;">
-                            <label for="location" class="col-md-6">Location</label>
-                            <div class="col-md-6">
-                                <input type="text" name="location" id="location" class="form-control">
-                            </div>
-                        </div>
-                        <div class="row mt-2" id="Certificate" style="display: none;">
-                            <label for="certificate" class="col-md-6">Certificate</label>
-                            <div class="col-md-6">
-                                <input type="text" name="certificate" id="certificate" value="" class="form-control">
+                                <input type="date" name="booster" class="form-control">
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -288,7 +312,7 @@
                             </div>
                         </div>
 
-                        <div class="modal-footer">
+                        <div class="modal-footer mt-4 d-flex justify-content-between">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary"> Save </button>
                         </div>
@@ -308,59 +332,41 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('store_covid_19_vaccine')}}" method="POST" enctype="multipart/form-data">
+                    <form action="{{route('covid-vaccine.store')}}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="text" id="hiddenid" name="hidden_section" style="display:none">
-                        <div class="row mt-2" id="vaccinefield">
-
+                        <div class="row mt-2">
                             <label for="" class="col-md-4">Dose Name</label>
                             <div class="col-md-8">
                                 <select name="vaccine_name" id="dose_name" class="form-control">
                                     <option value="" selected disabled>Select</option>
-                                    <option value="dose 01">dose 01</option>
-                                    <option value="dose 02">dose 02</option>
-                                    <option value="dose 03">dose 03</option>
-                                    <option value="dose 04">dose 04</option>
-                                    <option value="dose 05">dose 05</option>
-                                    <option value="booster">Booster</option>
-                             
+                                    <option value="Dose 01">Dose 01</option>
+                                    <option value="Dose 02">Dose 02</option>
+                                    <option value="Dose 03">Dose 03</option>
+                                    <option value="Dose 04">Dose 04</option>
+                                    <option value="Dose 05">Dose 05</option>
+                                    <option value="Booster">Booster</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="row mt-2" id="Manufacturer" >
+                        <div class="row mt-2">
                             <label for="manufacturer" class="col-md-4">Manufacturer</label>
                             <div class="col-md-8">
                                 <input type="text" value="" name="manufacturer" id="manufacturer" class="form-control">
                             </div>
                         </div>
-                      
-                       
-                        <div class="row mt-2" id="location">
+                        <div class="row mt-2">
                             <label for="location" class="col-md-4">Location</label>
                             <div class="col-md-8">
                                 <input type="text" name="location" id="location" class="form-control">
                             </div>
                         </div>
-                        <div class="row mt-2" id="location">
+                        <div class="row mt-2">
                             <label for="location" class="col-md-4">Date</label>
                             <div class="col-md-8">
                                 <input type="date" name="date" id="" class="form-control">
                             </div>
                         </div>
-                        {{-- <div class="row mt-2" id="Certificate" >
-                            <label for="certificate" class="col-md-6">Certificate</label>
-                            <div class="col-md-6">
-                                <input type="text" name="certificate" id="certificate" value="" class="form-control">
-                            </div>
-                        </div> --}}
-                        {{-- <div class="row mt-2">
-                            <label for="file" class="col-md-4">Upload file</label>
-                            <div class="col-md-8">
-                                <input type="file" name="image" id="file" class="form-control">
-                            </div>
-                        </div> --}}
-
-                        <div class="modal-footer">
+                        <div class="modal-footer mt-2">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary"> Save </button>
                         </div>
@@ -381,158 +387,19 @@
 
     document.getElementById('section1').addEventListener('click', function () {
         document.getElementById('vaccinefield').style.display = 'flex';
-        document.getElementById('Manufacturer').style.display = 'none';
         document.getElementById('marketName').style.display = 'none';
         document.getElementById('applicablefor').style.display = 'none';
-        document.getElementById('location').style.display = 'none';
-        document.getElementById('Certificate').style.display = 'none';
         document.getElementById('hiddenid').value = 'section one';
         document.getElementById('tableone').value = 'section one';
     });
 
-    document.getElementById('section2').addEventListener('click', function () {
-        document.getElementById('vaccinefield').style.display = 'none';
-        document.getElementById('Manufacturer').style.display = 'flex';
-        document.getElementById('marketName').style.display = 'none';
-        document.getElementById('applicablefor').style.display = 'none';
-        document.getElementById('location').style.display = 'flex';
-        document.getElementById('Certificate').style.display = 'flex';
-        document.getElementById('hiddenid').value = 'section two';
-        document.getElementById('tableone').value = 'section two';
-    });
-
     document.getElementById('section3').addEventListener('click', function () {
         document.getElementById('vaccinefield').style.display = 'none';
-        document.getElementById('Manufacturer').style.display = 'none';
         document.getElementById('marketName').style.display = 'flex';
         document.getElementById('applicablefor').style.display = 'flex';
-        document.getElementById('location').style.display = 'none';
-        document.getElementById('Certificate').style.display = 'none';
         document.getElementById('hiddenid').value = 'section three';
         document.getElementById('tableone').value = 'section three';
 
     });
 </script>
-
-<script>
-    $(function(){
-        $(document).on('click', '#section1', function(){
-            var section_one = 'section one';
-           
-
-            $.ajax({
-                url: "{{ route('get_section_one_data') }}",
-                type: "GET",
-                data: {section_one},
-                success:function(data){
-                    $('#sectiononetable').html(data);
-                }
-                document.getElementById('sectiononehide').style.display = 'none';
-            });
-        });
-    });
-</script>
-{{-- <script>
-    $(function(){
-        $(document).on('click', '#section2', function(){
-            var section_two = 'section two';
-           
-
-            $.ajax({
-                url: "{{ route('get_section_two_data') }}",
-                type: "GET",
-                data: {section_two},
-                success:function(data){
-                    $('#sectiontwotable').html(data);
-                }
-            });
-        });
-    });
-</script> --}}
-<script>
-    $(function(){
-        $(document).on('click', '#section3', function(){
-            var section_three = 'section three';
-          
-
-            $.ajax({
-                url: "{{ route('get_section_three_data') }}",
-                type: "GET",
-                data: {section_three},
-                success:function(data){
-                    $('#sectionthreetable').html(data);
-                }
-            });
-        });
-    });
-</script>
-
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const section = urlParams.get('section');
-        if (section === 'section2') {
-            document.getElementById('section2').click();
-            document.getElementById('nav-border-justified-profile').click();
-        }
-    });
-</script> --}}
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedVaccines = @json($savedVaccines);
-        const selectElement = document.getElementById('vaccine_name');
-
-        savedVaccines.forEach(vaccine => {
-            let option = selectElement.querySelector(`option[value="${vaccine}"]`);
-            if (option) {
-                option.style.display = 'none';
-            }
-        });
-    });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedVaccines = @json($marketName);
-        const selectElement = document.getElementById('market_name');
-
-        savedVaccines.forEach(vaccine => {
-            let option = selectElement.querySelector(`option[value="${vaccine}"]`);
-            if (option) {
-                option.style.display = 'none';
-            }
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedVaccines = @json($applicableFor);
-        const selectElement = document.getElementById('applicableFor');
-
-        savedVaccines.forEach(vaccine => {
-            let option = selectElement.querySelector(`option[value="${vaccine}"]`);
-            if (option) {
-                option.style.display = 'none';
-            }
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedVaccines = @json($validdataforcovid);
-        const selectElement = document.getElementById('dose_name');
-
-        savedVaccines.forEach(vaccine => {
-            let option = selectElement.querySelector(`option[value="${vaccine}"]`);
-            if (option) {
-                option.style.display = 'none';
-            }
-        });
-    });
-</script>
-
-<script>
-    document.getElementById('fileUploadButton').addEventListener('click', function() {
-        document.getElementById('viewButton').classList.remove('hidden');
-    });
-</script>
-
 

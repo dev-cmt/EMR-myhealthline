@@ -13,7 +13,21 @@ return new class extends Migration
     {
         Schema::create('medication_schedules', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
+            $table->unsignedBigInteger('mast_equipment_id');
+            $table->string('full_name')->nullable();
+            $table->unsignedBigInteger('mast_power_id');
+            $table->string('duration')->nullable();
+            $table->string('frequency')->nullable();
+            $table->string('cost')->nullable();
+            $table->string('timing')->nullable();
+            $table->string('antibiotic')->nullable();
             $table->timestamps();
+    
+            // Define foreign keys
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('mast_equipment_id')->references('id')->on('mast_equipment')->onDelete('cascade');
+            $table->foreign('mast_power_id')->references('id')->on('mast_powers')->onDelete('cascade');
         });
     }
 

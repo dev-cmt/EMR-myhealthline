@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('random_uploader_tools', function (Blueprint $table) {
             $table->id();
-            $table->string('document_name');
-            $table->string('sub_type')->nullable();
-            $table->date('date');
-            $table->text('additional_note')->nullable();
-            $table->string('upload_tool');
-            
             $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('document_name')->nullable();
+            $table->string('sub_type')->nullable();
+            $table->date('date')->nullable();
+            $table->text('additional_note')->nullable();
+            $table->string('upload_tool')->nullable();
             $table->timestamps();
+            
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

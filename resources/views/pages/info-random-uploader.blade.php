@@ -22,8 +22,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach($data as $key=> $row)
+                                        <tr>
+                                            <td><h6 class="mt-2">{{++$key}}</h6></td>
+                                            <td><input type="text" class="form-control" value="{{$row->document_name}}" disabled></td>
+                                            <td><input type="text" class="form-control" value="{{$row->sub_type}}" disabled></td>
+                                            <td><input type="date" class="form-control" value="{{$row->date}}" disabled></td>
+                                            <td><input type="text" class="form-control" value="{{$row->additional_note}}" disabled></td>
+                                            <td class="d-flex">
+                                                <a href="javascript:void(0);" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
+                                                {{-- <input type="file" class="form-control" value="" disabled> --}}
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     <tr>
-                                        <td><h6 class="mt-2">1</h6></td>
+                                        <td><h6 class="mt-2"></h6></td>
                                         <td><input type="text" class="form-control" name="document_name[]"></td>
                                         <td><input type="text" class="form-control" name="sub_type[]"></td>
                                         <td><input type="date" class="form-control" name="date[]"></td>

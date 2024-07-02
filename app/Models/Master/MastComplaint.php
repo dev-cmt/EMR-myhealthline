@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Information;
+namespace App\Models\Master;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Information\CaseRegistry;
 
-class Complaint extends Model
+class MastComplaint extends Model
 {
     use HasFactory;
 

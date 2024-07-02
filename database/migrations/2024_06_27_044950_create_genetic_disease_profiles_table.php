@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('genetic_disease_profiles', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
             $table->boolean('disease_diabetes')->default(false);
             $table->boolean('disease_stroke')->default(false);
             $table->boolean('disease_heart')->default(false);
@@ -23,10 +24,10 @@ return new class extends Migration
             $table->boolean('disease_disability')->default(false);
             $table->boolean('disease_psoriasis')->default(false);
             $table->text('additional_comments')->nullable();
-
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

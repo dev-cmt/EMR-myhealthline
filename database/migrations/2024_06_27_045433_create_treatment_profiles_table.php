@@ -13,18 +13,19 @@ return new class extends Migration
     {
         Schema::create('treatment_profiles', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
             $table->string('doctor_name')->nullable();;
             $table->string('designation')->nullable();;
             $table->string('chamber_address')->nullable();;
             $table->date('last_visit_date')->nullable();;
             $table->decimal('fees', 8, 2)->nullable();
             $table->text('comments')->nullable();
-            $table->string('disease_diagnosis');
+            $table->string('disease_diagnosis')->nullable();
             $table->string('prescription')->nullable();
-            
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

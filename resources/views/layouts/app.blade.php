@@ -104,6 +104,16 @@
         <script src="{{asset('public/backend')}}/js/pages/dashboard-analytics.init.js"></script>
         <!-- form wizard init -->
         <script src="{{asset('public/backend')}}/js/pages/form-wizard.init.js"></script>
+        
+        <!-- prismjs plugin -->
+        <script src="{{asset('public/backend')}}/libs/prismjs/prism.js"></script>
+        <script src="{{asset('public/backend')}}/libs/list.js/list.min.js"></script>
+        <script src="{{asset('public/backend')}}/libs/list.pagination.js/list.pagination.min.js"></script>
+        <!-- listjs init -->
+        <script src="{{asset('public/backend')}}/js/pages/listjs.init.js"></script>
+        <!-- Sweet Alerts js -->
+        <script src="{{asset('public/backend')}}/libs/sweetalert2/sweetalert2.min.js"></script>
+    
         <!-- App js -->
         <script src="{{asset('public/backend')}}/js/app.js"></script>
         

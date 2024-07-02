@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('blood_pressure_profilings', function (Blueprint $table) {
             $table->id();
-            $table->time('time');
-            $table->integer('systolic');
-            $table->integer('diastolic');
-            $table->integer('heart_rate_bpm');
-            $table->text('additional_note')->nullable();
-            
             $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->time('time')->nullable();
+            $table->integer('systolic')->nullable();
+            $table->integer('diastolic')->nullable();
+            $table->integer('heart_rate_bpm')->nullable();
+            $table->text('additional_note')->nullable();
             $table->timestamps();
+
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
