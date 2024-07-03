@@ -30,8 +30,8 @@
                                             <td><input type="date" class="form-control" value="{{$row->date}}" disabled></td>
                                             <td><input type="text" class="form-control" value="{{$row->additional_note}}" disabled></td>
                                             <td class="d-flex">
-                                                <a href="javascript:void(0);" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
-                                                {{-- <input type="file" class="form-control" value="" disabled> --}}
+                                                <a href="{{ route('random-uploader-tool.download', $row->id) }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
+                                                
                                             </td>
                                         </tr>
                                     @endforeach
@@ -41,7 +41,7 @@
                                         <td><input type="text" class="form-control" name="sub_type[]"></td>
                                         <td><input type="date" class="form-control" name="date[]"></td>
                                         <td><input type="text" class="form-control" name="additional_note[]"></td>
-                                        <td><input type="file" class="form-control" name="upload_tool[]"></td>
+                                        <td><input type="file" class="form-control" name="upload_tool"></td>
                                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
                                     </tr>
                                 </tbody>

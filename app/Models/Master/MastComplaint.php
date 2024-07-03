@@ -14,6 +14,6 @@ class MastComplaint extends Model
 
     public function cases()
     {
-        return $this->belongsToMany(CaseRegistry::class, 'case_complaints', 'complaint_id', 'case_registry_id');
+        return $this->belongsToMany(CaseRegistry::class, 'case_complaints', 'mast_complaint_id', 'case_registry_id');
     }
 }

@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('covid_certificates', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
             $table->string('certificate_number')->nullable();
             $table->string('uploader_tool')->nullable();
-            
-            $table->unsignedBigInteger('vaccination_covid_id');
-            $table->foreign('vaccination_covid_id')->references('id')->on('vaccination_covids')->onDelete('cascade');
             $table->timestamps();
+            
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

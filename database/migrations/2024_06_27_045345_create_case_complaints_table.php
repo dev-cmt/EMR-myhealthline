@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('case_complaints', function (Blueprint $table) {
             $table->id();
             $table->foreignId('case_registry_id')->constrained('case_registries')->onDelete('cascade');
-            $table->foreignId('complaint_id')->constrained('mast_complaints')->onDelete('cascade');
+            $table->foreignId('mast_complaint_id')->constrained('mast_complaints')->onDelete('cascade');
             $table->timestamps();
         });
     }

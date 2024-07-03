@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('vaccinations', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
             $table->string('type'); // EPI, Paid, or Covid-19
             $table->string('vaccine_name')->nullable();
             $table->string('dose_01')->nullable();
@@ -29,10 +30,10 @@ return new class extends Migration
             $table->string('certificate_number')->nullable();
             $table->text('side_effects')->nullable();
             $table->string('upload_tool')->nullable();
-
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

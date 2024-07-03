@@ -9,6 +9,8 @@
                 <div class="card-body">
                     <form action="{{ route('patient-registry.store') }}" method="POST">
                         @csrf
+                        <input type="hidden" value="{{ $user->id ?? '' }}" name="id">
+
                         <div class="row">
                             <div class="col-xxl-3 col-md-6">
                                 <div class="row mb-3">
@@ -29,7 +31,7 @@
                                         <label for="email" class="form-label">Email</label>
                                     </div>
                                     <div class="col-lg-9">
-                                        <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" value="{{ $user->email ?? old('email') }}">
+                                        <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" value="{{ isset($user) ? ($user->email ?? old('email')) : old('email') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
                                         @error('email')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -42,7 +44,7 @@
                                         <label for="password" class="form-label">Password</label>
                                     </div>
                                     <div class="col-lg-9">
-                                        <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password">
+                                        <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" {{ isset($user) && $user->id ? 'disabled' : '' }}>
                                         @error('password')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -232,7 +234,7 @@
                 <div class="card-body">
                     <form action="{{ route('sensitive-information.store') }}" method="POST">
                         @csrf
-                        <input type="hidden" value="{{$sensitiveInformation->id }}" name="id">
+                        <input type="hidden" value="{{ $sensitiveInformation->id ?? '' }}" name="id">
                         
                         <!-- Form Fields -->
                         <div class="row mb-2">
@@ -440,61 +442,62 @@
                 <div class="card-body">
                     <form action="{{ route('genetic-disease-profile.store') }}" method="POST">
                         @csrf
-                        <input type="text" value="{{$geneticDiseaseProfile->disease_heart }}" name="id">
+                        <input type="hidden" value="{{ $geneticDiseaseProfile->id ?? '' }}" name="id">
+                        
 
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <!-- Custom Checkboxes -->
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="diabetesCheckbox" name="disease_diabetes" value="1" {{ $sensitiveInformation->disease_diabetes = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="diabetesCheckbox" name="disease_diabetes" value="1" {{ $geneticDiseaseProfile->disease_diabetes ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="diabetesCheckbox">
                                         Diabetes
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="strokeCheckbox" name="disease_stroke" value="1" {{ $sensitiveInformation->disease_stroke = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="strokeCheckbox" name="disease_stroke" value="1" {{ $geneticDiseaseProfile->disease_stroke ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="strokeCheckbox">
                                         Stroke
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="heartDiseasesCheckbox" name="disease_heart" value="1" {{ $sensitiveInformation->disease_heart = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="heartDiseasesCheckbox" name="disease_heart" value="1" {{  $geneticDiseaseProfile->disease_heart ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="heartDiseasesCheckbox">
                                         Heart Diseases
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="hyperExcitationCheckbox" name="disease_hyper" value="1" {{ $sensitiveInformation->disease_hyper = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="hyperExcitationCheckbox" name="disease_hyper" value="1" {{  $geneticDiseaseProfile->disease_hyper ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="hyperExcitationCheckbox">
                                         Hyper Excitation
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="bloodPressureCheckbox" name="disease_pressure" value="1" {{ $sensitiveInformation->disease_pressure = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="bloodPressureCheckbox" name="disease_pressure" value="1" {{ $geneticDiseaseProfile->disease_pressure ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="bloodPressureCheckbox">
                                         Blood Pressure
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="baldingCheckbox" name="disease_balding" value="1" {{ $sensitiveInformation->disease_balding = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="baldingCheckbox" name="disease_balding" value="1" {{ $geneticDiseaseProfile->disease_balding ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="baldingCheckbox">
                                         Balding
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="vitiligoCheckbox" name="disease_vitiligo" value="1" {{ $sensitiveInformation->disease_vitiligo = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="vitiligoCheckbox" name="disease_vitiligo" value="1" {{ $geneticDiseaseProfile->disease_vitiligo ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="vitiligoCheckbox">
                                         Vitiligo
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="disabilityCheckbox" name="disease_disability" value="1" {{ $sensitiveInformation->disease_disability = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="disabilityCheckbox" name="disease_disability" value="1" {{ $geneticDiseaseProfile->disease_disability ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="disabilityCheckbox">
                                         Disability (Please specify in comment box)
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="psoriasisCheckbox" name="disease_psoriasis" value="1" {{ $sensitiveInformation->disease_psoriasis = 1 ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" id="psoriasisCheckbox" name="disease_psoriasis" value="1" {{ $geneticDiseaseProfile->disease_psoriasis ?? false ? 'checked' : '' }}>
                                     <label class="form-check-label" for="psoriasisCheckbox">
                                         Psoriasis
                                     </label>
@@ -502,7 +505,7 @@
                             </div>
                             <div class="col-md-8">
                                 <label for="additionalComments" class="form-label mt-3">Please mention in case if you have a hereditary disease which is not included in the list</label>
-                                <textarea class="form-control" id="additionalComments" name="additional_comments" rows="5" placeholder="Enter additional comments">{{ $sensitiveInformation->additional_comments }}</textarea>
+                                <textarea class="form-control" id="additionalComments" name="additional_comments" rows="5" placeholder="Enter additional comments">{{ $geneticDiseaseProfile->additional_comments ?? '' }}</textarea>
                             </div>
                         </div>                        
                         
@@ -528,7 +531,8 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('personal-information.store') }}">
                         @csrf
-    
+                        <input type="hidden" value="{{ $otherPersonalInformation->id ?? '' }}" name="id">
+
                         <div class="row mb-3">
                             <div class="col-md-8">
                                 <div class="row">
@@ -539,12 +543,12 @@
                                             </div>
                                             <div class="col-lg-7">
                                                 <select class="form-select" id="maritalStatus" name="marital_status">
-                                                    <option value="Single">Single</option>
-                                                    <option value="Married">Married</option>
-                                                    <option value="Married with Kids">Married with Kids</option>
-                                                    <option value="Divorced">Divorced</option>
-                                                    <option value="Widowed">Widowed</option>
-                                                    <option value="Unwilling to Disclose">Unwilling to Disclose</option>
+                                                    <option value="Single" {{ $otherPersonalInformation && $otherPersonalInformation->marital_status == "Single" ? 'selected': ''}}>Single</option>
+                                                    <option value="Married" {{ $otherPersonalInformation && $otherPersonalInformation->marital_status == "Married" ? 'selected': ''}}>Married</option>
+                                                    <option value="Married with Kids" {{ $otherPersonalInformation && $otherPersonalInformation->marital_status == "Married with Kids" ? 'selected': ''}}>Married with Kids</option>
+                                                    <option value="Divorced" {{ $otherPersonalInformation && $otherPersonalInformation->marital_status == "Divorced" ? 'selected': ''}}>Divorced</option>
+                                                    <option value="Widowed" {{ $otherPersonalInformation && $otherPersonalInformation->marital_status == "Widowed" ? 'selected': ''}}>Widowed</option>
+                                                    <option value="Unwilling to Disclose" {{ $otherPersonalInformation && $otherPersonalInformation->marital_status == "Unwilling to Disclose" ? 'selected': ''}}>Unwilling to Disclose</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -555,7 +559,7 @@
                                                 <label for="homeAddress" class="form-label">Home Address</label>
                                             </div>
                                             <div class="col-lg-7">
-                                                <input type="text" class="form-control" id="homeAddress" name="home_address" placeholder="Enter your home address">
+                                                <input type="text" class="form-control" id="homeAddress" name="home_address" placeholder="Enter your home address" value="{{ $otherPersonalInformation->home_address ?? ''}}">
                                             </div>
                                         </div>
                                     </div>
@@ -565,7 +569,7 @@
                                                 <label for="officeAddress" class="form-label">Office Address</label>
                                             </div>
                                             <div class="col-lg-7">
-                                                <input type="text" class="form-control" id="officeAddress" name="office_address" placeholder="Enter your office address">
+                                                <input type="text" class="form-control" id="officeAddress" name="office_address" placeholder="Enter your office address" value="{{ $otherPersonalInformation->office_address ?? ''}}">
                                             </div>
                                         </div>
                                     </div>
@@ -575,7 +579,7 @@
                                                 <label for="emailAddress" class="form-label">Email Address</label>
                                             </div>
                                             <div class="col-lg-7">
-                                                <input type="email" class="form-control" id="emailAddress" name="email_address" placeholder="Enter your email address">
+                                                <input type="email" class="form-control" id="emailAddress" name="email_address" placeholder="Enter your email address" value="{{ $otherPersonalInformation->email_address ?? ''}}">
                                             </div>
                                         </div>
                                     </div>
@@ -585,7 +589,7 @@
                                                 <label for="phoneNumber" class="form-label">Phone Number</label>
                                             </div>
                                             <div class="col-lg-7">
-                                                <input type="text" class="form-control" id="phoneNumber" name="phone_number" placeholder="Enter your phone number">
+                                                <input type="text" class="form-control" id="phoneNumber" name="phone_number" placeholder="Enter your phone number" value="{{ $otherPersonalInformation->phone_number ?? ''}}">
                                             </div>
                                         </div>
                                     </div>
@@ -595,7 +599,7 @@
                                                 <label for="lastBloodDonated" class="form-label">Last Blood Donated</label>
                                             </div>
                                             <div class="col-lg-7">
-                                                <input type="date" class="form-control" id="lastBloodDonated" name="last_blood_donated">
+                                                <input type="date" class="form-control" id="lastBloodDonated" name="last_blood_donated" value="{{ $otherPersonalInformation->last_blood_donated ?? ''}}">
                                             </div>
                                         </div>
                                     </div>
@@ -605,7 +609,7 @@
                                                 <label for="healthInsurance" class="form-label">Health Insurance #</label>
                                             </div>
                                             <div class="col-lg-7">
-                                                <input type="text" class="form-control" id="healthInsurance" name="health_insurance_number" placeholder="Enter your health insurance number">
+                                                <input type="text" class="form-control" id="healthInsurance" name="health_insurance_number" placeholder="Enter your health insurance number" value="{{ $otherPersonalInformation->health_insurance_number ?? ''}}">
                                             </div>
                                         </div>
                                     </div>
@@ -615,7 +619,7 @@
                                                 <label for="familyPhysician" class="form-label">Family Physician (If any)</label>
                                             </div>
                                             <div class="col-lg-7">
-                                                <input type="text" class="form-control" id="familyPhysician" name="family_physician" placeholder="Enter your family physician's name">
+                                                <input type="text" class="form-control" id="familyPhysician" name="family_physician" placeholder="Enter your family physician's name" value="{{ $otherPersonalInformation->family_physician ?? ''}}">
                                             </div>
                                         </div>
                                     </div>
@@ -625,7 +629,7 @@
                                                 <label for="physicianContact" class="form-label">Physician's Contact</label>
                                             </div>
                                             <div class="col-lg-7">
-                                                <input type="text" class="form-control" id="physicianContact" name="physician_contact" placeholder="Enter your physician's contact">
+                                                <input type="text" class="form-control" id="physicianContact" name="physician_contact" placeholder="Enter your physician's contact" value="{{ $otherPersonalInformation->physician_contact ?? ''}}">
                                             </div>
                                         </div>
                                     </div>
@@ -636,8 +640,8 @@
                                             </div>
                                             <div class="col-lg-7">
                                                 <select class="form-select" id="pregnancyStatus" name="pregnancy_status">
-                                                    <option value="Yes">Yes</option>
-                                                    <option value="No">No</option>
+                                                    <option value="Yes" {{ $otherPersonalInformation && $otherPersonalInformation->pregnancy_status == "Yes" ? 'selected': ''}}>Yes</option>
+                                                    <option value="No" {{ $otherPersonalInformation && $otherPersonalInformation->pregnancy_status == "No" ? 'selected': ''}}>No</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -649,9 +653,9 @@
                                             </div>
                                             <div class="col-lg-7">
                                                 <select class="form-select" id="menstrualCycle" name="menstrual_cycle">
-                                                    <option value="Regular">Regular</option>
-                                                    <option value="Irregular">Irregular</option>
-                                                    <option value="Menopaused">Menopaused</option>
+                                                    <option value="Regular" {{ $otherPersonalInformation && $otherPersonalInformation->menstrual_cycle == "Regular" ? 'selected': ''}}>Regular</option>
+                                                    <option value="Irregular" {{ $otherPersonalInformation && $otherPersonalInformation->menstrual_cycle == "Irregular" ? 'selected': ''}}>Irregular</option>
+                                                    <option value="Menopaused" {{ $otherPersonalInformation && $otherPersonalInformation->menstrual_cycle == "Menopaused" ? 'selected': ''}}>Menopaused</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -663,11 +667,11 @@
                                             </div>
                                             <div class="col-lg-7">
                                                 <select class="form-select" id="activityStatus" name="activity_status">
-                                                    <option value="Immobile/Paralyzed">Immobile/Paralyzed</option>
-                                                    <option value="Disabled">Disabled</option>
-                                                    <option value="Not Very Active">Not Very Active</option>
-                                                    <option value="Moderately Active">Moderately Active</option>
-                                                    <option value="Highly Active">Highly Active</option>
+                                                    <option value="Immobile/Paralyzed" {{ $otherPersonalInformation && $otherPersonalInformation->activity_status == "Immobile/Paralyzed" ? 'selected': ''}}>Immobile/Paralyzed</option>
+                                                    <option value="Disabled" {{ $otherPersonalInformation && $otherPersonalInformation->activity_status == "Disabled" ? 'selected': ''}}>Disabled</option>
+                                                    <option value="Not Very Active" {{ $otherPersonalInformation && $otherPersonalInformation->activity_status == "Not Very Active" ? 'selected': ''}}>Not Very Active</option>
+                                                    <option value="Moderately Active" {{ $otherPersonalInformation && $otherPersonalInformation->activity_status == "Moderately Active" ? 'selected': ''}}>Moderately Active</option>
+                                                    <option value="Highly Active" {{ $otherPersonalInformation && $otherPersonalInformation->activity_status == "Highly Active" ? 'selected': ''}}>Highly Active</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -676,7 +680,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="hereditaryDisease" class="form-label">Please mention if you have a hereditary disease not listed above</label>
-                                <textarea class="form-control" id="hereditaryDisease" name="hereditary_disease" rows="10" placeholder="Enter your hereditary disease information"></textarea>
+                                <textarea class="form-control" id="hereditaryDisease" name="hereditary_disease" rows="10" placeholder="Enter your hereditary disease information">{{$otherPersonalInformation->hereditary_disease ?? ''}}</textarea>
                             </div>
                         </div>
                         <div class="row mb-3">

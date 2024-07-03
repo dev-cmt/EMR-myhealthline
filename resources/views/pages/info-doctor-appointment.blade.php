@@ -93,16 +93,15 @@
                             </div>
                         </div>
                     </div>
-                </div><!-- end card -->
+                </div>
             </div>
-            <!-- end col -->
+            
         </div>
-        <!-- end col -->
+        
     </div>
-    <!-- end row -->
-
-
     
+
+
      <!-- Modal -->
      <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -167,8 +166,8 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col">Appointment(s)</th>
+                                        <th scope="col">Date</th>
                                         <th scope="col">Day</th>
-                                        <th scope="col">Time & Date Tool</th>
                                         <th scope="col">Fee</th>
                                         <th scope="col">Note</th>
                                         <th scope="col">Actions</th>
@@ -177,8 +176,16 @@
                                 <tbody></tbody>
                                 <tfoot class="table-light">
                                     <tr>
-                                        <td colspan="5"><button type="button" id="addRowFollowUp" class="btn btn-soft-secondary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Follow Up Session</button></td>
-                                        <td><button type="submit" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2 submit_btn"></i> Save</button></td>
+                                        <td colspan="5">
+                                            <button type="button" id="addRowFollowUp" class="btn btn-soft-secondary btn-label waves-effect waves-light">
+                                                <i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Follow Up Session
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
+                                                <i class="ri-check-double-line label-icon align-middle fs-16 me-2 submit_btn"></i> Save
+                                            </button>
+                                        </td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -192,72 +199,56 @@
     @push('scripts')
     <script type="text/javascript">
         $(document).ready(function(){
-            // Function to initialize modal and populate initial row
             $('#modalOpen').click(function(){
-                // Clear input fields
                 $('#full_name, #designation, #specialization, #chamber_address, #availability_hours, #contact_number').val('');
-    
-                // Clear table body and add first row only if it's not already added
+
                 if ($('#items-table tbody tr').length === 0) {
                     openFirstRow();
                 }
-    
-                // Show the modal
+
                 $('#exampleModal').modal('show');
             });
-    
+
             function openFirstRow(){
-                // Add only if no rows exist
+
                 if ($('#items-table tbody tr').length === 0) {
                     $('#items-table tbody').html(`
                         <tr>
                             <td><input type="text" class="form-control" name="moreFile[0][appointment]" value="1st Appointment"></td>
-                            <td>
-                                <select name="moreFile[0][day]" class="form-control">
-                                    <option value="sunday">Sunday</option>
-                                    <option value="monday">Monday</option>
-                                    <option value="tuesday">Tuesday</option>
-                                    <option value="wednesday">Wednesday</option>
-                                    <option value="thursday">Thursday</option>
-                                    <option value="friday">Friday</option>
-                                </select>
-                            </td>
-                            <td><input type="date" class="form-control" name="moreFile[0][time_date_tool]"></td>
+                            <td><input type="date" class="form-control date-input" name="moreFile[0][time_date_tool]"></td>
+                            <td><input type="text" class="form-control day-input" name="moreFile[0][day]" readonly></td>
                             <td><input type="number" class="form-control" name="moreFile[0][fee]"></td>
                             <td><textarea name="moreFile[0][note]" class="form-control" rows="1"></textarea></td>
                             <td><button type="button" class="btn btn-outline-success btn-icon waves-effect waves-light"><i class="ri-mail-send-line"></i></button></td>
                         </tr>
                     `);
+                    attachDateChangeEvent();
                 }
             }
-    
-            // Function to handle adding follow-up rows
+
             var count = 0;
             $('#addRowFollowUp').click(function(){
                 count++;
                 addRow(count);
             });
-    
+
             function addRow(i){
                 // Determine the appropriate ordinal suffix
                 var followUpCount = $('#items-table tbody tr').length;
                 let suffix = getOrdinalSuffix(followUpCount);
-                // alert(followUpCount);
+                // Get the date of the last follow-up session
+                var lastDate = new Date($(`input[name="moreFile[${followUpCount-1}][time_date_tool]"]`).val());
+                var nextDate = new Date(lastDate);
+                nextDate.setDate(lastDate.getDate() + 1); // Set to the next date
+
+                // Format the next date to YYYY-MM-DD
+                var nextDateString = nextDate.toISOString().split('T')[0];
 
                 // Create new row for follow-up and append to the table
                 var newRow = `<tr class="tr">
                                 <td><input type="text" class="form-control" name="moreFile[${i}][appointment]" value="${followUpCount}${suffix} Follow Up"></td>
-                                <td>
-                                    <select name="moreFile[${i}][day]" class="form-control">
-                                        <option value="sunday">Sunday</option>
-                                        <option value="monday">Monday</option>
-                                        <option value="tuesday">Tuesday</option>
-                                        <option value="wednesday">Wednesday</option>
-                                        <option value="thursday">Thursday</option>
-                                        <option value="friday">Friday</option>
-                                    </select>
-                                </td>
-                                <td><input type="date" class="form-control" name="moreFile[${i}][time_date_tool]"></td>
+                                <td><input type="date" class="form-control date-input" name="moreFile[${i}][time_date_tool]" value="${nextDateString}"></td>
+                                <td><input type="text" class="form-control day-input" name="moreFile[${i}][day]" readonly></td>
                                 <td><input type="number" class="form-control" name="moreFile[${i}][fee]"></td>
                                 <td><textarea name="moreFile[${i}][note]" class="form-control" rows="1"></textarea></td>
                                 <td>
@@ -265,10 +256,11 @@
                                     <button type="button" class="btn btn-danger btn-icon waves-effect waves-light remove-row"><i class="ri-delete-bin-5-line"></i></button>
                                 </td>
                             </tr>`;
-                                    
+
                 $('#items-table tbody').append(newRow);
+                attachDateChangeEvent();
             }
-    
+
             // Function to update ordinal suffixes after removing or adding rows
             function updateOrdinalSuffixes() {
                 $('#items-table tbody .tr').each(function(index) {
@@ -277,7 +269,7 @@
                     $(this).find('input[name^="moreFile["]').val(`${rowNumber}${suffix} Follow Up`);
                 });
             }
-    
+
             // Function to determine ordinal suffix (st, nd, rd, th)
             function getOrdinalSuffix(number) {
                 if (number % 10 === 1 && number % 100 !== 11) {
@@ -290,12 +282,47 @@
                     return 'th';
                 }
             }
-    
+
             // Attach event handler to initial "Remove" buttons
             $('#items-table').on('click', '.remove-row', function() {
                 $(this).closest('tr').remove();
                 updateOrdinalSuffixes();
             });
+
+            // Function to attach date change event
+            function attachDateChangeEvent() {
+                $('.date-input').off('change').on('change', function() {
+                    const date = new Date(this.value);
+                    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                    const day = days[date.getUTCDay()];
+                    $(this).closest('tr').find('.day-input').val(day.charAt(0).toUpperCase() + day.slice(1));
+
+                    // Validate date
+                    validateDate(this);
+                });
+            }
+            // Function to validate date
+            function validateDate(input) {
+                var selectedDate = new Date(input.value);
+                var currentDate = new Date();
+                
+                if (selectedDate <= currentDate) {
+                    alert('Please select a date after the current date.');
+                    input.value = ''; 
+                }
+
+                var lastDateInput = $(input).closest('tr').prev().find('.date-input');
+                if (lastDateInput.length) {
+                    var lastDate = new Date(lastDateInput.val());
+                    if (selectedDate <= lastDate) {
+                        alert('Please select a date after the previous follow-up date.');
+                        input.value = ''; 
+                    }
+                }
+            }
+
+            // Attach date change event to any initial rows
+            attachDateChangeEvent();
         });
     </script>
 
@@ -306,7 +333,7 @@
 
             // Clear input fields
             $('#full_name, #designation, #specialization, #chamber_address, #availability_hours, #contact_number').val('');
-            $('#items-table tbody').empty(); // Clear existing appointment details
+            $('#items-table tbody').empty(); 
 
             // Show the modal
             $('#exampleModal').modal('show');
@@ -331,20 +358,13 @@
                     $.each(response.appointment_details, function(index, detail) {
                         var newRow = '<tr>' +
                             '<td><input type="text" class="form-control" name="moreFile[' + index + '][appointment]" value="' + detail.appointment + '" disabled></td>' +
-                            '<td><select name="moreFile[' + index + '][day]" class="form-control" disabled>' +
-                                '<option value="sunday" ' + (detail.day === 'sunday' ? 'selected' : '') + '>Sunday</option>' +
-                                '<option value="monday" ' + (detail.day === 'monday' ? 'selected' : '') + '>Monday</option>' +
-                                '<option value="tuesday" ' + (detail.day === 'tuesday' ? 'selected' : '') + '>Tuesday</option>' +
-                                '<option value="wednesday" ' + (detail.day === 'wednesday' ? 'selected' : '') + '>Wednesday</option>' +
-                                '<option value="thursday" ' + (detail.day === 'thursday' ? 'selected' : '') + '>Thursday</option>' +
-                                '<option value="friday" ' + (detail.day === 'friday' ? 'selected' : '') + '>Friday</option>' +
-                            '</select></td>' +
                             '<td><input type="date" class="form-control" name="moreFile[' + index + '][time_date_tool]" value="' + detail.time_date_tool + '" disabled></td>' +
+                            '<td><input type="text" class="form-control" name="moreFile[' + index + '][day]" value="' + detail.day + '" disabled></td>' +
                             '<td><input type="number" class="form-control" name="moreFile[' + index + '][fee]" value="' + detail.fee + '" disabled></td>' +
                             '<td><textarea class="form-control" name="moreFile[' + index + '][note]" rows="1" disabled>' + (detail.note ? detail.note : '') + '</textarea></td>' +
                             '<td><button type="button" class="btn btn-outline-success btn-icon waves-effect waves-light"><i class="ri-mail-send-line"></i></button></td>' +
                             '</tr>';
-                        
+
                         $('#items-table tbody').append(newRow);
                     });
                 },
@@ -360,7 +380,7 @@
         });
     </script>
 
-    
+
     @endpush
 
 </x-app-layout>

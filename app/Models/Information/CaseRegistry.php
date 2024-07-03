@@ -4,7 +4,7 @@ namespace App\Models\Information;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Information\Complaint;
+use App\Models\Master\MastComplaint;
 use App\Models\User;
 
 class CaseRegistry extends Model
@@ -31,6 +31,6 @@ class CaseRegistry extends Model
 
     public function complaints()
     {
-        return $this->belongsToMany(Complaint::class, 'case_complaints');
+        return $this->belongsToMany(MastComplaint::class, 'case_complaints');
     }
 }

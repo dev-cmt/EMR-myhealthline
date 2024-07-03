@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('vaccination_covids', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
             $table->string('dose_type'); // E.g., Dose 01, Dose 02, Dose 03, Booster
             $table->string('location');
             $table->date('date');
             $table->string('manufacturer');
-            
-            $table->unsignedBigInteger('patient_id');
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            
+            // Foreign key
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

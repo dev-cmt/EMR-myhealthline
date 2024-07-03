@@ -14,17 +14,15 @@ class vaccineController extends Controller
 
     public function vaccinationRecord(Request $request)
     {
-        
         $vaccinationRecords = Vaccination::where('type','section one')->get();
+        $vaccinationsectionthree = Vaccination::where('type','section three')->get();
         $user = Auth::user();
         $savedVaccines = Vaccination::where('patient_id', $user->id)->pluck('vaccine_name')->toArray();
         $marketName = Vaccination::where('patient_id', $user->id)->pluck('market_name')->toArray();
         $applicableFor = Vaccination::where('patient_id', $user->id)->pluck('applicable_for')->toArray();
-
         $coviddata = VaccinationCovid::where('patient_id', $user->id)->get();
         $validdataforcovid = VaccinationCovid::where('patient_id', $user->id)->pluck('dose_type')->toArray();
-    
-        return view('pages.info-vaccination-record', compact('vaccinationRecords', 'savedVaccines', 'marketName', 'applicableFor', 'coviddata','validdataforcovid'));
+        return view('pages.info-vaccination-record', compact('vaccinationRecords', 'savedVaccines', 'marketName', 'applicableFor', 'coviddata','validdataforcovid','vaccinationsectionthree'));
     }
 
 
@@ -51,7 +49,7 @@ class vaccineController extends Controller
 
         return self::$imageUrl;
     }
-    public function saveVaccinations(Request $request)
+    public function vaccinationStore(Request $request)
     {
        
         try{
@@ -134,7 +132,7 @@ class vaccineController extends Controller
     }
 
 
-    public function storeCovid19Vaccine(Request $request)
+    public function vaccinationCovid(Request $request)
     {
 
         $storecoviddata = new VaccinationCovid;
@@ -149,7 +147,7 @@ class vaccineController extends Controller
     }
 
 
-    public function storeCovidFileUpload(Request $request)
+    public function covidCertificate(Request $request)
     {
         $storecovidfile = new CovidCertificate;
         $storecovidfile->certificate_number = $request->certificateNo;
@@ -157,5 +155,28 @@ class vaccineController extends Controller
         $storecovidfile->patient_id = Auth::user()->id;
         $storecovidfile->save();
         return redirect()->back();
+    }
+
+    public function covidFileDownload()
+    {
+        $file = CovidCertificate::where('patient_id', Auth::user()->id)->first();
+        $path = $file->uploader_tool;
+        return response()->download($path);
+    }
+
+    public function vaccinesectionthreedownload($id)
+    {
+        $file = Vaccination::where('id', $id)->first();
+        $path = $file->upload_tool;
+        return response()->download($path);
+
+    }
+
+
+    public function downloadSectiononeFile($id)
+    {
+        $file = Vaccination::where('id', $id)->first();
+        $path = $file->upload_tool;
+        return response()->download($path);
     }
 }

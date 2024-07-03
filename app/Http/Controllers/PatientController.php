@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 use App\Models\Master\MastComplaint;
 use App\Models\Master\MastTest;
@@ -35,10 +36,46 @@ use App\Models\Information\OptionsalQuestion;
 use App\Models\Information\Restriction;
 
 use App\Models\Information\DoctorAppointment;
+use App\Models\Information\DoctorAppointmentDetails;
 use Exception;
 
 class PatientController extends Controller
 {
+    public static $file, $fileName, $subfolder, $fileUrl, $directory, $update;
+
+    public static function uploadImage($file, $subfolder, $update = null)
+    {
+        if ($file) {
+            // Delete existing file if $update is provided and has a file path
+            if ($update && $update->file) {
+                $oldFilePath = public_path($update->file);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+
+            // Move the uploaded file to the desired directory
+            $fileName = $file->getClientOriginalName();
+            $userId = auth()->user()->id;
+            $directory = public_path("document/{$userId}/{$subfolder}/");
+
+            // Ensure the directory exists; create if it doesn't
+            if (!File::isDirectory($directory)) {
+                File::makeDirectory($directory, 0777, true, true);
+            }
+
+            $file->move($directory, $fileName);
+            $fileUrl = "document/{$userId}/{$subfolder}/{$fileName}";
+        } else {
+            $fileUrl = $update ? $update->file : null;
+        }
+
+        return $fileUrl;
+    }
+
+
+
+
 
     public function generalProfile()
     {
@@ -52,7 +89,7 @@ class PatientController extends Controller
             $geneticDiseaseProfile = GeneticDiseaseProfile::where('patient_id', $user->id)->first();
             $otherPersonalInformation = OtherPersonalInformation::where('patient_id', $user->id)->first();
         }
-        
+
         return view('pages.info-general', compact('user', 'sensitiveInformation', 'geneticDiseaseProfile', 'otherPersonalInformation'));
     }
 
@@ -65,8 +102,8 @@ class PatientController extends Controller
         // Validate request data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'email' => 'required_if:id,null|email|unique:users,email,' . $request->id,
+            'password' => 'required_if:id,null|string|min:8',
             'dob' => 'nullable|date',
             'age' => 'nullable|integer|min:0',
             'gender' => 'nullable|string|in:Male,Female,Other',
@@ -94,11 +131,22 @@ class PatientController extends Controller
             return redirect()->back()->withErrors(['unique_patient_id' => 'The unique patient ID already exists.'])->withInput();
         }
 
-        // If validation passes, create and save the user
-        $user = new User();
+        // Determine if it's an update or create operation
+        if ($request->id) {
+            // Update existing record
+            $user = User::find($request->id);
+            if (!$user) {
+                return redirect()->back()->withErrors(['user' => 'User not found.'])->withInput();
+            }
+        } else {
+            // Create new record
+            $user = new User();
+            $user->email = $request->input('email');
+            $user->password = Hash::make($request->input('password'));
+        }
+
+        // Populate user fields
         $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
         $user->dob = $request->input('dob');
         $user->age = $request->input('age');
         $user->gender = $request->input('gender');
@@ -108,11 +156,12 @@ class PatientController extends Controller
         $user->height_inches = $request->input('height_inches');
         $user->weight_kg = $request->input('weight_kg');
         $user->weight_pounds = $request->input('weight_pounds');
+        $user->bmi = $request->input('bmi');
 
         // Calculate BMI if height and weight are provided
-        if ($request->input('height_feet') && $request->input('height_inches') && $request->input('weight_kg')) {
-            $user->bmi = $this->calculateBMI($request->input('height_feet'), $request->input('height_inches'), $request->input('weight_kg'));
-        }
+        // if ($request->input('height_feet') && $request->input('height_inches') && $request->input('weight_kg')) {
+        //     $user->bmi = $this->calculateBMI($request->input('height_feet'), $request->input('height_inches'), $request->input('weight_kg'));
+        // }
 
         $user->emergency_contact = $request->input('emergency_contact');
         $user->marital_status = $request->input('marital_status');
@@ -142,7 +191,8 @@ class PatientController extends Controller
         $heightInMeters = (($feet * 12) + $inches) * 0.0254;
         return $weightKg / ($heightInMeters * $heightInMeters);
     }
-    
+
+
 
     /**------------------------------
      * Store => sensitive_information
@@ -265,8 +315,29 @@ class PatientController extends Controller
         $organs = MastOrgan::all();
         $equipments = MastEquipment::all();
         $powers = MastPower::all();
-        
-        return view('pages.info-cases', compact('complaints', 'tests', 'organs', 'equipments', 'powers'));
+
+        $caseRegistry = CaseRegistry::where('patient_id', Auth::user()->id)->first();
+        $treatmentProfile = TreatmentProfile::where('patient_id', Auth::user()->id)->with('labTests')->first();
+
+        $medicationSchedule = MedicationSchedule::where('patient_id', Auth::user()->id)->get();
+        $surgicalIntervention = SurgicalIntervention::where('patient_id', Auth::user()->id)->get();
+        $optionsalQuestion = OptionsalQuestion::where('patient_id', Auth::user()->id)->first();
+        $restriction = Restriction::where('patient_id', Auth::user()->id)->get();
+
+        return view('pages.info-cases', compact(
+            'complaints', 
+            'tests', 
+            'organs', 
+            'equipments', 
+            'powers',
+
+            'caseRegistry',
+            'treatmentProfile',
+            'medicationSchedule',
+            'surgicalIntervention',
+            'restriction',
+            'optionsalQuestion',
+        ));
     }
 
     /**------------------------
@@ -274,37 +345,45 @@ class PatientController extends Controller
      */
     public function caseRegistry(Request $request)
     {
-        $data = $request->validate([
-            'patient_id' => 'required|integer',
-            'date_of_primary_identification' => 'required|date',
-            'date_of_first_visit' => 'required|date',
-            'recurrence' => 'required|string|max:255',
-            'duration' => 'required|integer',
-            'duration_unit' => 'required|string|max:10',
-            'area_of_problem' => 'required|string|max:255',
-            'type_of_ailment' => 'required|string|max:255',
+        $validatedData = $request->validate([
+            'date_of_primary_identification' => 'nullable|date',
+            'date_of_first_visit' => 'nullable|date',
+            'recurrence' => 'nullable|string|max:255',
+            'duration' => 'nullable|integer',
+            'duration_unit' => 'nullable|string|max:10',
+            'area_of_problem' => 'nullable|string|max:255',
+            'type_of_ailment' => 'nullable|string|max:255',
             'additional_complaints' => 'nullable|string',
-            'complaints' => 'array',
-            'complaints.*' => 'integer|exists:complaints,id',
+            'mast_complaints' => 'array',
+            'mast_complaints.*' => 'integer|exists:mast_complaints,id',
         ]);
 
-        $caseRegistry = CaseRegistry::create([
-            'patient_id' => $data['patient_id'],
-            'date_of_primary_identification' => $data['date_of_primary_identification'],
-            'date_of_first_visit' => $data['date_of_first_visit'],
-            'recurrence' => $data['recurrence'],
-            'duration_of_suffering' => $data['duration'] . ' ' . $data['duration_unit'],
-            'area_of_problem' => $data['area_of_problem'],
-            'type_of_ailment' => $data['type_of_ailment'],
-            'additional_complaints' => $data['additional_complaints'] ?? null,
-        ]);
-
-        if (isset($data['complaints'])) {
-            $caseRegistry->complaints()->sync($data['complaints']);
+        if ($request->id) {
+            // Update existing record
+            $caseRegistry = CaseRegistry::find($request->id);
+        } else {
+            // Create new record
+            $caseRegistry = new CaseRegistry();
         }
 
-        return redirect()->route('dashboard')->with('success', 'Case registry created successfully!');
+        $caseRegistry->patient_id = Auth::user()->id;
+        $caseRegistry->date_of_primary_identification = $request->date_of_primary_identification;
+        $caseRegistry->date_of_first_visit = $request->date_of_first_visit;
+        $caseRegistry->recurrence = $request->recurrence;
+        $caseRegistry->duration_of_suffering = $request->duration . ' ' . $request->duration_unit ?? null;
+        $caseRegistry->area_of_problem = $request->area_of_problem;
+        $caseRegistry->type_of_ailment = $request->type_of_ailment;
+        $caseRegistry->additional_complaints = $request->additional_complaints;
+        $caseRegistry->save();
+
+        if (isset($validatedData['mast_complaints'])) {
+            $caseRegistry->complaints()->sync($validatedData['mast_complaints']);
+        }
+
+        return redirect()->back()->with('success', 'Case registry created successfully!');
     }
+
+
 
     /**-----------------------------------------
      * Store => treatment_profiles OR lab_tests
@@ -338,11 +417,11 @@ class PatientController extends Controller
         $treatmentProfile->fees = $request->fees;
         $treatmentProfile->comments = $request->comments;
         $treatmentProfile->disease_diagnosis = $request->disease_diagnosis;
-        
+
         if ($request->hasFile('prescription')) {
             $treatmentProfile->prescription = $request->file('prescription')->store('prescriptions');
         }
-        
+
         $treatmentProfile->patient_id = auth()->id(); // or set the patient_id as required
         $treatmentProfile->save();
 
@@ -413,13 +492,13 @@ class PatientController extends Controller
         // Optionally, you can return a response or redirect
         return redirect()->back()->with('success', 'Surgical interventions saved successfully.');
     }
+
     /**-----------------------------
      * Store => surgical_interventions
      */
     public function optionsalQuestion(Request $request)
     {
-        // Create a new optional question record
-        $question = OptionsalQuestion::create([
+        $data = [
             'patient_id' => auth()->id(),
             'admitted_following_diagnosis' => $request->input('admitted_following_diagnosis'),
             'hospitalization_duration' => $request->input('hospitalization_duration'),
@@ -427,7 +506,19 @@ class PatientController extends Controller
             'medication_effectiveness' => $request->input('medication_effectiveness'),
             'satisfied_with_treatment' => $request->input('satisfied_with_treatment'),
             'recommend_physician' => $request->input('recommend_physician'),
-        ]);
+        ];
+    
+        if ($request->id) {
+            // Update existing record
+            $question = OptionsalQuestion::find($request->id);
+            if (!$question) {
+                return redirect()->back()->with('error', 'Record not found.');
+            }
+            $question->update($data);
+        } else {
+            // Create new record
+            OptionsalQuestion::create($data);
+        }
 
         // Optionally, return a response or redirect
         return redirect()->back()->with('success', 'Optional questions saved successfully.');
@@ -585,7 +676,7 @@ class PatientController extends Controller
             $vaccinestore->patient_id = Auth::user()->id;
             $vaccinestore->save();
         }
-        
+
         $notification = ['messege' => 'Data has been saved successfully', 'alert-type' => 'success'];
         return redirect()->back()->with($notification);
     }
@@ -611,8 +702,8 @@ class PatientController extends Controller
 
         return redirect()->back();
     }
-    
-  
+
+
     /**--------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
      * RANDOM UPLOADER TOOL
@@ -631,47 +722,47 @@ class PatientController extends Controller
     {
         // Validate incoming requests if needed
         $request->validate([
-            'document_name.*' => 'required',
+            'document_name.*' => 'required|string|max:255',
             'date.*' => 'required|date',
             'upload_tool.*' => 'required|file',
         ]);
 
-        try {
-            // Loop through each row submitted in the form
-            foreach ($request->document_name as $key => $value) {
-                $tool = new RandomUploaderTool();
-                $tool->document_name = $request->document_name[$key];
-                $tool->sub_type = $request->sub_type[$key] ?? null;
-                $tool->date = $request->date[$key];
-                $tool->additional_note = $request->additional_note[$key] ?? null;
+        // Loop through each row submitted in the form
+        foreach ($request->document_name as $key => $value) {
+            $tool = new RandomUploaderTool();
+            $tool->document_name = $request->document_name[$key];
+            $tool->sub_type = $request->sub_type[$key] ?? null;
+            $tool->date = $request->date[$key];
+            $tool->additional_note = $request->additional_note[$key] ?? null;
+            $tool->upload_tool = self::uploadImage($request->upload_tool, 'Random Uploader') ?? null;
 
-                // Handle file upload
-                if ($request->hasFile('upload_tool')) {
-                    $file = $request->file('upload_tool')[$key];
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $file->storeAs('uploads', $fileName); // Adjust the storage path as needed
-                    $tool->upload_tool = $fileName;
-                }
+            // Assuming patient_id is authenticated user ID
+            $tool->patient_id = auth()->user()->id;
+            $tool->save();
+        }
 
-                // Assuming patient_id is authenticated user ID
-                $tool->patient_id = auth()->user()->id;
-                $tool->save();
-            }
+        return back()->with('success', 'Documents uploaded successfully.');
+    } 
 
-            return redirect()->back()->with('success', 'Data saved successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to save data. ' . $e->getMessage());
+    public function downloadRandomUploaderTool($id)
+    {
+        $data = RandomUploaderTool::find($id);
+        $file = public_path($data->upload_tool); 
+
+        if (file_exists($file)) {
+            return response()->download($file);
+        } else {
+            abort(404, 'File not found');
         }
     }
 
-    
     /**--------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
      * Doctor's Appointment Setup Tool
      * --------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
      */
-    
+
      public function doctorAppointment()
     {
         $info = DoctorAppointment::where('patient_id', auth()->id())->get();
@@ -718,12 +809,35 @@ class PatientController extends Controller
         return redirect()->back()->with('success', 'Appointment details saved successfully!');
     }
     /**------------------------
-     * GET => random_uploader_tools
+     * GET => doctor_appointments
      */
     public function editDoctorAppointment(Request $request)
     {
         $data = DoctorAppointment::with('appointmentDetails')->find($request->id)->toArray();
         return response()->json($data);
     }
+
+    /**------------------------
+     * DOWONLOAD
+     */
+    // private function uploadFile($file, $fieldName, $subfolder, $userId)
+    // {
+    //     if ($file) {
+    //         $extension = $file->getClientOriginalExtension();
+    //         $filenameToStore = strtoupper($fieldName) . '_' . time() . '.' . $extension;
+
+    //         $folderPath = public_path("document/{$userId}/{$subfolder}");
+    //         if (!File::exists($folderPath)) {
+    //             File::makeDirectory($folderPath, 0777, true);
+    //         }
+
+    //         $file->move($folderPath, $filenameToStore);
+
+    //         return "document/{$userId}/{$subfolder}/{$filenameToStore}";
+    //     }
+
+    //     return null;
+    // }
+   
 
 }

@@ -50,7 +50,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($data as $row)
+                                            @foreach($vaccinationRecords as $row)
                                                 @if($row->type == 'section one')
                                                     <tr>
                                                         <td>{{$loop->iteration}}</td>
@@ -62,7 +62,7 @@
                                                         <td>{{$row->dose_05}}</td>
                                                         <td>{{$row->booster}}</td>
                                                         <td>
-                                                            <a href="#" class="btn btn-soft-info btn-sm">
+                                                            <a href="{{ route('download_sectionone_file',$row->id) }}" class="btn btn-soft-info btn-sm">
                                                                 <i class="ri-file-list-3-line align-middle"></i> Download File
                                                             </a>
                                                         </td>
@@ -102,13 +102,14 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($dataCovid as $row)
+                                                    @foreach($coviddata as $row)
                                                         <tr>
-                                                            <td><input type="hidden" id="vaccination_covid_id" value="{{$row->dose_type}}"></td>
+                                                            {{-- <td><input type="hidden" id="vaccination_covid_id" value="{{$row->dose_type}}"></td> --}}
                                                             <td>{{$row->dose_type}}</td>
+                                                            <td>{{$row->manufacturer}}</td>
                                                             <td>{{$row->location}}</td>
                                                             <td>{{$row->date}}</td>
-                                                            <td>{{$row->manufacturer}}</td>
+                                                            
                                                         </tr>
                                                     @endforeach
         
@@ -122,12 +123,12 @@
                                             @csrf
                                             <div class="row mb-2">
                                                 <label class="form-label mb-2">Certificate No :</label>
-                                                <input type="text" name="certificate_number" id="" value="" class="form-control mb-2">
-                                                <input type="file" name="uploader_tool" id="file" class="form-control mb-2">
+                                                <input type="text" name="certificateNo" id="" value="" class="form-control mb-2">
+                                                <input type="file" name="image" id="file" class="form-control mb-2">
                                             </div>
                                             <div class="text-end">
                                                 <button type="submit" class="btn btn-primary">File Upload</button>
-                                                <button type="button" class="btn btn-success">View</button>
+                                                <a href="{{ route('covid_file_download') }}" class="btn btn-success"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
                                             </div>
                                         </form>
 
@@ -166,8 +167,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($data as $row)
-                                                @if($row->type == 'section three')
+                                            @foreach($vaccinationsectionthree as $row)
+                                              
                                                     <tr>
                                                         <td>{{$loop->iteration}}</td>
                                                         <td>{{$row->market_name}}</td>
@@ -179,12 +180,12 @@
                                                         <td>{{$row->dose_05}}</td>
                                                         <td>{{$row->booster}}</td>
                                                         <td>
-                                                            <a href="#" class="btn btn-soft-info btn-sm">
+                                                            <a href="{{route('vaccinesectionthree',$row->id)}}" class="btn btn-soft-info btn-sm">
                                                                 <i class="ri-file-list-3-line align-middle"></i> Download File
                                                             </a>
                                                         </td>
                                                     </tr>
-                                                @endif
+                                             
                                             @endforeach
 
                                         </tbody>
@@ -402,4 +403,58 @@
 
     });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedVaccines = @json($savedVaccines);
+        const selectElement = document.getElementById('vaccine_name');
+
+        savedVaccines.forEach(vaccine => {
+            let option = selectElement.querySelector(`option[value="${vaccine}"]`);
+            if (option) {
+                option.style.display = 'none';
+            }
+        });
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const validdataforcovid = @json($validdataforcovid);
+        const selectElement = document.getElementById('dose_name');
+
+        validdataforcovid.forEach(vaccine => {
+            let option = selectElement.querySelector(`option[value="${vaccine}"]`);
+            if (option) {
+                option.style.display = 'none';
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const marketName = @json($marketName);
+        const selectElement = document.getElementById('market_name');
+
+        marketName.forEach(vaccine => {
+            let option = selectElement.querySelector(`option[value="${vaccine}"]`);
+            if (option) {
+                option.style.display = 'none';
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const applicableFor = @json($applicableFor);
+        const selectElement = document.getElementById('applicable_name');
+
+        applicableFor.forEach(vaccine => {
+            let option = selectElement.querySelector(`option[value="${vaccine}"]`);
+            if (option) {
+                option.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+
+
 

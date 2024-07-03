@@ -8,5 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class CovidCertificate extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'patient_id',
+        'uploader_tool',
+        'certificate_number',
+       
+    ];
     
 }
