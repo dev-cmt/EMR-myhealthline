@@ -745,6 +745,6 @@
     </script>
 
     <script>
-        let algin = document.getElementById('allergies').vaelu
+        let algin = document.getElementById('allergies').value;
     </script>
 </x-app-layout>
