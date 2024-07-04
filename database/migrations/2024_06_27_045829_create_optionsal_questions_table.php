@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('optionsal_questions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('patient_id');
+            $table->unsignedBigInteger('case_registry_id');
             $table->string('admitted_following_diagnosis')->nullable();
             $table->string('hospitalization_duration')->nullable();
             $table->decimal('total_cost_incurred', 10, 2)->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
             
             // Foreign keys
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('case_registry_id')->references('id')->on('case_registries')->onDelete('cascade');
         });
     }
 

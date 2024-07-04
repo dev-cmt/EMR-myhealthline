@@ -49,7 +49,7 @@
                 </li>
                 @auth
                 <li class="nav-item">
-                    <a href="{{route('info-cases')}}" class="nav-link menu-link {{ Request::routeIs('info-cases') ? 'active' : '' }}">
+                    <a href="{{route('info-cases-list')}}" class="nav-link menu-link {{ Request::routeIs('info-cases-list') ? 'active' : '' }}">
                         <i class="bx bx-layer"></i> <span data-key="t-dashboards">Case(s)</span>
                     </a>
                 </li>

@@ -36,6 +36,8 @@ class User extends Authenticatable
         'bmi',
         'emergency_contact',
         'marital_status',
+        'address',
+        'nationality',
     ];
 
     /**

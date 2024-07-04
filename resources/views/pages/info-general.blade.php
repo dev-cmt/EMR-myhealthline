@@ -1,5 +1,5 @@
 <x-app-layout>
-        
+
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -70,7 +70,8 @@
                                         <label for="dob" class="form-label">Date Of Birth</label>
                                     </div>
                                     <div class="col-lg-9">
-                                        <input type="date" class="form-control" id="dob" name="dob" placeholder="Enter your date of birth" value="{{ $user->dob ?? old('dob') }}">
+                                        <input type="date" class="form-control" id="dob_display" name="dob_display" placeholder="Enter your date of birth" value="{{ isset($user) ? \Carbon\Carbon::parse($user->dob)->format('d-m-Y') : old('dob') }}">
+                                        <input type="hidden" id="dob" name="dob" value="{{ $user->dob ?? old('dob') }}">
                                         @error('dob')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -81,7 +82,7 @@
                                         <label for="age" class="form-label">Age</label>
                                     </div>
                                     <div class="col-lg-9">
-                                        <input type="number" class="form-control" id="age" name="age" placeholder="Enter your age" value="{{ $user->age ?? old('age') }}">
+                                        <input type="number" class="form-control" id="age" name="age" placeholder="Enter your age" value="{{ $user->age ?? old('age') }}" readonly>
                                         @error('age')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -126,7 +127,7 @@
                                     </div>
                                 </div>
                             </div> <!--end col-->
-    
+
                             <div class="col-md-6">
                                 <div class="row mb-2">
                                     <div class="col-lg-3">
@@ -173,7 +174,7 @@
                                         <label for="bmi" class="form-label">BMI</label>
                                     </div>
                                     <div class="col-lg-9">
-                                        <input type="text" class="form-control" id="bmi" name="bmi" placeholder="Auto-generated" value="{{ $user->bmi ?? old('bmi') }}">
+                                        <input type="text" class="form-control" id="bmi" name="bmi" placeholder="Input BMI" value="{{ $user->bmi ?? old('bmi') }}">
                                         @error('bmi')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -209,9 +210,9 @@
                                     </div>
                                 </div>
                             </div> <!--end col-->
-    
+
                         </div> <!--end row-->
-    
+
                         <div class="col-12 text-start">
                             <button type="submit" class="btn btn-primary">Save</button>
                         </div>
@@ -222,7 +223,7 @@
         <!--end col-->
     </div>
     <!--End => Step1-->
-    
+
 
     @auth
     <div class="row">
@@ -235,7 +236,7 @@
                     <form action="{{ route('sensitive-information.store') }}" method="POST">
                         @csrf
                         <input type="hidden" value="{{ $sensitiveInformation->id ?? '' }}" name="id">
-                        
+
                         <!-- Form Fields -->
                         <div class="row mb-2">
                             <div class="col-lg-2">
@@ -247,7 +248,7 @@
                                     <option value="No" {{ ($sensitiveInformation && $sensitiveInformation->sexually_active == 'No') || old('sexually_active') == 'No' ? 'selected' : '' }}>No</option>
                                     <option value="Do Not Know" {{ ($sensitiveInformation && $sensitiveInformation->sexually_active == 'Do Not Know') || old('sexually_active') == 'Do Not Know' ? 'selected' : '' }}>Don't Know</option>
                                     <option value="Unwilling to Disclose" {{ ($sensitiveInformation && $sensitiveInformation->sexually_active == 'Unwilling to Disclose') || old('sexually_active') == 'Unwilling to Disclose' ? 'selected' : '' }}>Unwilling to Disclose</option>
-                                </select>                                
+                                </select>
                             </div>
                         </div>
                         <div class="row mb-2">
@@ -260,7 +261,7 @@
                                     <option value="No" {{ ($sensitiveInformation && $sensitiveInformation->diabetic == 'No') || old('diabetic') == 'No' ? 'selected' : '' }}>No</option>
                                     <option value="Do Not Know" {{ ($sensitiveInformation && $sensitiveInformation->diabetic == 'Do Not Know') || old('diabetic') == 'Do Not Know' ? 'selected' : '' }}>Don't Know</option>
                                     <option value="Unwilling to Disclose" {{ ($sensitiveInformation && $sensitiveInformation->diabetic == 'Unwilling to Disclose') || old('diabetic') == 'Unwilling to Disclose' ? 'selected' : '' }}>Unwilling to Disclose</option>
-                                </select>                                
+                                </select>
                             </div>
                         </div>
                         <div class="row mb-2">
@@ -293,7 +294,7 @@
                                     <option value="No" {{ ($sensitiveInformation && $sensitiveInformation->thyroid == 'No') || old('thyroid') == 'No' ? 'selected' : '' }}>No</option>
                                     <option value="Do Not Know" {{ ($sensitiveInformation && $sensitiveInformation->thyroid == 'Do Not Know') || old('thyroid') == 'Do Not Know' ? 'selected' : '' }}>Don't Know</option>
                                     <option value="Unwilling to Disclose" {{ ($sensitiveInformation && $sensitiveInformation->thyroid == 'Unwilling to Disclose') || old('thyroid') == 'Unwilling to Disclose' ? 'selected' : '' }}>Unwilling to Disclose</option>
-                                </select>                                
+                                </select>
                             </div>
                             <div class="col-lg-4">
                                 <label for="thyroid_details" class="form-label">If yes, last test results and date</label>
@@ -334,7 +335,7 @@
                             <div class="col-lg-4">
                                 <textarea class="form-control" name="cholesterol_details" id="cholesterol_details" rows="1" placeholder="Enter your message">{{ old('cholesterol_details') }}</textarea>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="row mb-2">
                             <div class="col-lg-2">
                                 <label for="s_creatinine" class="form-label">S Creatinine</label>
@@ -345,7 +346,7 @@
                                     <option value="No" {{ ($sensitiveInformation && $sensitiveInformation->s_creatinine == 'No') || old('s_creatinine') == 'No' ? 'selected' : '' }}>No</option>
                                     <option value="Do Not Know" {{ ($sensitiveInformation && $sensitiveInformation->s_creatinine == 'Do Not Know') || old('s_creatinine') == 'Do Not Know' ? 'selected' : '' }}>Don't Know</option>
                                     <option value="Unwilling to Disclose" {{ ($sensitiveInformation && $sensitiveInformation->s_creatinine == 'Unwilling to Disclose') || old('s_creatinine') == 'Unwilling to Disclose' ? 'selected' : '' }}>Unwilling to Disclose</option>
-                                </select>                                
+                                </select>
                             </div>
                             <div class="col-lg-4">
                                 <label for="s_creatinine_details" class="form-label">If yes, last test results and date</label>
@@ -383,7 +384,7 @@
                                     <option value="No" {{ ($sensitiveInformation && $sensitiveInformation->alcohol_intake == 'No') || old('alcohol_intake') == 'No' ? 'selected' : '' }}>No</option>
                                     <option value="Do Not Know" {{ ($sensitiveInformation && $sensitiveInformation->alcohol_intake == 'Do Not Know') || old('alcohol_intake') == 'Do Not Know' ? 'selected' : '' }}>Don't Know</option>
                                     <option value="Unwilling to Disclose" {{ ($sensitiveInformation && $sensitiveInformation->alcohol_intake == 'Unwilling to Disclose') || old('alcohol_intake') == 'Unwilling to Disclose' ? 'selected' : '' }}>Unwilling to Disclose</option>
-                                </select>                                
+                                </select>
                             </div>
                             <div class="col-lg-4">
                                 <label for="alcohol_frequency" class="form-label">If yes, what type?</label>
@@ -396,7 +397,7 @@
                                     <option value="Monthly" {{ ($sensitiveInformation && $sensitiveInformation->alcohol_frequency == 'Monthly') || old('alcohol_frequency') == 'Monthly' ? 'selected' : '' }}>Monthly</option>
                                     <option value="Daily" {{ ($sensitiveInformation && $sensitiveInformation->alcohol_frequency == 'Daily') || old('alcohol_frequency') == 'Daily' ? 'selected' : '' }}>Daily</option>
                                     <option value="Unwilling to Disclose" {{ ($sensitiveInformation && $sensitiveInformation->alcohol_frequency == 'Unwilling to Disclose') || old('alcohol_frequency') == 'Unwilling to Disclose' ? 'selected' : '' }}>Unwilling to Disclose</option>
-                                </select>                                
+                                </select>
                             </div>
                         </div>
                         <div class="row mb-2">
@@ -409,7 +410,7 @@
                                     <option value="No" {{ ($sensitiveInformation && $sensitiveInformation->drug_abuse_history == 'No') || old('drug_abuse_history') == 'No' ? 'selected' : '' }}>No</option>
                                     <option value="Do Not Know" {{ ($sensitiveInformation && $sensitiveInformation->drug_abuse_history == 'Do Not Know') || old('drug_abuse_history') == 'Do Not Know' ? 'selected' : '' }}>Don't Know</option>
                                     <option value="Unwilling to Disclose" {{ ($sensitiveInformation && $sensitiveInformation->drug_abuse_history == 'Unwilling to Disclose') || old('drug_abuse_history') == 'Unwilling to Disclose' ? 'selected' : '' }}>Unwilling to Disclose</option>
-                                </select>                                
+                                </select>
                             </div>
                             <div class="col-lg-4">
                                 <label for="nameInput" class="form-label">If yes, write down the subtstances </label>
@@ -443,7 +444,7 @@
                     <form action="{{ route('genetic-disease-profile.store') }}" method="POST">
                         @csrf
                         <input type="hidden" value="{{ $geneticDiseaseProfile->id ?? '' }}" name="id">
-                        
+
 
                         <div class="row mb-3">
                             <div class="col-md-4">
@@ -507,8 +508,8 @@
                                 <label for="additionalComments" class="form-label mt-3">Please mention in case if you have a hereditary disease which is not included in the list</label>
                                 <textarea class="form-control" id="additionalComments" name="additional_comments" rows="5" placeholder="Enter additional comments">{{ $geneticDiseaseProfile->additional_comments ?? '' }}</textarea>
                             </div>
-                        </div>                        
-                        
+                        </div>
+
                         <div class="row mb-3">
                             <div class="col-12 text-center">
                                 <button type="submit" class="btn btn-primary">Save</button>
@@ -696,4 +697,54 @@
     </div>
     <!--End => Step4-->
     @endauth
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dobDisplay = document.getElementById('dob_display');
+            const dob = document.getElementById('dob');
+            const age = document.getElementById('age');
+
+            function formatDateToDMY(date) {
+                const parts = date.split('-');
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+
+            function formatDateToYMD(date) {
+                const parts = date.split('-');
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+
+            function calculateAge(dob) {
+                const today = new Date();
+                const birthDate = new Date(dob);
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDifference = today.getMonth() - birthDate.getMonth();
+                if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                return age;
+            }
+
+            dobDisplay.addEventListener('change', function() {
+                const date = dobDisplay.value;
+                if (date.match(/^\d{2}-\d{2}-\d{4}$/)) {
+                    dob.value = formatDateToYMD(date);
+                    const ageValue = calculateAge(dob.value);
+                    age.value = ageValue;
+                }
+            });
+
+            // Initialize dobDisplay and age if dob is already set
+            if (dob.value) {
+                dobDisplay.value = formatDateToDMY(dob.value);
+                const ageValue = calculateAge(dob.value);
+                age.value = ageValue;
+            }
+        });
+    </script>
+
+    <script>
+        let algin = document.getElementById('allergies').vaelu
+    </script>
 </x-app-layout>

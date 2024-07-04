@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('surgical_interventions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('patient_id');
+            $table->unsignedBigInteger('case_registry_id');
             $table->string('intervention')->nullable();
             $table->string('due_time')->nullable();
             $table->text('details')->nullable();
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign keys
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('case_registry_id')->references('id')->on('case_registries')->onDelete('cascade');
         });
     }
 

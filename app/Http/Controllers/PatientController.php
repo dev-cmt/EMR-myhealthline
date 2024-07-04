@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
@@ -104,7 +105,7 @@ class PatientController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required_if:id,null|email|unique:users,email,' . $request->id,
             'password' => 'required_if:id,null|string|min:8',
-            'dob' => 'nullable|date',
+            'dob' => 'required|date_format:d-m-Y',
             'age' => 'nullable|integer|min:0',
             'gender' => 'nullable|string|in:Male,Female,Other',
             'religion' => 'nullable|string|max:255',
@@ -147,7 +148,7 @@ class PatientController extends Controller
 
         // Populate user fields
         $user->name = $request->input('name');
-        $user->dob = $request->input('dob');
+        $user->dob = \Carbon\Carbon::parse($user->dob)->format('d-m-Y');
         $user->age = $request->input('age');
         $user->gender = $request->input('gender');
         $user->religion = $request->input('religion');
@@ -177,12 +178,25 @@ class PatientController extends Controller
 
     private function generateUniquePatientId($request)
     {
-        $firstNameInitial = strtoupper(substr($request->input('name'), 0, 1));
-        $lastNameInitial = strtoupper(substr(strrchr($request->input('name'), ' '), 1));
+        $arrayName =  explode(" ", $request->input('name'));
+        if(count($arrayName) > 1){
+            $firstNameInitial = strtoupper(substr($arrayName[0], 0, 1)) . strtoupper(substr($arrayName[count($arrayName) - 1], 0, 1));
+        }else{
+            $firstNameInitial = strtoupper(substr($arrayName[0], 0, 1));
+        }
         $genderInitial = strtoupper(substr($request->input('gender'), 0, 1));
         $bloodGroupConnotation = strtoupper(substr($request->input('blood_group'), 0, 1));
+        if(strstr($request->input('blood_group') ,"+")){
+            $bloodGroupConnotation = $bloodGroupConnotation . "P";
+        }else{
+            $bloodGroupConnotation = $bloodGroupConnotation . "N";
+        }
+        $getValue = DB::table('setup')->first()->patiant_id;
+        $sevenNo = str_pad( $getValue, 7 - Str::length($getValue), "0", STR_PAD_LEFT);
+
         $maritalStatusInitial = strtoupper(substr($request->input('marital_status'), 0, 1));
-        $uniquePatientId = $firstNameInitial . $lastNameInitial . $genderInitial . $bloodGroupConnotation . Str::random(7) . $maritalStatusInitial;
+        $uniquePatientId = $firstNameInitial . $genderInitial . $bloodGroupConnotation . $sevenNo . $maritalStatusInitial;
+
         return $uniquePatientId;
     }
 
@@ -308,23 +322,81 @@ class PatientController extends Controller
      * --------------------------------------------------------------------------------------------
      * --------------------------------------------------------------------------------------------
      */
-    public function cases()
+    public function casesList(){
+        $data = CaseRegistry::where('patient_id', Auth::user()->id)->get();
+
+        return view('pages.info-cases-list', compact('data'));
+    }
+    public function casesFrom()
     {
+        //---Master
         $complaints = MastComplaint::all();
         $tests = MastTest::all();
         $organs = MastOrgan::all();
         $equipments = MastEquipment::all();
         $powers = MastPower::all();
 
+       //---GET Data
         $caseRegistry = CaseRegistry::where('patient_id', Auth::user()->id)->first();
-        $treatmentProfile = TreatmentProfile::where('patient_id', Auth::user()->id)->with('labTests')->first();
+        if ($caseRegistry) {
+            $treatmentProfile = $caseRegistry->treatmentProfile;
+            $medicationSchedule = $caseRegistry->medicationSchedule;
+            $surgicalIntervention = $caseRegistry->surgicalIntervention;
+            $optionsalQuestion = $caseRegistry->optionalQuestion; // Corrected typo
+            $restriction = $caseRegistry->restriction;
+        } else {
+            // Handle case when no case registry is found
+            $treatmentProfile = null;
+            $medicationSchedule = null;
+            $surgicalIntervention = null;
+            $optionsalQuestion = null;
+            $restriction = null;
+        }
+        // $complaints = DB::select("
+        //     SELECT m.id, m.name, 
+        //         CASE WHEN c.mast_complaint_id IS NOT NULL THEN 1 ELSE 0 END AS chk 
+        //     FROM mast_complaints m 
+        //     LEFT JOIN case_complaints c 
+        //         ON c.mast_complaint_id = m.id 
+        //         AND c.case_registry_id = 2
+        // ");
 
-        $medicationSchedule = MedicationSchedule::where('patient_id', Auth::user()->id)->get();
-        $surgicalIntervention = SurgicalIntervention::where('patient_id', Auth::user()->id)->get();
-        $optionsalQuestion = OptionsalQuestion::where('patient_id', Auth::user()->id)->first();
-        $restriction = Restriction::where('patient_id', Auth::user()->id)->get();
 
-        return view('pages.info-cases', compact(
+        // $complaints =  SELECT m.id, m.name, case WHEN c.mast_complaint_id IS null THEN 0 ELSE 1 END AS chk FROM mast_complaints m LEFT OUTER JOIN case_complaints c ON c.mast_complaint_id = m.id AND c.case_registry_id = 2;
+
+        return view('pages.info-cases-from', compact(
+            'complaints', 
+            'tests', 
+            'organs', 
+            'equipments', 
+            'powers',
+
+            'caseRegistry',
+            'treatmentProfile',
+            'medicationSchedule',
+            'surgicalIntervention',
+            'optionsalQuestion',
+            'restriction',
+        ));
+    }
+    public function casesEdit($id)
+    {
+        //---Master
+        $complaints = MastComplaint::all();
+        $tests = MastTest::all();
+        $organs = MastOrgan::all();
+        $equipments = MastEquipment::all();
+        $powers = MastPower::all();
+
+        //---GET Data
+        $caseRegistry = CaseRegistry::find($id);
+        $treatmentProfile = $caseRegistry->treatmentProfile;
+        $medicationSchedule = $caseRegistry->medicationSchedule;
+        $surgicalIntervention = $caseRegistry->surgicalIntervention;
+        $optionsalQuestion = $caseRegistry->optionsalQuestion;
+        $restriction = $caseRegistry->restriction;
+
+        return view('pages.info-cases-from', compact(
             'complaints', 
             'tests', 
             'organs', 
@@ -358,19 +430,20 @@ class PatientController extends Controller
             'mast_complaints.*' => 'integer|exists:mast_complaints,id',
         ]);
 
-        if ($request->id) {
-            // Update existing record
-            $caseRegistry = CaseRegistry::find($request->id);
-        } else {
-            // Create new record
-            $caseRegistry = new CaseRegistry();
-        }
-
+        // if ($request->id) {
+        //     // Update existing record
+        //     $caseRegistry = CaseRegistry::find($request->id);
+        // } else {
+        //     // Create new record
+        //     $caseRegistry = new CaseRegistry();
+        // }
+        $caseRegistry = new CaseRegistry();
         $caseRegistry->patient_id = Auth::user()->id;
         $caseRegistry->date_of_primary_identification = $request->date_of_primary_identification;
         $caseRegistry->date_of_first_visit = $request->date_of_first_visit;
         $caseRegistry->recurrence = $request->recurrence;
-        $caseRegistry->duration_of_suffering = $request->duration . ' ' . $request->duration_unit ?? null;
+        $caseRegistry->duration = $request->duration;
+        $caseRegistry->duration_unit = $request->duration_unit;
         $caseRegistry->area_of_problem = $request->area_of_problem;
         $caseRegistry->type_of_ailment = $request->type_of_ailment;
         $caseRegistry->additional_complaints = $request->additional_complaints;
@@ -400,16 +473,17 @@ class PatientController extends Controller
             'comments' => 'nullable|string',
             'disease_diagnosis' => 'nullable|string',
             'prescription' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-            'data.mast_test_id.*' => 'required|integer|exists:lab_tests,id',
-            'data.type.*' => 'required|string',
-            'data.organ.*' => 'required|integer|exists:organs,id',
-            'data.comments.*' => 'nullable|string',
-            'data.cost.*' => 'nullable|numeric',
-            'data.lab.*' => 'nullable|string',
         ]);
 
-        // Save the treatment profile
-        $treatmentProfile = new TreatmentProfile();
+        if ($request->id) {
+            // Update existing record
+            $treatmentProfile = TreatmentProfile::find($request->id);
+        } else {
+            // Create new record
+            $treatmentProfile = new TreatmentProfile();
+        }
+        
+        $treatmentProfile->case_registry_id = $request->case_registry_id;
         $treatmentProfile->doctor_name = $request->doctor_name;
         $treatmentProfile->designation = $request->designation;
         $treatmentProfile->chamber_address = $request->chamber_address;
@@ -417,25 +491,19 @@ class PatientController extends Controller
         $treatmentProfile->fees = $request->fees;
         $treatmentProfile->comments = $request->comments;
         $treatmentProfile->disease_diagnosis = $request->disease_diagnosis;
-
-        if ($request->hasFile('prescription')) {
-            $treatmentProfile->prescription = $request->file('prescription')->store('prescriptions');
-        }
-
-        $treatmentProfile->patient_id = auth()->id(); // or set the patient_id as required
+        $treatmentProfile->prescription = self::uploadImage($request->prescription, 'Prescription Uploader') ?? null;
         $treatmentProfile->save();
 
-       // Save the lab tests
-        foreach ($request->data['mast_test_id'] as $key => $mast_test_id) {
-            $labTest = new LabTest();
-            $labTest->mast_test_id = $mast_test_id;
-            $labTest->type = $request->data['type'][$key];
-            $labTest->mast_organ_id = $request->data['mast_organ_id'][$key];
-            $labTest->comments = $request->data['comments'][$key];
-            $labTest->cost = $request->data['cost'][$key];
-            $labTest->lab = $request->data['lab'][$key];
-            $labTest->treatment_profile_id = $treatmentProfile->id;
-            $labTest->save();
+        foreach ($request->data as $item) {
+            LabTest::create([
+                'mast_test_id' => $item['mast_test_id'],
+                'type' => $item['type'],
+                'mast_organ_id' => $item['mast_organ_id'],
+                'comments' => $item['comments'],
+                'cost' => $item['cost'],
+                'lab' => $item['lab'],
+                'treatment_profile_id' => $treatmentProfile->id, 
+            ]);
         }
 
         return redirect()->back()->with('success', 'Treatment profile and lab tests saved successfully!');
@@ -458,7 +526,7 @@ class PatientController extends Controller
 
         foreach ($validatedData['data'] as $data) {
             MedicationSchedule::create([
-                'patient_id' => auth()->id(),
+                'case_registry_id' => $request->case_registry_id,
                 'mast_equipment_id' => $data['mast_equipment_id'],
                 'full_name' => $data['full_name'],
                 'mast_power_id' => $data['mast_power_id'],
@@ -481,7 +549,7 @@ class PatientController extends Controller
 
         foreach ($data as $row) {
             SurgicalIntervention::create([
-                'patient_id' => auth()->id(),
+                'case_registry_id' => $request->case_registry_id,
                 'intervention' => $row['intervention'],
                 'due_time' => $row['due_time'],
                 'details' => $row['details'],
@@ -489,6 +557,7 @@ class PatientController extends Controller
             ]);
         }
 
+        
         // Optionally, you can return a response or redirect
         return redirect()->back()->with('success', 'Surgical interventions saved successfully.');
     }
@@ -499,7 +568,7 @@ class PatientController extends Controller
     public function optionsalQuestion(Request $request)
     {
         $data = [
-            'patient_id' => auth()->id(),
+            'case_registry_id' => $request->case_registry_id,
             'admitted_following_diagnosis' => $request->input('admitted_following_diagnosis'),
             'hospitalization_duration' => $request->input('hospitalization_duration'),
             'total_cost_incurred' => $request->input('total_cost_incurred'),
@@ -537,7 +606,7 @@ class PatientController extends Controller
         // Loop through submitted data and store in database
         foreach ($request->types as $index => $type) {
             $restriction = new Restriction();
-            $restriction->patient_id = auth()->id();
+            $restriction->case_registry_id = $request->case_registry_id;
             $restriction->type = $type;
             $restriction->details = $request->details[$index] ?? null;
             $restriction->save();

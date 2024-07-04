@@ -13,7 +13,7 @@ class MedicationSchedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'patient_id',
+        'case_registry_id',
         'mast_equipment_id',
         'full_name',
         'mast_power_id',

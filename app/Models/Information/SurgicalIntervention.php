@@ -9,5 +9,11 @@ class SurgicalIntervention extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['intervention', 'due_time', 'details', 'cost', 'patient_id'];
+    protected $fillable = [ 
+        'case_registry_id',
+        'intervention', 
+        'due_time', 
+        'details', 
+        'cost'
+    ];
 }

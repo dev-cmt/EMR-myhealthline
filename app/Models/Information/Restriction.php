@@ -10,6 +10,7 @@ class Restriction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'case_registry_id',
         'type',
         'details',
         'patient_id',

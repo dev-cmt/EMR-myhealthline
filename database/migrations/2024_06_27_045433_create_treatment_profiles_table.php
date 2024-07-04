@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('treatment_profiles', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('patient_id');
+            $table->unsignedBigInteger('case_registry_id');
             $table->string('doctor_name')->nullable();;
             $table->string('designation')->nullable();;
             $table->string('chamber_address')->nullable();;
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
             
             // Foreign key
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('case_registry_id')->references('id')->on('case_registries')->onDelete('cascade');
         });
     }
 

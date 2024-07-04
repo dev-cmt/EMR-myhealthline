@@ -49,8 +49,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/genetic-disease-profile', [PatientController::class, 'geneticDiseaseProfile'])->name('genetic-disease-profile.store');
     Route::post('/other-personal-information', [PatientController::class, 'otherPersonalInformation'])->name('personal-information.store');
     
-    Route::get('/patient/info-cases', [PatientController::class, 'cases'])->name('info-cases');
-    Route::post('/cases/case_registry/store', [PatientController::class, 'caseRegistry'])->name('case_registry.store');
+    Route::get('/patient/info-cases/list', [PatientController::class, 'casesList'])->name('info-cases-list');
+    Route::get('/patient/info-cases/from', [PatientController::class, 'casesFrom'])->name('info-cases-from');
+    Route::get('/patient/info-cases/{id}/edit', [PatientController::class, 'casesEdit'])->name('info-cases.edit');
+    Route::post('/cases/case-registry/store', [PatientController::class, 'caseRegistry'])->name('case_registry.store');
     Route::post('/cases/treatment-lab-test/store', [PatientController::class, 'treatmentLabTest'])->name('treatment-lab-test.store');
     Route::post('/cases/medication-schedule/store', [PatientController::class, 'medicationSchedule'])->name('medication-schedule.store');
     Route::post('/cases/surgical-intervention/store', [PatientController::class, 'surgicalIntervention'])->name('surgical-intervention.store');

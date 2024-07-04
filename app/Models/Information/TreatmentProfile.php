@@ -11,8 +11,15 @@ class TreatmentProfile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'doctor_name', 'designation', 'chamber_address', 'last_visit_date', 
-        'fees', 'comments', 'disease_diagnosis', 'prescription', 'patient_id'
+        'case_registry_id', 
+        'doctor_name', 
+        'designation', 
+        'chamber_address', 
+        'last_visit_date', 
+        'fees', 
+        'comments', 
+        'disease_diagnosis', 
+        'prescription'
     ];
 
     public function labTests()
