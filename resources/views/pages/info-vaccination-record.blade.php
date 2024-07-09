@@ -7,23 +7,23 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs nav-justified nav-border-top nav-border-top-success mb-3" id="" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active " id="section1" data-bs-toggle="tab" href="#nav-border-justified-home" role="tab" aria-selected="false">
+                            <a class="nav-link {{ Session::has('step2') || Session::has('step3') ? '' : 'active' }} " id="section1" data-bs-toggle="tab" href="#nav-border-justified-home" role="tab" aria-selected="false">
                                 <i class="ri-home-5-line align-middle me-1"></i> Section 01 (EPI)
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="section2" data-bs-toggle="tab" href="#nav-border-justified-profile" role="tab" aria-selected="false">
+                            <a class="nav-link {{ Session::has('step2') ? 'active' : '' }}" id="section2" data-bs-toggle="tab" href="#nav-border-justified-profile" role="tab" aria-selected="false">
                                 <i class="ri-user-line me-1 align-middle"></i> Section 02 (Covid-19)
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="section3" data-bs-toggle="tab" href="#nav-border-justified-messages" role="tab" aria-selected="false">
+                            <a class="nav-link {{ Session::has('step3') ? 'active' : '' }}" id="section3" data-bs-toggle="tab" href="#nav-border-justified-messages" role="tab" aria-selected="false">
                                 <i class="ri-question-answer-line align-middle me-1"></i>Section 03 (Paid Ones)
                             </a>
                         </li>
                     </ul>
                     <div class="tab-content text-muted">
-                        <div class="tab-pane active" id="nav-border-justified-home" role="tabpanel">
+                        <div class="tab-pane {{ Session::has('step2') || Session::has('step3') ? '' : 'active show' }}" id="nav-border-justified-home" role="tabpanel">
                             <!--Grid Data-->
                             <div class="card-header align-items-center d-flex">
                                 <h4 class="card-title mb-0 flex-grow-1">Section-01-EPI  VPD (Vaccination for Preventable Diseases)</h4>
@@ -62,7 +62,7 @@
                                                         <td>{{$row->dose_05}}</td>
                                                         <td>{{$row->booster}}</td>
                                                         <td>
-                                                            <a href="{{ route('download_sectionone_file',$row->id) }}" class="btn btn-soft-info btn-sm">
+                                                            <a href="{{ route('vaccination.download', $row->id) }}" class="btn btn-soft-info btn-sm">
                                                                 <i class="ri-file-list-3-line align-middle"></i> Download File
                                                             </a>
                                                         </td>
@@ -76,8 +76,8 @@
                             </div>
 
                         </div>
-                        <div class="tab-pane" id="nav-border-justified-profile" role="tabpanel">
-                            
+                        <div class="tab-pane {{ Session::has('step2') ? 'active show' : '' }}" id="nav-border-justified-profile" role="tabpanel">
+
                             <!--Grid Data-->
                             <div class="card-header align-items-center d-flex">
                                 <h4 class="card-title mb-0 flex-grow-1">Section-02 (Covid-19)</h4>
@@ -88,7 +88,6 @@
                                 </div>
                             </div>
                             <div class="card-body">
-
                                 <div class="row">
                                     <div class="col-md-7">
                                         <div class="table-responsive table-card">
@@ -104,16 +103,39 @@
                                                 <tbody>
                                                     @foreach($coviddata as $row)
                                                         <tr>
-                                                            {{-- <td><input type="hidden" id="vaccination_covid_id" value="{{$row->dose_type}}"></td> --}}
                                                             <td>{{$row->dose_type}}</td>
                                                             <td>{{$row->manufacturer}}</td>
                                                             <td>{{$row->location}}</td>
                                                             <td>{{$row->date}}</td>
-                                                            
                                                         </tr>
                                                     @endforeach
-        
                                                 </tbody>
+
+                                            </table>
+
+                                            <table class="table table-nowrap table-striped mt-4">
+                                                @if ($covidcirtificate && $covidcirtificate->patient_id == Auth::user()->id)
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th scope="col">Certificate No</th>
+                                                        <th scope="col">Document</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ $covidcirtificate->certificate_number }}</td>
+                                                        <td>
+                                                            <img src="{{ asset('public/' . $covidcirtificate->upload_tool) }}" width="60">
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ route('covid_file_download') }}" class="btn btn-success">
+                                                                <i class="ri-download-2-line align-bottom me-1"></i> Download
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            @endif
                                             </table>
                                         </div>
                                     </div>
@@ -121,14 +143,17 @@
                                     <div class="col-md-3">
                                         <form action="{{route('covid-certificate.upload')}}" method="POST" enctype="multipart/form-data">
                                             @csrf
-                                            <div class="row mb-2">
-                                                <label class="form-label mb-2">Certificate No :</label>
-                                                <input type="text" name="certificateNo" id="" value="" class="form-control mb-2">
-                                                <input type="file" name="image" id="file" class="form-control mb-2">
+                                            @if (empty($covidcirtificate) || empty($covidcirtificate->certificate_number))
+                                                <div class="row mb-2" id="certificateDiv">
+                                                    <label class="form-label mb-2">Certificate No :</label>
+                                                    <input type="text" name="certificateNo" id="certificateNo" value="" class="form-control mb-2">
+                                                </div>
+                                            @endif
+                                            <div>
+                                                <input type="file" name="upload_tool" id="upload_tool" class="form-control mb-2">
                                             </div>
                                             <div class="text-end">
                                                 <button type="submit" class="btn btn-primary">File Upload</button>
-                                                <a href="{{ route('covid_file_download') }}" class="btn btn-success"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
                                             </div>
                                         </form>
 
@@ -138,7 +163,7 @@
 
 
                         </div>
-                        <div class="tab-pane" id="nav-border-justified-messages" role="tabpanel">
+                        <div class="tab-pane {{ Session::has('step3') ? 'active show' : '' }}" id="nav-border-justified-messages" role="tabpanel">
 
                             <!--Grid Data-->
                             <div class="card-header align-items-center d-flex">
@@ -168,24 +193,23 @@
                                         </thead>
                                         <tbody>
                                             @foreach($vaccinationsectionthree as $row)
-                                              
-                                                    <tr>
-                                                        <td>{{$loop->iteration}}</td>
-                                                        <td>{{$row->market_name}}</td>
-                                                        <td>{{$row->applicable_for}}</td>
-                                                        <td>{{$row->dose_01}}</td>
-                                                        <td>{{$row->dose_02}}</td>
-                                                        <td>{{$row->dose_03}}</td>
-                                                        <td>{{$row->dose_04}}</td>
-                                                        <td>{{$row->dose_05}}</td>
-                                                        <td>{{$row->booster}}</td>
-                                                        <td>
-                                                            <a href="{{route('vaccinesectionthree',$row->id)}}" class="btn btn-soft-info btn-sm">
-                                                                <i class="ri-file-list-3-line align-middle"></i> Download File
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                             
+                                                <tr>
+                                                    <td>{{$loop->iteration}}</td>
+                                                    <td>{{$row->market_name}}</td>
+                                                    <td>{{$row->applicable_for}}</td>
+                                                    <td>{{$row->dose_01}}</td>
+                                                    <td>{{$row->dose_02}}</td>
+                                                    <td>{{$row->dose_03}}</td>
+                                                    <td>{{$row->dose_04}}</td>
+                                                    <td>{{$row->dose_05}}</td>
+                                                    <td>{{$row->booster}}</td>
+                                                    <td>
+                                                        <a href="{{route('vaccinesectionthree',$row->id)}}" class="btn btn-soft-info btn-sm">
+                                                            <i class="ri-file-list-3-line align-middle"></i> Download File
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
                                             @endforeach
 
                                         </tbody>
@@ -196,7 +220,7 @@
                         </div>
                     </div>
 
-               
+
                 </div>
             </div>
         </div>
@@ -309,7 +333,7 @@
                         <div class="row mt-2">
                             <label for="file" class="col-md-6">Upload file</label>
                             <div class="col-md-6">
-                                <input type="file" name="image" id="file" class="form-control">
+                                <input type="file" name="upload_tool" id="upload_tool" class="form-control">
                             </div>
                         </div>
 

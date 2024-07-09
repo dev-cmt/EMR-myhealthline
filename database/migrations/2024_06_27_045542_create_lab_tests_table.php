@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('comments')->nullable();
             $table->decimal('cost', 8, 2)->nullable();
             $table->string('lab')->nullable();
+            $table->string('upload_tool')->nullable();
             $table->unsignedBigInteger('treatment_profile_id');
 
             // Foreign key

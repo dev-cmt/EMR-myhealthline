@@ -379,8 +379,37 @@
             $(this).closest('tr').remove();
         });
     </script>
+    @endpush
 
 
+
+
+
+    @push('scripts')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        @if(Session::has('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ Session::get('success') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if(Session::has('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '{{ Session::get('error') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+    </script>
     @endpush
 
 </x-app-layout>

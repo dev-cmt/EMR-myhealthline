@@ -37,7 +37,7 @@ class User extends Authenticatable
         'emergency_contact',
         'marital_status',
         'address',
-        'nationality',
+        'mast_nationality_id',
     ];
 
     /**

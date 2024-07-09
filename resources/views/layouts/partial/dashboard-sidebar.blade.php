@@ -75,10 +75,16 @@
                 </li>
 
 
-                <!-- end Dashboard Menu -->
+                <!-- Report Menu -->
+                <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Report Information</span></li>
+                <li class="nav-item">
+                    <a href="{{route('report-user.index')}}" class="nav-link menu-link {{ Request::routeIs('report-user.index') ? 'active' : '' }}">
+                        <i class="bx bx-layer"></i> <span data-key="t-dashboards">Report Download</span>
+                    </a>
+                </li>
+                <!-- End Report Menu -->
 
-                <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Web Portal</span></li>
-
+                <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Web Setting</span></li>
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAuth">
                         <i class="bx bx-user-circle"></i> <span data-key="t-authentication">Authentication</span>

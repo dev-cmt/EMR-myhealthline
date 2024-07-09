@@ -19,6 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('mast_power_id');
             $table->string('duration')->nullable();
             $table->string('frequency')->nullable();
+            $table->time('morning')->nullable();
+            $table->time('noon')->nullable();
+            $table->time('night')->nullable();
             $table->string('cost')->nullable();
             $table->string('timing')->nullable();
             $table->string('antibiotic')->nullable();

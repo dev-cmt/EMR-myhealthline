@@ -11,7 +11,7 @@ class CovidCertificate extends Model
 
     protected $fillable = [
         'patient_id',
-        'uploader_tool',
+        'upload_tool',
         'certificate_number',
        
     ];

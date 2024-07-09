@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('mast_tests', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('test_name');
             $table->timestamps();
+            
+            // Foreign key
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

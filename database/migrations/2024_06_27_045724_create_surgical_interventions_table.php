@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('intervention')->nullable();
             $table->string('due_time')->nullable();
             $table->text('details')->nullable();
+            $table->date('date_line')->nullable();
             $table->decimal('cost', 10, 2)->nullable();
             $table->timestamps();
 

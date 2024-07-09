@@ -14,6 +14,7 @@ class SurgicalIntervention extends Model
         'intervention', 
         'due_time', 
         'details', 
+        'date_line', 
         'cost'
     ];
 }

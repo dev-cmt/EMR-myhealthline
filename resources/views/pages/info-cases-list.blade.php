@@ -5,10 +5,10 @@
             <div class="card">
                 <!--Grid Data-->
                 <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">Section-01-EPI  VPD (Vaccination for Preventable Diseases)</h4>
+                    <h4 class="card-title mb-0 flex-grow-1">Case(s) Registration List</h4>
                     <div class="flex-shrink-0">
                         <a href="{{route('info-cases-from')}}" class="btn btn-sm btn-success">
-                            <i class="ri-add-line align-middle me-1"></i> Add Vaccination
+                            <i class="ri-add-line align-middle me-1"></i> Add New Case
                         </a>
                     </div>
                 </div>

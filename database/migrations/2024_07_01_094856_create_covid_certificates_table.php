@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('patient_id');
             $table->string('certificate_number')->nullable();
-            $table->string('uploader_tool')->nullable();
+            $table->string('upload_tool')->nullable();
             $table->timestamps();
             
             // Foreign key

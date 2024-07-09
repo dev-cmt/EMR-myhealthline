@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MastEquipment extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name', 'user_id'];
 }

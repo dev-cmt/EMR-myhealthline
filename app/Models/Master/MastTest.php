@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MastTest extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['test_name', 'user_id'];
 }

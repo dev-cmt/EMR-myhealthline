@@ -25,9 +25,9 @@ return new class extends Migration
             $table->enum('s_creatinine', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
             $table->text('s_creatinine_details')->nullable();
             $table->enum('smoking', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
-            $table->integer('smoking_quantity')->nullable();
+            $table->text('smoking_details')->nullable();
             $table->enum('alcohol_intake', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
-            $table->string('alcohol_frequency')->nullable();
+            $table->string('alcohol_intake_details')->nullable();
             $table->enum('drug_abuse_history', ['Yes', 'No', 'Do Not Know', 'Unwilling to Disclose']);
             $table->text('drug_abuse_details')->nullable();
             $table->timestamps();

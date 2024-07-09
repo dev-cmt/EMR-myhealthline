@@ -32,8 +32,8 @@ return new class extends Migration
             $table->decimal('bmi', 5, 2)->nullable();
             $table->string('emergency_contact')->nullable();
             $table->string('marital_status')->nullable();
+            $table->unsignedBigInteger('mast_nationality_id')->nullable();
             $table->string('address')->nullable();
-            $table->string('nationality')->nullable();
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use App\Models\Information\Vaccination;
 use App\Models\Information\VaccinationCovid;
 use App\Models\Information\CovidCertificate;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class vaccineController extends Controller
 {
@@ -22,9 +23,9 @@ class vaccineController extends Controller
         $applicableFor = Vaccination::where('patient_id', $user->id)->pluck('applicable_for')->toArray();
         $coviddata = VaccinationCovid::where('patient_id', $user->id)->get();
         $validdataforcovid = VaccinationCovid::where('patient_id', $user->id)->pluck('dose_type')->toArray();
-        return view('pages.info-vaccination-record', compact('vaccinationRecords', 'savedVaccines', 'marketName', 'applicableFor', 'coviddata','validdataforcovid','vaccinationsectionthree'));
+        $covidcirtificate = CovidCertificate::where('patient_id', $user->id)->first();
+        return view('pages.info-vaccination-record', compact('vaccinationRecords', 'savedVaccines', 'marketName', 'applicableFor', 'coviddata','validdataforcovid','vaccinationsectionthree','covidcirtificate'));
     }
-
 
     public static function uploadImage($request, $product = null)
     {
@@ -51,10 +52,10 @@ class vaccineController extends Controller
     }
     public function vaccinationStore(Request $request)
     {
-       
+
         try{
 
-           
+
             if($request->hidden_section == 'section one')
             {
                 $vaccinestore = new Vaccination;
@@ -102,16 +103,15 @@ class vaccineController extends Controller
                 $vaccinestore->save();
             }
 
-           
+
             $notification = ['messege' => 'Data has been saved successfully', 'alert-type' => 'success'];
             return redirect()->back()->with($notification);
         }catch(Exception $e){
             $notification = ['messege' => 'Media Info save not successfull', 'alert-type' => 'error'];
             return redirect()->back()->with($notification);
         }
-       
-    }
 
+    }
 
     public function getSectionOneData(Request $request)
     {
@@ -134,7 +134,6 @@ class vaccineController extends Controller
 
     public function vaccinationCovid(Request $request)
     {
-
         $storecoviddata = new VaccinationCovid;
         $storecoviddata->dose_type = $request->vaccine_name;
         $storecoviddata->location = $request->location;
@@ -143,17 +142,20 @@ class vaccineController extends Controller
         $storecoviddata->patient_id = Auth::user()->id;
         $storecoviddata->save();
         return redirect()->back();
-
     }
 
 
     public function covidCertificate(Request $request)
     {
-        $storecovidfile = new CovidCertificate;
-        $storecovidfile->certificate_number = $request->certificateNo;
-        $storecovidfile->uploader_tool = self::uploadImage($request);
-        $storecovidfile->patient_id = Auth::user()->id;
-        $storecovidfile->save();
+        $userId = Auth::user()->id;
+        $data = CovidCertificate::where('patient_id', $userId)->first();
+        CovidCertificate::updateOrCreate(
+            ['patient_id' => $userId],
+            [
+                'certificate_number' => $request->certificateNo??$data->certificate_number,
+                'uploader_tool' => self::uploadImage($request),
+            ]
+        );
         return redirect()->back();
     }
 
