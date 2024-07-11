@@ -331,7 +331,7 @@
                             <div class="tab-pane {{ Session::has('step2') ? 'active show' : '' }}" id="nav-border-step2" role="tabpanel">
                                 <form action="{{ route('sensitive-information.store') }}" method="POST">
                                     @csrf
-                                    <input type="hidden" value="{{ $sensitiveInformation->id ?? '' }}" name="id">
+                                    <input type="hidden" value="{{ $sensitiveInformation->id ?? '' }}" name="id" id="sensitiveInformationId">
             
                                     <!-- Sexually Active -->
                                     <div class="row mb-2">
@@ -501,6 +501,7 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                     <!-- Smoking -->
                                     <div class="row mb-2">
                                         <div class="col-lg-2">
@@ -528,6 +529,7 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                     <!-- Alcohol Intake -->
                                     <div class="row mb-2">
                                         <div class="col-lg-2">
@@ -564,7 +566,7 @@
                                         </div>
                                     </div>
             
-                                    <!-- Medication History -->
+                                    <!-- Drug Abuse -->
                                     <div class="row mb-2">
                                         <div class="col-lg-2">
                                             <label for="drug_abuse_history" class="form-label">Drug Abuse History</label>
@@ -595,10 +597,10 @@
                                     <!-- Submit Button -->
                                     <div class="row mb-2">
                                         <div class="col-lg-12 text-center">
-                                            <button type="button" id="edit-button" class="btn btn-info btn-label waves-effect waves-light {{isset($sensitiveInformation) ? 'd-flex': ''}}">
+                                            <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-2">
                                                 <i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit
                                             </button>
-                                            <button type="submit" id="save-button" class="btn btn-success btn-label waves-effect waves-light {{isset($sensitiveInformation) ? 'd-none': ''}}">
+                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-2">
                                                 <i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save
                                             </button>
                                         </div>                                        
@@ -612,7 +614,7 @@
                             <div class="tab-pane {{ Session::has('step3') ? 'active show' : '' }}" id="nav-border-step3" role="tabpanel">
                                 <form action="{{ route('genetic-disease-profile.store') }}" method="POST">
                                     @csrf
-                                    <input type="hidden" value="{{ $geneticDiseaseProfile->id ?? '' }}" name="id">
+                                    <input type="hidden" value="{{ $geneticDiseaseProfile->id ?? '' }}" name="id" id="geneticDiseaseProfileId">
             
             
                                     <div class="row mb-3">
@@ -674,8 +676,8 @@
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <label for="additionalComments" class="form-label mt-3">Please mention in case if you have a hereditary disease which is not included in the list</label>
-                                            <textarea class="form-control" id="additionalComments" name="additional_comments" rows="5" placeholder="Enter additional comments">{{ $geneticDiseaseProfile->additional_comments ?? '' }}</textarea>
+                                            <label for="additional_comments" class="form-label mt-3">Please mention in case if you have a hereditary disease which is not included in the list</label>
+                                            <textarea class="form-control" id="additional_comments" name="additional_comments" rows="5" placeholder="Enter additional comments">{{ $geneticDiseaseProfile->additional_comments ?? '' }}</textarea>
                                             @error('additional_comments')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -684,7 +686,8 @@
             
                                     <div class="row mb-3">
                                         <div class="col-12 text-center">
-                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                            <button type="button" class="btn btn-success btn-label waves-effect waves-light" id="edit-btn-3"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-3"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                         </div>
                                     </div>
                                 </form>
@@ -697,7 +700,7 @@
                             <div class="tab-pane {{ Session::has('step4') ? 'active show' : '' }}" id="nav-border-step4" role="tabpanel">
                                 <form method="POST" action="{{ route('personal-information.store') }}">
                                     @csrf
-                                    <input type="hidden" value="{{ $otherPersonalInformation->id ?? '' }}" name="id">
+                                    <input type="hidden" value="{{ $otherPersonalInformation->id ?? '' }}" name="id" id="otherPersonalInformationId">
             
                                     <div class="row mb-3">
                                         <div class="col-md-9">
@@ -873,7 +876,8 @@
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-12 text-center">
-                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                            <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-4"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-4"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                         </div>
                                     </div>
                                 </form>
@@ -920,22 +924,58 @@
     </script>
 
     <script>
+        
         $(document).ready(function() {
-            $('#edit-button').on('click', function() {
-                $(this).addClass('d-none');
-                $('#save-button').removeClass('d-none');
-            });
+            function setupEditAndSave(step, idSelector, fields) {
+                var id = $(idSelector).val();
+
+                if (id === null || id === '') {
+                    $('#save-btn-' + step).show();
+                    $('#edit-btn-' + step).hide();
+                } else {
+                    $('#edit-btn-' + step).show();
+                    $('#save-btn-' + step).hide();
+                    fields.forEach(function(field) {
+                        $('#' + field).prop('disabled', true);
+                    });
+                }
+
+                $('#edit-btn-' + step).on('click', function() {
+                    $('#save-btn-' + step).show();
+                    $('#edit-btn-' + step).hide();
+                    fields.forEach(function(field) {
+                        $('#' + field).prop('disabled', false);
+                    });
+                });
+            }
+
+            setupEditAndSave(2, "#sensitiveInformationId", [
+                'sexually_active', 'diabetic', 'allergies', 'allergy_details', 'thyroid', 'thyroid_details', 
+                'hypertension', 'cholesterol', 'cholesterol_details', 's_creatinine', 's_creatinine_details', 
+                'smoking', 'smoking_details', 'alcohol_intake', 'alcohol_intake_details', 'drug_abuse_history', 
+                'drug_abuse_history_details'
+            ]);
+
+            setupEditAndSave(3, "#geneticDiseaseProfileId", [
+                'diabetesCheckbox', 'strokeCheckbox', 'heartDiseasesCheckbox', 'hyperExcitationCheckbox', 
+                'bloodPressureCheckbox', 'baldingCheckbox', 'vitiligoCheckbox', 'disabilityCheckbox', 
+                'psoriasisCheckbox', 'additional_comments'
+            ]);
+
+            setupEditAndSave(4, "#otherPersonalInformationId", [
+                'homeAddress', 'officeAddress', 'emailAddress', 'phoneNumber', 'lastBloodDonated', 
+                'healthInsurance', 'familyPhysician', 'physicianContact', 'pregnancyStatus', 
+                'menstrualCycle', 'activityStatus', 'hereditaryDisease'
+            ]);
         });
-    </script>
 
 
-    <script>
         //----------------------------------------------------------------
         $(document).ready(function(){
-            $('#emergencyContact').mask('00000000000');
+            $('#phoneNumber').mask('00000000000');
         });
 
-        //----------------------------------------------------------------
+        //-------------------------STEP=>2--------------------------------
         document.addEventListener('DOMContentLoaded', function() {
             function toggleTextarea(selectElement, textareaId, labelId) {
                 var textarea = document.getElementById(textareaId);

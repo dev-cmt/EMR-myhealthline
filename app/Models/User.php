@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles; // KEY :: MULTIPERMISSION
+use App\Models\Master\MastNationality;
 
 class User extends Authenticatable
 {
@@ -39,6 +40,16 @@ class User extends Authenticatable
         'address',
         'mast_nationality_id',
     ];
+
+
+    public function mastNationality()
+    {
+        return $this->belongsTo(MastNationality::class);
+    }
+
+
+
+
 
     /**
      * The attributes that should be hidden for serialization.

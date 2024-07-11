@@ -20,7 +20,8 @@
                                     <th scope="col">#SL</th>
                                     <th scope="col">Case Name</th>
                                     <th scope="col">Area Of Problem</th>
-                                    <th scope="col">Duration Of Suffering</th>
+                                    <th scope="col">First Visit</th>
+                                    <th scope="col">Duration of Suffering</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -30,7 +31,8 @@
                                         <td>{{$loop->iteration}}</td>
                                         <td>Case {{$loop->iteration}}</td>
                                         <td>{{$row->area_of_problem}}</td>
-                                        <td>{{$row->duration_of_suffering}}</td>
+                                        <td>{{$row->date_of_first_visit}}</td>
+                                        <td>{{$row->duration}} {{$row->duration_unit}}</td>
                                         <td>
                                             <div class="hstack gap-3 fs-15">
                                                 <a href="{{route('info-cases.edit', $row->id)}}" class="link-primary"><i class="ri-settings-4-line"></i></a>

@@ -5,6 +5,8 @@ namespace App\Models\Information;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Information\TreatmentProfile;
+use App\Models\Master\MastTest;
+use App\Models\Master\mastOrgan;
 
 class LabTest extends Model
 {
@@ -17,5 +19,13 @@ class LabTest extends Model
     public function treatmentProfile()
     {
         return $this->belongsTo(TreatmentProfile::class);
+    }
+    public function mastTest()
+    {
+        return $this->belongsTo(MastTest::class);
+    }
+    public function mastOrgan()
+    {
+        return $this->belongsTo(MastOrgan::class);
     }
 }

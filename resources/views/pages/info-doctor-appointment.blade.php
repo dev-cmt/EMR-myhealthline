@@ -117,14 +117,14 @@
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <label for="full_name" class="form-label">Full Name</label>
-                                <input type="text" name="full_name" class="form-control" id="full_name" placeholder="Enter your Full Name" value="{{ old('full_name') }}">
+                                <input type="text" name="full_name" class="form-control" id="full_name" placeholder="Enter Doctor Full Name" value="{{ old('full_name') }}">
                                 @error('full_name')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6 mb-2">
                                 <label for="designation" class="form-label">Designation</label>
-                                <input type="text" name="designation" class="form-control" id="designation" placeholder="Enter your designation" value="{{ old('designation') }}">
+                                <input type="text" name="designation" class="form-control" id="designation" placeholder="Enter Designation (Professor/Assistant Professor, Lecturer, Medical Officer)" value="{{ old('designation') }}">
                                 @error('designation')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror

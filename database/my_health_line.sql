@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 09, 2024 at 02:01 PM
+-- Generation Time: Jul 11, 2024 at 04:13 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.0
 
@@ -663,9 +663,7 @@ CREATE TABLE `model_has_roles` (
 --
 
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
-(1, 'App\\Models\\User', 1),
-(2, 'App\\Models\\User', 2),
-(3, 'App\\Models\\User', 3);
+(1, 'App\\Models\\User', 1);
 
 -- --------------------------------------------------------
 
@@ -743,36 +741,36 @@ CREATE TABLE `permissions` (
 --
 
 INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'user-list', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(2, 'user-create', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(3, 'user-edit', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(4, 'user-show', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(5, 'user-delete', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(6, 'role-list', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(7, 'role-create', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(8, 'role-show', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(9, 'role-edit', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(10, 'role-delete', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(11, 'category-list', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(12, 'category-create', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(13, 'category-edit', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(14, 'category-delete', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(15, 'category-show', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(16, 'subcategory-list', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(17, 'subcategory-create', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(18, 'subcategory-edit', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(19, 'subcategory-delete', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(20, 'subcategory-show', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(21, 'product-list', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(22, 'product-create', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(23, 'product-edit', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(24, 'product-show', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(25, 'product-delete', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(26, 'order-list', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(27, 'order-create', 'web', '2024-07-09 05:58:33', '2024-07-09 05:58:33'),
-(28, 'order-edit', 'web', '2024-07-09 05:58:34', '2024-07-09 05:58:34'),
-(29, 'order-delete', 'web', '2024-07-09 05:58:34', '2024-07-09 05:58:34'),
-(30, 'order-show', 'web', '2024-07-09 05:58:34', '2024-07-09 05:58:34');
+(1, 'user-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(2, 'user-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(3, 'user-edit', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(4, 'user-show', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(5, 'user-delete', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(6, 'role-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(7, 'role-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(8, 'role-show', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(9, 'role-edit', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(10, 'role-delete', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(11, 'category-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(12, 'category-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(13, 'category-edit', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(14, 'category-delete', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(15, 'category-show', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(16, 'subcategory-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(17, 'subcategory-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(18, 'subcategory-edit', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(19, 'subcategory-delete', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(20, 'subcategory-show', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(21, 'product-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(22, 'product-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
+(23, 'product-edit', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(24, 'product-show', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(25, 'product-delete', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(26, 'order-list', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(27, 'order-create', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(28, 'order-edit', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(29, 'order-delete', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(30, 'order-show', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28');
 
 -- --------------------------------------------------------
 
@@ -845,9 +843,9 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'SuperAdmin', 'web', '2024-07-09 05:58:34', '2024-07-09 05:58:34'),
-(2, 'Administrator', 'web', '2024-07-09 05:58:34', '2024-07-09 05:58:34'),
-(3, 'Member', 'web', '2024-07-09 05:58:34', '2024-07-09 05:58:34');
+(1, 'SuperAdmin', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(2, 'Administrator', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
+(3, 'Member', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28');
 
 -- --------------------------------------------------------
 
@@ -871,13 +869,9 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 (4, 1),
 (5, 1),
 (6, 1),
-(6, 2),
 (7, 1),
-(7, 2),
 (8, 1),
-(8, 2),
 (9, 1),
-(9, 2),
 (10, 1),
 (11, 1),
 (12, 1),
@@ -890,26 +884,15 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 (19, 1),
 (20, 1),
 (21, 1),
-(21, 2),
 (22, 1),
-(22, 2),
 (23, 1),
-(23, 2),
 (24, 1),
-(24, 2),
 (25, 1),
-(25, 2),
 (26, 1),
-(26, 2),
-(26, 3),
 (27, 1),
-(27, 2),
-(27, 3),
 (28, 1),
-(28, 2),
 (29, 1),
-(30, 1),
-(30, 2);
+(30, 1);
 
 -- --------------------------------------------------------
 
@@ -1017,9 +1000,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `unique_patient_id`, `dob`, `age`, `gender`, `religion`, `blood_group`, `height_feet`, `height_inches`, `weight_kg`, `weight_pounds`, `bmi`, `emergency_contact`, `marital_status`, `mast_nationality_id`, `address`, `created_at`, `updated_at`) VALUES
-(1, 'SuperAdmin user', 'super@gmail.com', NULL, '$2y$10$EV9m8QNtC1du4W4byZv0bO4BAOFETwWsQQyG35oGHnTh.E7Lf.mjK', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-07-09 05:58:34', '2024-07-09 05:58:34'),
-(2, 'Admin user', 'admin@gmail.com', NULL, '$2y$10$4xq00EtKLSNWS00HK.cQ/etgYnpssAvT9Wjc7801kP2qRzi4Jl0uW', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-07-09 05:58:34', '2024-07-09 05:58:34'),
-(3, 'Member user', 'member@gmail.com', NULL, '$2y$10$aI8TvwOkXYno6sQmgbZyHOKVwlDMrAMnbZHseX0pNwUJxksoyFVlq', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-07-09 05:58:34', '2024-07-09 05:58:34');
+(1, 'Super Admin', 'super@gmail.com', NULL, '$2y$10$ThcFgKdn3JTuNrdO4MeZMug3tUCSdlrI9YoV/BC1eKVf1sPJz6g.G', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-07-11 08:13:28', '2024-07-11 08:13:28');
 
 -- --------------------------------------------------------
 
@@ -1497,7 +1478,7 @@ ALTER TABLE `treatment_profiles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `vaccinations`

@@ -363,14 +363,14 @@ class PatientController extends Controller
     }
     public function casesEdit($id)
     {
-        //---Master
+        //---Master (casesEdit)
         // $complaints = MastComplaint::all();
         $tests = MastTest::all();
         $organs = MastOrgan::all();
         $equipments = MastEquipment::all();
         $powers = MastPower::all();
 
-        //---GET Data
+        //---GET Data (casesEdit)
         $caseRegistry = CaseRegistry::find($id);
         $treatmentProfile = $caseRegistry->treatmentProfile;
         $medicationSchedule = $caseRegistry->medicationSchedule;
@@ -404,7 +404,7 @@ class PatientController extends Controller
     }
 
     /**------------------------
-     * Store => blood_sugar_profilings
+     * Store => case_registries
      */
     public function caseRegistry(Request $request)
     {
@@ -421,9 +421,9 @@ class PatientController extends Controller
             'mast_complaints.*' => 'integer|exists:mast_complaints,id',
         ]);
 
-        if ($request->id) {
+        if ($request->case_registry_id) {
             // Update existing record
-            $caseRegistry = CaseRegistry::find($request->id);
+            $caseRegistry = CaseRegistry::find($request->case_registry_id);
         } else {
             // Create new record
             $caseRegistry = new CaseRegistry();
@@ -489,14 +489,12 @@ class PatientController extends Controller
         if ($request->hasFile('prescription')) {
             $treatmentProfile->prescription = self::uploadImage($request->prescription, 'Prescription Uploader');
         } elseif ($treatmentProfile->exists) {
-            // Retain existing file if no new file is uploaded
             $treatmentProfile->prescription = $treatmentProfile->getOriginal('prescription');
         } else {
             $treatmentProfile->prescription = null;
         }
-
         $treatmentProfile->save();
-
+        
         if (!empty($request->data)) {
             foreach ($request->data as $item) {
                 $labTestData = [
@@ -507,16 +505,14 @@ class PatientController extends Controller
                     'cost' => $item['cost'],
                     'lab' => $item['lab'],
                     'treatment_profile_id' => $treatmentProfile->id,
+                    'upload_tool' => !empty($item['upload_tool']) 
+                                        ? self::uploadImage($item['upload_tool'], 'Lab Test Report') 
+                                        : (isset($item['id']) ? optional(LabTest::find($item['id']))->getOriginal('upload_tool') : null),
                 ];
-
-                if (isset($item['upload_tool']) && $item['upload_tool']) {
-                    $labTestData['upload_tool'] = self::uploadImage($item['upload_tool'], 'Lab Test Report');
-                } else {
-                    $labTestData['upload_tool'] = null;
-                }
-                LabTest::create($labTestData);
+        
+                LabTest::updateOrCreate(['id' => $item['id'] ?? null], $labTestData);
             }
-        }
+        }        
 
         // Save the user
         try {
@@ -525,6 +521,8 @@ class PatientController extends Controller
             return redirect()->back()->with(['error' => 'Failed to save Treatment profile. Please try again.', 'step2' => '2'])->withInput();
         }
     }
+
+
 
     public function downloadPrescription($id)
     {
@@ -555,41 +553,29 @@ class PatientController extends Controller
      */
     public function medicationSchedule(Request $request)
     {
-        $validatedData = $request->validate([
-            'data.*.mast_equipment_id' => 'required|exists:mast_equipment,id',
-            'data.*.full_name' => 'nullable|string',
-            'data.*.mast_power_id' => 'required|exists:mast_powers,id',
-            'data.*.duration' => 'nullable|string',
-            'data.*.frequency' => 'nullable|string',
-            'data.*.cost' => 'nullable|string',
-            'data.*.timing' => 'nullable|string',
-            'data.*.antibiotic' => 'nullable|string',
-        ]);
-        $caseRegistryId = $request->input('case_registry_id');
-        $medicationData = $request->input('data');
-    
-        foreach ($medicationData as $key => $data) {
-            MedicationSchedule::create([
-                'case_registry_id' => $caseRegistryId,
-                'mast_equipment_id' => $data['mast_equipment_id'],
-                'full_name' => $data['full_name'],
-                'mast_power_id' => $data['mast_power_id'],
-                'duration' => $data['duration'],
-                'frequency' => $data['frequency'],
-                'morning' => $data['morning'] ?? null,
-                'noon' => $data['noon'] ?? null,
-                'night' => $data['night'] ?? null,
-                'cost' => $data['cost'],
-                'timing' => $data['timing'],
-                'antibiotic' => $data['antibiotic'],
-            ]);
-        }
+        if (!empty($request->data)) {
+            foreach ($request->data as $item) {
+                $medicationData = [
+                    'case_registry_id' => $request->case_registry_id,
+                    'mast_equipment_id' => $item['mast_equipment_id'],
+                    'full_name' => $item['full_name'],
+                    'mast_power_id' => $item['mast_power_id'],
+                    'duration' => $item['duration'],
+                    'frequency' => $item['frequency'],
+                    'morning' => $item['morning'] ?? null,
+                    'noon' => $item['noon'] ?? null,
+                    'night' => $item['night'] ?? null,
+                    'cost' => $item['cost'],
+                    'timing' => $item['timing'],
+                    'antibiotic' => $item['antibiotic'],
+                ];
 
-        // Save the user
-        try {
+                MedicationSchedule::updateOrCreate(['id' => $item['id'] ?? null], $medicationData );
+            }
+
             return redirect()->back()->with(['success' => 'Medication schedules saved successfully', 'step3' => '3']);
-        } catch (\Exception $e) {
-            return redirect()->back()->with(['error' => 'Failed to save Medication schedules. Please try again.', 'step3' => '3'])->withInput();
+        } else {
+            return redirect()->back()->with(['error' => 'No data received for medication schedules', 'step3' => '3'])->withInput();
         }
     }
     /**-----------------------------
@@ -597,17 +583,16 @@ class PatientController extends Controller
      */
     public function surgicalIntervention(Request $request)
     {
-        $data = $request->input('data');
-
-        foreach ($data as $row) {
-            SurgicalIntervention::create([
+        foreach ($request->data as $item) {
+            $surgicalInterventionData = [
                 'case_registry_id' => $request->case_registry_id,
-                'intervention' => $row['intervention'],
-                'due_time' => $row['due_time'],
-                'details' => $row['details'],
-                'date_line' => $row['date_line'],
-                'cost' => $row['cost'],
-            ]);
+                'intervention' => $item['intervention'],
+                'due_time' => $item['due_time'],
+                'details' => $item['details'],
+                'date_line' => $item['date_line'],
+                'cost' => $item['cost'],
+            ];
+            SurgicalIntervention::updateOrCreate(['id' => $item['id'] ?? null], $surgicalInterventionData );
         }
 
         try {
@@ -658,17 +643,18 @@ class PatientController extends Controller
     {
         // Validate incoming requests
         $request->validate([
-            'types.*' => 'required|string',
+            'type.*' => 'nullable|string',
             'details.*' => 'nullable|string',
         ]);
 
         // Loop through submitted data and store in database
-        foreach ($request->types as $index => $type) {
-            $restriction = new Restriction();
-            $restriction->case_registry_id = $request->case_registry_id;
-            $restriction->type = $type;
-            $restriction->details = $request->details[$index] ?? null;
-            $restriction->save();
+        foreach ($request->data as $item) {
+            $restrictionData = [
+                'case_registry_id' => $request->case_registry_id,
+                'type' => $item['type'],
+                'details' => $item['details'] ?? null,
+            ];
+            restriction::updateOrCreate(['id' => $item['id'] ?? null], $restrictionData );
         }
 
         // Save the user
@@ -696,23 +682,24 @@ class PatientController extends Controller
      */
     public function bloodSugarProfiling(Request $request)
     {
-        $data = $request->validate([
-            'time.*' => 'required|date_format:H:i',
-            'reading.*' => 'required|numeric',
-            'dietary_information.*' => 'required|string',
-            'remark.*' => 'required|string',
+        $validatedData = $request->validate([
+            'time.*' => 'nullable|date_format:H:i',
+            'reading.*' => 'nullable|numeric',
+            'dietary_information.*' => 'nullable|string',
+            'remark.*' => 'nullable|string',
             'additional_note.*' => 'nullable|string',
         ]);
-
-        foreach ($data['time'] as $index => $time) {
-            BloodSugarProfiling::create([
-                'time' => $time,
-                'reading' => $data['reading'][$index],
-                'dietary_information' => $data['dietary_information'][$index],
-                'remark' => $data['remark'][$index],
-                'additional_note' => $data['additional_note'][$index] ?? null,
+        // dd($request->data);
+        foreach ($request->data as $item) {
+            $bloodSugarProfilingData = [
+                'time' => $item['time'],
+                'reading' => $item['reading'],
+                'dietary_information' => $item['dietary_information'],
+                'remark' => $item['remark'],
+                'additional_note' => $item['additional_note'] ?? null,
                 'patient_id' => Auth::user()->id,
-            ]);
+            ];
+            BloodSugarProfiling::updateOrCreate(['id' => $item['id'] ?? null], $bloodSugarProfilingData );
         }
 
         // Save the user
@@ -729,23 +716,24 @@ class PatientController extends Controller
     {
         // Validate the incoming request data for blood pressure
         $validatedData = $request->validate([
-            'time.*' => 'required',
-            'systolic.*' => 'required|integer',
-            'diastolic.*' => 'required|integer',
-            'heart_rate_bpm.*' => 'required|integer',
+            'time.*' => 'nullable',
+            'systolic.*' => 'nullable|integer',
+            'diastolic.*' => 'nullable|integer',
+            'heart_rate_bpm.*' => 'nullable|integer',
             'additional_note.*' => 'nullable',
         ]);
 
         // Process each blood pressure reading and store in the database
-        foreach ($validatedData['time'] as $key => $value) {
-            BloodPressureProfiling::create([
-                'time' => $validatedData['time'][$key],
-                'systolic' => $validatedData['systolic'][$key],
-                'diastolic' => $validatedData['diastolic'][$key],
-                'heart_rate_bpm' => $validatedData['heart_rate_bpm'][$key],
-                'additional_note' => $validatedData['additional_note'][$key] ?? null,
+        foreach ($request->data as $item) {
+            $bloodPressureProfilingData = [
+                'time' => $item['time'],
+                'systolic' => $item['systolic'],
+                'diastolic' => $item['diastolic'],
+                'heart_rate_bpm' => $item['heart_rate_bpm'],
+                'additional_note' => $item['additional_note'] ?? null,
                 'patient_id' => Auth::user()->id,
-            ]);
+            ];
+            BloodPressureProfiling::updateOrCreate(['id' => $item['id'] ?? null], $bloodPressureProfilingData );
         }
 
         // Save the user
@@ -901,24 +889,25 @@ class PatientController extends Controller
     public function saveRandomUploaderTool(Request $request)
     {
         // Validate incoming requests if needed
-        $request->validate([
-            'document_name.*' => 'required|string|max:255',
-            'date.*' => 'required|date',
-            'upload_tool.*' => 'required|file',
+        $validatedData = $request->validate([
+            'document_name.*' => 'nullable|string|max:255',
+            'date.*' => 'nullable|date',
+            'upload_tool.*' => 'nullable|file',
         ]);
 
         // Loop through each row submitted in the form
-        foreach ($request->document_name as $key => $value) {
-            $tool = new RandomUploaderTool();
-            $tool->document_name = $request->document_name[$key];
-            $tool->sub_type = $request->sub_type[$key] ?? null;
-            $tool->date = $request->date[$key];
-            $tool->additional_note = $request->additional_note[$key] ?? null;
-            $tool->upload_tool = self::uploadImage($request->upload_tool, 'Random Uploader') ?? null;
-
-            // Assuming patient_id is authenticated user ID
-            $tool->patient_id = auth()->user()->id;
-            $tool->save();
+        foreach ($request->data as $item) {
+            $randomUploaderToolData = [
+                'document_name' => $item['document_name'],
+                'sub_type' => $item['sub_type'],
+                'date' => $item['date'],
+                'additional_note' => $item['additional_note'],
+                'upload_tool' => !empty($item['upload_tool']) 
+                                    ? self::uploadImage($item['upload_tool'], 'Random Uploader') 
+                                    : (isset($item['id']) ? optional(RandomUploaderTool::find($item['id']))->getOriginal('upload_tool') : null),
+                'patient_id' => auth()->user()->id,
+            ];
+            RandomUploaderTool::updateOrCreate(['id' => $item['id'] ?? null], $randomUploaderToolData );
         }
 
         // Save the user

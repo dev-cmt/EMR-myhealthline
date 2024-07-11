@@ -34,6 +34,8 @@
 
                         <form action="{{ route('blood-sugar-profiling.store') }}" method="POST">
                             @csrf
+                            <input type="hidden" value="{{ count($sugarData) > 0 ? '1' : '' }}" id="hasSugarData">
+
                             <div class="card-body">
                                 <div class="table-responsive table-card">
                                     <table id="dataTableSugar" class="table table-nowrap table-striped mb-0">
@@ -52,38 +54,38 @@
                                         <tbody>
                                             @foreach($sugarData as $key => $row)
                                                 <tr>
-                                                    <td><h6 class="mt-2">{{ $key + 1 }}st</h6></td>
-                                                    <td><input type="time" class="form-control" name="time[]" value="{{ $row->time }}" disabled></td>
+                                                    <td><h6 class="mt-2">{{ ++$key }}st</h6></td>
+                                                    <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
+                                                    <td><input type="time" class="form-control time" name="data[{{$key}}][time]" value="{{ $row->time }}" disabled></td>
                                                     <td>
-                                                        <select class="form-select" name="reading[]" disabled>
-                                                            <option value="4.4" {{ $row->reading == '4.4' ? 'selected': '' }}>4.4</option>
-                                                            <option value="4.5" {{ $row->reading == '4.5' ? 'selected': '' }}>4.5</option>
-                                                            <option value="4.6" {{ $row->reading == '4.6' ? 'selected': '' }}>4.6</option>
-                                                            <option value="4.7" {{ $row->reading == '4.7' ? 'selected': '' }}>4.7</option>
-                                                            <option value="4.8" {{ $row->reading == '4.8' ? 'selected': '' }}>4.8</option>
-                                                            <option value="4.9" {{ $row->reading == '4.9' ? 'selected': '' }}>4.9</option>
-                                                            <option value="5" {{ $row->reading == '5' ? 'selected': '' }}>5</option>
-                                                            <option value="5.1" {{ $row->reading == '5.1' ? 'selected': '' }}>5.1</option>
+                                                        @php
+                                                            $readings = range(0.1, 35, 0.1);
+                                                        @endphp
+
+                                                        <select class="form-select reading" name="data[{{$key}}][reading]" disabled>
+                                                            @foreach ($readings as $reading)
+                                                                <option value="{{ $reading }}" {{ $row->reading == $reading ? 'selected' : '' }}>{{ $reading }}</option>
+                                                            @endforeach
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select class="form-select" name="dietary_information[]" disabled>
-                                                            <option value="Hypo (Dangerously Low)" {{ $row->dietary_information == 'Hypo (Dangerously Low)' ? 'selected': '' }}>Hypo (Dangerously Low)</option>
-                                                            <option value="Low" {{ $row->dietary_information == 'Low' ? 'selected': '' }}>Low</option>
-                                                            <option value="Normal" {{ $row->dietary_information == 'Normal' ? 'selected': '' }}>Normal</option>
-                                                            <option value="High" {{ $row->dietary_information == 'High' ? 'selected': '' }}>High</option>
-                                                            <option value="Hyper (Dangerously High)" {{ $row->dietary_information == 'Hyper (Dangerously High)' ? 'selected': '' }}>Hyper (Dangerously High)</option>
+                                                        <select class="form-select dietary_information" name="data[{{$key}}][dietary_information]" disabled>
+                                                            <option value="Fasting (Eaten before 6 or more hours)" {{ $row->dietary_information == 'Fasting (Eaten before 6 or more hours)' ? 'selected': '' }}>Fasting (Eaten before 6 or more hours)</option>
+                                                            <option value="Semi Fasting (Eaten 4 hours before)" {{ $row->dietary_information == 'Semi Fasting (Eaten 4 hours before)' ? 'selected': '' }}>Semi Fasting (Eaten 4 hours before)</option>
+                                                            <option value="Digestive (Eaten 2 hours ago)" {{ $row->dietary_information == 'Digestive (Eaten 2 hours ago)' ? 'selected': '' }}>Digestive (Eaten 2 hours ago)</option>
+                                                            <option value="2 Hours After meal" {{ $row->dietary_information == '2 Hours After meal' ? 'selected': '' }}>2 Hours After meal</option>
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select class="form-select" name="remark[]" disabled>
-                                                            <option value="Fasting (Eaten before 6 or more hours)" {{ $row->remark == 'Fasting (Eaten before 6 or more hours)' ? 'selected': '' }}>Fasting (Eaten before 6 or more hours)</option>
-                                                            <option value="Semi Fasting (Eaten 4 hours before)" {{ $row->remark == 'Semi Fasting (Eaten 4 hours before)' ? 'selected': '' }}>Semi Fasting (Eaten 4 hours before)</option>
-                                                            <option value="Digestive (Eaten 2 hours ago)" {{ $row->remark == 'Digestive (Eaten 2 hours ago)' ? 'selected': '' }}>Digestive (Eaten 2 hours ago)</option>
-                                                            <option value="2 Hours After meal" {{ $row->remark == '2 Hours After meal' ? 'selected': '' }}>2 Hours After meal</option>
+                                                        <select class="form-select remark" name="data[{{$key}}][remark]" disabled>
+                                                            <option value="Hypo (Dangerously Low)" {{ $row->remark == 'Hypo (Dangerously Low)' ? 'selected': '' }}>Hypo (Dangerously Low)</option>
+                                                            <option value="Low" {{ $row->remark == 'Low' ? 'selected': '' }}>Low</option>
+                                                            <option value="Normal" {{ $row->remark == 'Normal' ? 'selected': '' }}>Normal</option>
+                                                            <option value="High" {{ $row->remark == 'High' ? 'selected': '' }}>High</option>
+                                                            <option value="Hyper (Dangerously High)" {{ $row->remark == 'Hyper (Dangerously High)' ? 'selected': '' }}>Hyper (Dangerously High)</option>
                                                         </select>
                                                     </td>
-                                                    <td><textarea class="form-control" name="additional_note[]" rows="1" disabled>{{ $row->additional_note }}</textarea></td>
+                                                    <td><textarea class="form-control additional_note" name="data[{{$key}}][additional_note]" rows="1" disabled>{{ $row->additional_note }}</textarea></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -92,7 +94,10 @@
                             </div>
                             <div class="card-footer d-flex justify-content-between">
                                 <button type="button" id="addRowSugar" class="btn btn-secondary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Row</button>
-                                <button type="submit" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button> 
+                                <div>
+                                    <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-1"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-1"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                </div>
                             </div>
                         </form>
 
@@ -104,6 +109,8 @@
 
                         <form action="{{ route('blood-pressure-profiling.store') }}" method="POST">
                             @csrf
+                            <input type="hidden" value="{{ count($pressureData) > 0 ? '1' : '' }}" id="hasPressureData">
+                            
                             <div class="card-body">
                                 <div class="table-responsive table-card">
                                     <table id="dataTablePressure" class="table table-nowrap table-striped mb-0">
@@ -122,30 +129,31 @@
                                         <tbody>
                                             @foreach($pressureData as $key =>  $row)
                                                 <tr>
-                                                    <td><h6 class="mt-2">{{ ordinal($key + 1) }}</h6></td>
-                                                    <td><input type="time" class="form-control" name="time[]" value="{{$row->time}}" disabled></td>
+                                                    <td><h6 class="mt-2">{{ ordinal(++$key) }}</h6></td>
+                                                    <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
+                                                    <td><input type="time" class="form-control time2" name="data[{{ $key }}][time]" value="{{$row->time}}" disabled></td>
                                                     <td>
-                                                        <select class="form-select" name="systolic[]" disabled>
+                                                        <select class="form-select systolic" name="data[{{ $key }}][systolic]" disabled>
                                                             @foreach (range(50, 200) as $value)
                                                                 <option value="{{ $value }}" {{$row->systolic ==  $value ? 'selected' : '' }}>{{ $value }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select class="form-select" name="diastolic[]" disabled>
+                                                        <select class="form-select diastolic" name="data[{{ $key }}][diastolic]" disabled>
                                                             @foreach (range(30, 125) as $value)
                                                                 <option value="{{ $value }}" {{$row->diastolic ==  $value ? 'selected' : '' }}>{{ $value }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select class="form-select" name="heart_rate_bpm[]" disabled>
+                                                        <select class="form-select heart_rate_bpm" name="data[{{ $key }}][heart_rate_bpm]" disabled>
                                                             @foreach (range(30, 130) as $value)
                                                                 <option value="{{ $value }}" {{$row->heart_rate_bpm ==  $value ? 'selected' : '' }}>{{ $value }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
-                                                    <td><textarea class="form-control" name="additional_note[]" rows="1" disabled>{{$row->additional_note}}</textarea></td>
+                                                    <td><textarea class="form-control additional_note" name="data[{{ $key }}][additional_note]" rows="1" disabled>{{$row->additional_note}}</textarea></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -154,7 +162,10 @@
                             </div>
                             <div class="card-footer d-flex justify-content-between">
                                 <button type="button" id="addRowPressure" class="btn btn-secondary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Row</button>
-                                <button type="submit" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                <div>
+                                    <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-2"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-2"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -191,25 +202,33 @@
                 addRowSugar(rowCount);
             });
 
-            function addRowSugar(rowCount){
+            function addRowSugar(rowCount) {
+                // Generate options for readings
+                var readings = "";
+                for (var i = 0.1; i <= 35.1; i += 0.1) {
+                    var value = i.toFixed(1); // Ensure one decimal place
+                    readings += `<option value="${value}">${value}</option>`;
+                }
+
                 var newRow = `
                     <tr>
                         <td><h6 class="mt-2">${ordinal(rowCount)}</h6></td>
-                        <td><input type="time" class="form-control" name="time[]"></td>
+                        <td><input type="time" class="form-control" name="data[${rowCount}][time]"></td>
                         <td>
-                            <select class="form-select" name="reading[]">
-                                <option value="4.4">4.4</option>
-                                <option value="4.5">4.5</option>
-                                <option value="4.6">4.6</option>
-                                <option value="4.7">4.7</option>
-                                <option value="4.8">4.8</option>
-                                <option value="4.9">4.9</option>
-                                <option value="5">5</option>
-                                <option value="5.1">5.1</option>
+                            <select class="form-select" name="data[${rowCount}][reading]">
+                                ${readings}
                             </select>
                         </td>
                         <td>
-                            <select class="form-select" name="dietary_information[]">
+                            <select class="form-select" name="data[${rowCount}][dietary_information]">
+                                <option value="Fasting (Eaten before 6 or more hours)">Fasting (Eaten before 6 or more hours)</option>
+                                <option value="Semi Fasting (Eaten 4 hours before)">Semi Fasting (Eaten 4 hours before)</option>
+                                <option value="Digestive (Eaten 2 hours ago)">Digestive (Eaten 2 hours ago)</option>
+                                <option value="2 Hours After meal">2 Hours After meal</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select" name="data[${rowCount}][remark]">
                                 <option value="Hypo (Dangerously Low)">Hypo (Dangerously Low)</option>
                                 <option value="Low">Low</option>
                                 <option value="Normal">Normal</option>
@@ -217,47 +236,40 @@
                                 <option value="Hyper (Dangerously High)">Hyper (Dangerously High)</option>
                             </select>
                         </td>
-                        <td>
-                            <select class="form-select" name="remark[]">
-                                <option value="Fasting (Eaten before 6 or more hours)">Fasting (Eaten before 6 or more hours)</option>
-                                <option value="Semi Fasting (Eaten 4 hours before)">Semi Fasting (Eaten 4 hours before)</option>
-                                <option value="Digestive (Eaten 2 hours ago)">Digestive (Eaten 2 hours ago)</option>
-                                <option value="2 Hours After meal">2 Hours After meal</option>
-                            </select>
-                        </td>
-                        <td><textarea class="form-control" name="additional_note[]" rows="1"></textarea></td>
+                        <td><textarea class="form-control" name="data[${rowCount}][additional_note]" rows="1"></textarea></td>
                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
                     </tr>
                 `;
                 $('#dataTableSugar tbody').append(newRow);
             }
+
             function addRowPressure(rowCount){
                 var newRow = `
                     <tr>
                         <td><h6 class="mt-2">${ordinal(rowCount)}</h6></td>
-                        <td><input type="time" class="form-control" name="time[]"></td>
+                        <td><input type="time" class="form-control" name="data[${rowCount}][time]"></td>
                         <td>
-                            <select class="form-select" name="systolic[]">
+                            <select class="form-select" name="data[${rowCount}][systolic]">
                                 @foreach (range(50, 200) as $value)
                                     <option value="{{ $value }}">{{ $value }}</option>
                                 @endforeach
                             </select>
                         </td>
                         <td>
-                            <select class="form-select" name="diastolic[]">
+                            <select class="form-select" name="data[${rowCount}][diastolic]">
                                 @foreach (range(30, 125) as $value)
                                     <option value="{{ $value }}">{{ $value }}</option>
                                 @endforeach
                             </select>
                         </td>
                         <td>
-                            <select class="form-select" name="heart_rate_bpm[]">
+                            <select class="form-select" name="data[${rowCount}][heart_rate_bpm]">
                                 @foreach (range(30, 130) as $value)
                                     <option value="{{ $value }}">{{ $value }}</option>
                                 @endforeach
                             </select>
                         </td>
-                        <td><textarea class="form-control" name="additional_note[]" rows="1"></textarea></td>
+                        <td><textarea class="form-control" name="data[${rowCount}][additional_note]" rows="1"></textarea></td>
                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
                     </tr>
                 `;
@@ -286,6 +298,45 @@
                     $(this).find('td:first-child h6').text((index + 1) + 'st');
                 });
             }
+
+
+            // Function Edit Mode
+            function setupEditAndSave(step, idSelector, fields) {
+                var id = $(idSelector).val();
+                if (id === null || id === '') {
+                    $('#save-btn-' + step).show();
+                    $('#edit-btn-' + step).hide();
+                } else {
+                    $('#edit-btn-' + step).show();
+                    $('#save-btn-' + step).hide();
+                    fields.forEach(function(field) {
+                        $(field).prop('disabled', true);
+                    });
+                }
+
+                $('#edit-btn-' + step).on('click', function() {
+                    $('#save-btn-' + step).show();
+                    $('#edit-btn-' + step).hide();
+                    fields.forEach(function(field) {
+                        $(field).prop('disabled', false);
+                    });
+                });
+            }
+            setupEditAndSave(1, "#hasSugarData", [
+                '.time',
+                '.reading',
+                '.dietary_information',
+                '.remark',
+                '.additional_note',
+            ]);
+            setupEditAndSave(2, "#hasPressureData", [
+                '.time2',
+                '.systolic',
+                '.diastolic',
+                '.heart_rate_bpm',
+                '.additional_note',
+            ]);
+
         });
     </script>
     @endpush

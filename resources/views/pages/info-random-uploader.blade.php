@@ -8,6 +8,8 @@
                 <div class="card-body">
                     <form action="{{ route('random-uploader-tool.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" value="{{ count($data) > 0 ? '1' : '' }}" id="hasData">
+
                         <div class="table-responsive table-card">
                             <table id="dataTableUploadTool" class="table table-nowrap table-striped mb-0">
                                 <thead class="table-light">
@@ -25,29 +27,25 @@
                                     @foreach($data as $key=> $row)
                                         <tr>
                                             <td><h6 class="mt-2">{{++$key}}</h6></td>
-                                            <td><input type="text" class="form-control" value="{{$row->document_name}}" disabled></td>
-                                            <td><input type="text" class="form-control" value="{{$row->sub_type}}" disabled></td>
-                                            <td><input type="date" class="form-control" value="{{$row->date}}" disabled></td>
-                                            <td><input type="text" class="form-control" value="{{$row->additional_note}}" disabled></td>
+                                            <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
+                                            <td><input type="text" class="form-control document_name" name="data[{{$key}}][document_name]" value="{{$row->document_name}}" disabled></td>
+                                            <td><input type="text" class="form-control sub_type" name="data[{{$key}}][sub_type]" value="{{$row->sub_type}}" disabled></td>
+                                            <td><input type="date" class="form-control date" name="data[{{$key}}][date]" value="{{$row->date}}" disabled></td>
+                                            <td><input type="text" class="form-control additional_note" name="data[{{$key}}][additional_note]" value="{{$row->additional_note}}" disabled></td>
+                                            <td><input type="file" class="form-control upload_tool" name="data[{{$key}}][upload_tool]" value="{{$row->upload_tool}}" disabled></td>
                                             <td class="d-flex">
-                                                <a href="{{ route('random-uploader-tool.download', $row->id) }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
+                                                <a href="{{ route('random-uploader-tool.download', $row->id) }}" class="btn btn-primary {{empty($row->upload_tool) ? 'd-none': ''}}"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
                                             </td>
                                         </tr>
                                     @endforeach
-                                    <tr>
-                                        <td><h6 class="mt-2"></h6></td>
-                                        <td><input type="text" class="form-control" name="document_name[]"></td>
-                                        <td><input type="text" class="form-control" name="sub_type[]"></td>
-                                        <td><input type="date" class="form-control" name="date[]"></td>
-                                        <td><input type="text" class="form-control" name="additional_note[]"></td>
-                                        <td><input type="file" class="form-control" name="upload_tool"></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
-                                    </tr>
                                 </tbody>
                                 <tfoot class="table-light">
                                     <tr>
                                         <td colspan="6"><button type="button" id="addRowSugar" class="btn btn-secondary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Row</button></td>
-                                        <td><button type="submit" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button></td>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-1"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-1"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                        </td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -61,23 +59,32 @@
     @push('scripts')
     <script>
         $(document).ready(function() {
+            var index = $('#dataTableUploadTool tbody tr').length + 1;
+            if (index == 1) {
+                addRowUploadTool(index);
+            }
+
             // Add Row Button Click
             $('#addRowSugar').click(function() {
-                var rowCount = $('#dataTableUploadTool tbody tr').length + 1;
-
-                var newRow = '<tr>' +
-                    '<td><h6 class="mt-2">' + rowCount + '</h6></td>' +
-                    '<td><input type="text" class="form-control" name="document_name[]"></td>' +
-                    '<td><input type="text" class="form-control" name="sub_type[]"></td>' +
-                    '<td><input type="date" class="form-control" name="date[]"></td>' +
-                    '<td><input type="text" class="form-control" name="additional_note[]"></td>' +
-                    '<td><input type="file" class="form-control" name="upload_tool[]"></td>' +
-                    '<td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>' +
-                    '</tr>';
-
-                $('#dataTableUploadTool tbody').append(newRow);
+                var index = $('#dataTableUploadTool tbody tr').length + 1;
+                addRowUploadTool(index);
                 updateRowNumbers();
             });
+
+            function addRowUploadTool(index) {
+                var newRow = `
+                    <tr>
+                        <td><h6 class="mt-2">${index}</h6></td>
+                        <td><input type="text" class="form-control" name="data[${index}][document_name]"></td>
+                        <td><input type="text" class="form-control" name="data[${index}][sub_type]"></td>
+                        <td><input type="date" class="form-control" name="data[${index}][date]"></td>
+                        <td><input type="text" class="form-control" name="data[${index}][additional_note]"></td>
+                        <td><input type="file" class="form-control" name="data[${index}][upload_tool]"></td>
+                        <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                    </tr>
+                `;
+                $('#dataTableUploadTool tbody').append(newRow);
+            }
 
             // Remove Row Button Click
             $(document).on('click', '.remove-row', function() {
@@ -91,9 +98,39 @@
                     $(this).find('td:first-child h6').text(index + 1);
                 });
             }
+
+            function setupEditAndSave(step, idSelector, fields) {
+                var id = $(idSelector).val();
+                if (id === null || id === '') {
+                    $('#save-btn-' + step).show();
+                    $('#edit-btn-' + step).hide();
+                } else {
+                    $('#edit-btn-' + step).show();
+                    $('#save-btn-' + step).hide();
+                    fields.forEach(function(field) {
+                        $(field).prop('disabled', true);
+                    });
+                }
+
+                $('#edit-btn-' + step).on('click', function() {
+                    $('#save-btn-' + step).show();
+                    $('#edit-btn-' + step).hide();
+                    fields.forEach(function(field) {
+                        $(field).prop('disabled', false);
+                    });
+                });
+            }
+            setupEditAndSave(1, "#hasData", [
+                '.document_name',
+                '.sub_type',
+                '.date',
+                '.additional_note',
+                '.upload_tool',
+            ]);
         });
-    </script>  
+    </script>
     @endpush
+
 
 
 

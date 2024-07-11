@@ -40,53 +40,53 @@
         </div>
 
         <!-- Item 3-->
-        <div class="col-xl-4 col-md-4 col-sm-6">
+        <div class="col-xl-3 col-md-4 col-sm-6">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title mb-0">Physicians/Doctors visited </h4>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('doctor-visit.report') }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
+                        <a href="{{ route('doctor-visit.report', Auth::user()->id) }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Item 4-->
-        <div class="col-xl-4 col-md-4 col-sm-6">
+        <div class="col-xl-3 col-md-4 col-sm-6">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title mb-0">Medicines Consumed </h4>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('medicine-list.report') }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
+                        <a href="{{ route('medicine-list.report', Auth::user()->id) }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Item 5-->
-        <div class="col-xl-4 col-md-4 col-sm-6">
+        <div class="col-xl-3 col-md-4 col-sm-6">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title mb-0">Antibiotics Consumed </h4>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('antibiotic-cost.report') }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
+                        <a href="{{ route('antibiotic-cost.report', Auth::user()->id) }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Item 6-->
-        <div class="col-xl-4 col-md-4 col-sm-6">
+        <div class="col-xl-3 col-md-4 col-sm-6">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title mb-0">Tests Done </h4>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('test-done.report') }}" class="btn btn-primary">
+                        <a href="{{ route('test-done.report', Auth::user()->id) }}" class="btn btn-primary">
                             <i class="ri-download-2-line align-bottom me-1"></i> Download
                         </a>
                     </div>
@@ -94,14 +94,14 @@
             </div>
         </div>
         <!-- Item 7-->
-        <div class="col-xl-4 col-md-4 col-sm-6">
+        <div class="col-xl-3 col-md-4 col-sm-6">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title mb-0">Cost of Doctor's Consultation </h4>
+                    <h4 class="card-title mb-0">Doctor Consultation Cost</h4>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('doctor-cost.report') }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
+                        <a href="{{ route('doctor-cost.report', Auth::user()->id) }}" class="btn btn-primary"><i class="ri-download-2-line align-bottom me-1"></i> Download</a>
                     </div>
                 </div>
             </div>

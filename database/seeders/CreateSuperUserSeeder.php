@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
-class CreateSuperAdminUserSeeder extends Seeder
+class CreateSuperUserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,7 +21,7 @@ class CreateSuperAdminUserSeeder extends Seeder
         User::truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $user = User::create([
-            'name' => 'SuperAdmin user',
+            'name' => 'Super Admin',
             'email' => 'super@gmail.com',
             'password' => Hash::make('password')
         ]);

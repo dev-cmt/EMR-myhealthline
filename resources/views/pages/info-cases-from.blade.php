@@ -46,8 +46,7 @@
                         <div class="card-body">
                             <form action="{{ route('case_registry.store') }}" method="POST">
                                 @csrf
-                                <input type="hidden" name="id" value="{{ $caseRegistry->id ?? '' }}">
-                                <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
+                                <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}" id="caseRegistryId">
         
                                 <div class="row mb-1">
                                     <div class="col-lg-4">
@@ -79,17 +78,17 @@
                                 </div>
                                 <div class="row mb-1">
                                     <div class="col-lg-4">
-                                        <label for="duration_of_suffering" class="form-label">Duration of Suffering (Prior to Physician Visit)</label>
+                                        <label for="duration" class="form-label">Duration of Suffering (Prior to Physician Visit)</label>
                                     </div>
                                     <div class="col-lg-2">
-                                        <select class="form-select" name="duration">
+                                        <select class="form-select" name="duration" id="duration">
                                             @foreach (range(1, 29) as $value)
                                                 <option value="{{ $value }}" {{ $caseRegistry && $caseRegistry->duration == $value ? 'selected' : '' }}>{{ $value }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
-                                        <select name="duration_unit" class="form-select">
+                                        <select name="duration_unit" class="form-select" id="duration_unit">
                                             <option value="Hour(s)" {{ $caseRegistry && $caseRegistry->duration_unit == 'Hour(s)' ? 'selected' : '' }}>Hour(s)</option>
                                             <option value="Day(s)" {{ $caseRegistry && $caseRegistry->duration_unit == 'Day(s)' ? 'selected' : '' }}>Day(s)</option>
                                             <option value="Week(s)" {{ $caseRegistry && $caseRegistry->duration_unit == 'Week(s)' ? 'selected' : '' }}>Week(s)</option>
@@ -111,7 +110,7 @@
                                         <label for="type_of_ailment" class="form-label">Type of Ailment</label>
                                     </div>
                                     <div class="col-lg-4">
-                                        <select name="type_of_ailment" id="type_of_ailment" class="form-select">
+                                        <select name="type_of_ailment" class="form-select" id="type_of_ailment">
                                             <option value="Neurological" {{ $caseRegistry && $caseRegistry->type_of_ailment == 'Neurological' ? 'selected' : '' }}>Neurological</option>
                                             <option value="Eye/Visual" {{ $caseRegistry && $caseRegistry->type_of_ailment == 'Eye/Visual' ? 'selected' : '' }}>Eye/Visual</option>
                                             <option value="Orthopedic" {{ $caseRegistry && $caseRegistry->type_of_ailment == 'Orthopedic' ? 'selected' : '' }}>Orthopedic</option>
@@ -140,7 +139,7 @@
                                             @foreach($complaints as $complaint)
                                                 <div class="col-md-3">
                                                     <div class="form-check">
-                                                        <input type="checkbox" name="mast_complaints[]" value="{{ $complaint->id }}" id="mast_complaints{{ $complaint->id }}" class="form-check-input" {{$complaint->chk == 1 ? 'checked': ''}}>
+                                                        <input type="checkbox" name="mast_complaints[]" value="{{ $complaint->id }}" class="form-check-input mast_complaints" {{$complaint->chk == 1 ? 'checked': ''}}>
                                                         <label for="complaint_{{ $complaint->id }}" class="form-check-label">{{ $complaint->name }} </label>
                                                     </div>
                                                 </div>
@@ -148,12 +147,13 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <textarea class="form-control" name="additional_complaints" rows="12" placeholder="Enter your message">{{$caseRegistry->additional_complaints ?? ''}}</textarea>
+                                        <textarea class="form-control" name="additional_complaints" id="additional_complaints" rows="12" placeholder="Enter your message">{{$caseRegistry->additional_complaints ?? ''}}</textarea>
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <div class="col-md-12 text-center">
-                                        <button type="submit" class="btn btn-success btn-label waves-effect waves-light"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                    <div class="col-12 text-center">
+                                        <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-1"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                        <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-1"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                     </div>
                                 </div>
                             </form>
@@ -164,11 +164,11 @@
             </div>
             <!-- Examination & Treatment Profile || Lab Test-->
             <div class="tab-content text-muted">
-                <div class="tab-pane {{ Session::has('ste2') ? 'active show' : '' }}" id="nav-border-step2" role="tabpanel">
+                <div class="tab-pane {{ Session::has('step2') ? 'active show' : '' }}" id="nav-border-step2" role="tabpanel">
                     
                     <form action="{{ route('treatment-lab-test.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="id" value="{{ $treatmentProfile->id ?? '' }}">
+                        <input type="hidden" name="id" value="{{ $treatmentProfile->id ?? '' }}" id="treatmentProfileId">
                         <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
         
                         <div class="card">
@@ -274,16 +274,17 @@
                                             @if(isset($treatmentProfile->labTests) && count($treatmentProfile->labTests) > 0)
                                                 @foreach ($treatmentProfile->labTests as $key => $row)
                                                     <tr>
-                                                        <th scope="row">{{ $key + 1 }}</th>
+                                                        <th scope="row">{{ ++$key }}</th>
+                                                        <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
                                                         <td>
-                                                            <select class="form-select" name="data[{{ $key }}][mast_test_id]" disabled>
+                                                            <select class="form-select mast_test_id" name="data[{{ $key }}][mast_test_id]" disabled>
                                                                 @foreach ($tests as $item)
                                                                     <option value="{{ $item->id }}" {{ $row->mast_test_id == $item->id ? 'selected' : '' }}>{{ $item->test_name }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select class="form-select" name="data[{{ $key }}][type]" disabled>
+                                                            <select class="form-select type" name="data[{{ $key }}][type]" disabled>
                                                                 <option value="1" {{ $row->type == 1 ? 'selected' : '' }}>Blood sample</option>
                                                                 <option value="2" {{ $row->type == 2 ? 'selected' : '' }}>Urine Sample</option>
                                                                 <option value="3" {{ $row->type == 3 ? 'selected' : '' }}>Stool Sample</option>
@@ -293,20 +294,22 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select class="form-select" name="data[{{ $key }}][mast_organ_id]" disabled>
+                                                            <select class="form-select mast_organ_id" name="data[{{ $key }}][mast_organ_id]" disabled>
                                                                 @foreach ($organs as $item)
                                                                     <option value="{{ $item->id }}" {{ $row->mast_organ_id == $item->id ? 'selected' : '' }}>{{ $item->organ_name }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
-                                                        <td><textarea name="data[{{ $key }}][comments]" rows="1" class="form-control" disabled>{{ $row->comments }}</textarea></td>
-                                                        <td><input type="number" name="data[{{ $key }}][cost]" class="form-control" value="{{ $row->cost }}" disabled></td>
-                                                        <td><input type="text" name="data[{{ $key }}][lab]" class="form-control" value="{{ $row->lab }}" disabled></td>
+                                                        <td><textarea rows="1" name="data[{{ $key }}][comments]" class="form-control comments" disabled>{{ $row->comments }}</textarea></td>
+                                                        <td><input type="number" name="data[{{ $key }}][cost]" class="form-control cost" value="{{ $row->cost }}" disabled></td>
+                                                        <td><input type="text" name="data[{{ $key }}][lab]" class="form-control lab" value="{{ $row->lab }}" disabled></td>
+                                                        <td><input type="file" name="data[{{ $key }}][upload_tool]" class="form-control upload_tool" value="{{ $row->upload_tool }}" disabled></td>
                                                         <td class="pt-3">
-                                                            <a href="{{route('treatment-labtest.dwonload', $row->id)}}" class="text-white bg-success p-2 border-rounded"><i class="ri-download-2-line fs-17 lh-1 align-middle"></i> Download</a>
+                                                            <a href="{{route('treatment-labtest.dwonload', $row->id)}}" class="text-white bg-success p-2 border-rounded {{ empty($row->upload_tool) ? 'd-none' : '' }}"><i class="ri-download-2-line fs-17 lh-1 align-middle"></i> Download</a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
+
                                             @endif
                                         </tbody>
                                         <tfoot class="table-light">
@@ -317,9 +320,8 @@
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
-                                                        <i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save
-                                                    </button>
+                                                    <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-2"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-2"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                                 </td>
                                             </tr>
                                         </tfoot>
@@ -387,6 +389,7 @@
 
                 </div>
             </div>
+
             <!-- Medication/Remedy List & Schedule -->
             <div class="tab-content text-muted">
                 <div class="tab-pane {{ Session::has('step3') ? 'active show' : '' }}" id="nav-border-step3" role="tabpanel">
@@ -395,6 +398,7 @@
                             <form action="{{ route('medication-schedule.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
+                                <input type="hidden" value="{{ count($surgicalIntervention) > 0 ? '1' : '' }}" id="hasMedicationSchedule">
 
                                 <div class="table-responsive table-card">
                                     <table id="medicationTable" class="table table-nowrap table-striped mb-0">
@@ -415,50 +419,59 @@
                                         <tbody>
                                             @if(isset($medicationSchedule) && count($medicationSchedule) > 0)
                                                 @foreach ($medicationSchedule as $key => $row)
-                                                    <tr>
-                                                        <th scope="row">{{ ++$key }}</th>
-                                                        <td>
-                                                            <select class="form-select" name="data[{{ $key }}][mast_equipment_id]" disabled>
-                                                                @foreach($equipments as $equipment)
-                                                                    <option value="{{ $equipment->id }}" {{ $row->equipment->name == $equipment->name ? 'selected' : '' }}>{{ $equipment->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="text" name="data[{{ $key }}][full_name]" class="form-control" value="{{ $row->full_name }}" disabled></td>
-                                                        <td>
-                                                            <select class="form-select" name="data[{{ $key }}][mast_power_id]" disabled>
-                                                                @foreach($powers as $power)
-                                                                    <option value="{{ $power->id }}" {{ $row->power->name == $power->name ? 'selected' : '' }}>{{ $power->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select class="form-select" name="data[{{ $key }}][duration]" disabled>
-                                                                @foreach(['3 Days', '7 Days', '10 Days', '14 Days', '21 Days', '28 Days', '1 Month', '2 Months', '3 Months', '6 Months', 'Extensive (Undecided)'] as $duration)
-                                                                    <option value="{{ $duration }}" {{ $row->duration == $duration ? 'selected' : '' }}>{{ $duration }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="text" name="data[{{ $key }}][frequency]" class="form-control" value="{{ $row->frequency }}" disabled></td>
-                                                        <td><input type="number" name="data[{{ $key }}][cost]" class="form-control" value="{{ $row->cost }}" disabled></td>
-                                                        <td>
-                                                            <select class="form-select" name="data[{{ $key }}][timing]" disabled>
-                                                                @foreach(['Before meal', 'After meal', 'On Empty Stomach'] as $timing)
-                                                                    <option value="{{ $timing }}" {{ $row->timing == $timing ? 'selected' : '' }}>{{ $timing }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select class="form-select" name="data[{{ $key }}][antibiotic]" disabled>
-                                                                @foreach(['Yes', 'No', 'Not Sure'] as $antibiotic)
-                                                                    <option value="{{ $antibiotic }}" {{ $row->antibiotic == $antibiotic ? 'selected' : '' }}>{{ $antibiotic }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
-                                                        <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
-                                                    </tr>
+                                                <tr>
+                                                    <th scope="row">{{ ++$key }}</th>
+                                                    <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
+                                                    <td>
+                                                        <select class="form-select mast_equipment_id" name="data[{{ $key }}][mast_equipment_id]">
+                                                            @foreach($equipments as $equipment)
+                                                                <option value="{{ $equipment->id }}" {{ isset($row->mast_equipment_id) && $row->mast_equipment_id == $equipment->id ? 'selected' : '' }}>{{ $equipment->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="text" name="data[{{ $key }}][full_name]" class="form-control full_name" value="{{ $row['full_name'] ?? '' }}"></td>
+                                                    <td>
+                                                        <select class="form-select mast_power_id" name="data[{{ $key }}][mast_power_id]">
+                                                            @foreach($powers as $power)
+                                                                <option value="{{ $power->id }}" {{ isset($row['mast_power_id']) && $row['mast_power_id'] == $power->id ? 'selected' : '' }}>{{ $power->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select duration" name="data[{{ $key }}][duration]">
+                                                            @foreach(['3 Days', '7 Days', '10 Days', '14 Days', '21 Days', '28 Days', '1 Month', '2 Months', '3 Months', '6 Months', 'Extensive (Undecided)'] as $duration)
+                                                                <option value="{{ $duration }}" {{ isset($row['duration']) && $row['duration'] == $duration ? 'selected' : '' }}>{{ $duration }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select frequency" name="data[{{ $key }}][frequency]">
+                                                            <option value="">-- Select --</option>
+                                                            <option value="0.0.1" {{ isset($row['frequency']) && $row['frequency'] == '0.0.1' ? 'selected' : '' }}>0.0.1</option>
+                                                            <option value="0.1.0" {{ isset($row['frequency']) && $row['frequency'] == '0.1.0' ? 'selected' : '' }}>0.1.0</option>
+                                                            <option value="1.0.0" {{ isset($row['frequency']) && $row['frequency'] == '1.0.0' ? 'selected' : '' }}>1.0.0</option>
+                                                            <option value="1.0.1" {{ isset($row['frequency']) && $row['frequency'] == '1.0.1' ? 'selected' : '' }}>1.0.1</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="number" name="data[{{ $key }}][cost]" class="form-control cost" value="{{ $row['cost'] ?? '' }}"></td>
+                                                    <td>
+                                                        <select class="form-select timing" name="data[{{ $key }}][timing]">
+                                                            @foreach(['Before meal', 'After meal', 'On Empty Stomach'] as $timing)
+                                                                <option value="{{ $timing }}" {{ isset($row['timing']) && $row['timing'] == $timing ? 'selected' : '' }}>{{ $timing }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select antibiotic" name="data[{{ $key }}][antibiotic]">
+                                                            @foreach(['Yes', 'No', 'Not Sure'] as $antibiotic)
+                                                                <option value="{{ $antibiotic }}" {{ isset($row['antibiotic']) && $row['antibiotic'] == $antibiotic ? 'selected' : '' }}>{{ $antibiotic }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
                                                 @endforeach
                                             @endif
+                                        
                                         </tbody>
                                         <tfoot class="table-light">
                                             <tr>
@@ -468,9 +481,8 @@
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
-                                                        <i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save
-                                                    </button>
+                                                    <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-3"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-3"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                                 </td>
                                             </tr>
                                         </tfoot>
@@ -518,7 +530,7 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select class="form-select frequency" name="data[${index}][frequency]">
+                                                <select class="form-select" name="data[${index}][frequency]">
                                                     <option value="">-- Select --</option>
                                                     <option value="0.0.1">0.0.1</option>
                                                     <option value="0.1.0">0.1.0</option>
@@ -632,7 +644,8 @@
                             <form action="{{ route('surgical-intervention.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
-                            
+                                <input type="hidden" value="{{ count($surgicalIntervention) > 0 ? '1' : '' }}" id="hasSurgicalIntervention">
+
                                 <div class="table-responsive table-card">
                                     <table id="surgicalTable" class="table table-nowrap table-striped mb-0">
                                         <thead class="table-light">
@@ -650,9 +663,10 @@
                                             @if(isset($surgicalIntervention) && count($surgicalIntervention) > 0)
                                                 @foreach ($surgicalIntervention as $key => $row)
                                                     <tr>
-                                                        <td>{{ $key + 1 }}</td>
+                                                        <td>{{ ++$key }}</td>
+                                                        <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
                                                         <td> 
-                                                            <select class="form-select" name="data[{{ $key }}][intervention]" disabled>
+                                                            <select class="form-select intervention" name="data[{{ $key }}][intervention]" disabled>
                                                                 <option value="Prosthesis" {{ $row->intervention == "Prosthesis" ? 'selected' : '' }}>Prosthesis</option>
                                                                 <option value="Orthosis" {{ $row->intervention == "Orthosis" ? 'selected' : '' }}>Orthosis</option>
                                                                 <option value="Surgery (Minor)" {{ $row->intervention == "Surgery (Minor)" ? 'selected' : '' }}>Surgery (Minor)</option>
@@ -667,7 +681,7 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select class="form-select" name="data[{{ $key }}][due_time]" disabled>
+                                                            <select class="form-select due_time" name="data[{{ $key }}][due_time]" disabled>
                                                                 <option value="ASAP" {{ $row->due_time == "ASAP" ? 'selected' : '' }}>ASAP</option>
                                                                 <option value="Within 24 Hours" {{ $row->due_time == "Within 24 Hours" ? 'selected' : '' }}>Within 24 Hours</option>
                                                                 <option value="Within 2 Days" {{ $row->due_time == "Within 2 Days" ? 'selected' : '' }}>Within 2 Days</option>
@@ -685,25 +699,23 @@
                                                                 <option value="No time limit" {{ $row->due_time == "No time limit" ? 'selected' : '' }}>No time limit</option>
                                                             </select>
                                                         </td>
-                                                        <td><textarea name="data[{{ $key }}][details]" class="form-control" rows="1" disabled>{{ $row->details }}</textarea></td>
-                                                        <td><input type="number" name="data[{{ $key }}][cost]" class="form-control" value="{{ $row->cost }}" disabled></td>
-                                                        <td><input type="number" name="data[{{ $key }}][date_line]" class="form-control" value="{{ $row->date_line }}" disabled></td>
-                                                        <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                                                        <td><textarea name="data[{{ $key }}][details]" class="form-control details" rows="1" disabled>{{ $row->details }}</textarea></td>
+                                                        <td><input type="date" name="data[{{ $key }}][date_line]" class="form-control date_line" value="{{ $row->date_line }}" disabled></td>
+                                                        <td><input type="number" name="data[{{ $key }}][cost]" class="form-control cost" value="{{ $row->cost }}" disabled></td>
                                                     </tr>
                                                 @endforeach
                                             @endif
                                         </tbody>
                                         <tfoot class="table-light">
                                             <tr>
-                                                <td colspan="5">
+                                                <td colspan="6">
                                                     <button type="button" id="addRowSurgical" class="btn btn-secondary btn-label waves-effect waves-light">
                                                         <i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Row
                                                     </button>
                                                 </td>
                                                 <td class="text-end">
-                                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
-                                                        <i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save
-                                                    </button>
+                                                    <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-4"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-4"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                                 </td>
                                             </tr>
                                         </tfoot>
@@ -791,6 +803,7 @@
                     </div>
                 </div>
             </div>
+
             <!--Optional Question(s) && Restriction(s)-->
             <div class="tab-content text-muted">
                 <div class="tab-pane {{ Session::has('step5') ? 'active show' : '' }}" id="nav-border-step5" role="tabpanel">
@@ -805,7 +818,7 @@
                                 <div class="card-body">
                                     <form action="{{ route('optional-questions.store') }}" method="POST">
                                         @csrf
-                                        <input type="hidden" name="id" value="{{ $optionsalQuestion->id ?? '' }}">
+                                        <input type="hidden" name="id" value="{{ $optionsalQuestion->id ?? '' }}" id="optionsalQuestionId">
                                         <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
                 
                                         <div class="row mb-3">
@@ -890,9 +903,8 @@
                                         </div>
                 
                                         <div class="card-footer d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
-                                                <i class="ri-check-double-line label-icon align-middle fs-16 me-7"></i> Save
-                                            </button>
+                                            <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-5"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-5"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                         </div>
                                     </form>
 
@@ -938,7 +950,8 @@
                                     <form id="restrictionForm" action="{{ route('restriction.store') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
-                
+                                        <input type="hidden" value="{{ count($restriction) > 0 ? '1' : '' }}" id="hasRestriction">
+
                                         <div class="table-responsive table-card">
                                             <table id="restrictionTable" class="table table-nowrap table-striped mb-0">
                                                 <thead class="table-light">
@@ -954,8 +967,9 @@
                                                         @foreach ($restriction as $key => $row)
                                                             <tr>
                                                                 <td>{{++$key }}</td>
-                                                                <td><input type="text" name="types[]" class="form-control" value="{{$row->type}}" disabled></td>
-                                                                <td><textarea name="details[]" class="form-control" rows="1" disabled>{{$row->details}}</textarea></td>
+                                                                <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
+                                                                <td><input type="text" name="data[{{$key}}][type]" class="form-control types" value="{{$row->type}}" disabled></td>
+                                                                <td><textarea name="data[{{$key}}][details]" class="form-control details" rows="1" disabled>{{$row->details}}</textarea></td>
                                                             </tr>
                                                         @endforeach
                                                     @endif
@@ -968,9 +982,8 @@
                                                             </button>
                                                         </td>
                                                         <td class="text-end">
-                                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light">
-                                                                <i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save
-                                                            </button>
+                                                            <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-6"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                                            <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-6"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                                         </td>
                                                     </tr>
                                                 </tfoot>
@@ -1000,8 +1013,8 @@
                                 function addRowRestriction(index){
                                     var newRow = `<tr>
                                         <td>${index}</td>
-                                        <td><input type="text" name="types[]" class="form-control"></td>
-                                        <td><textarea name="details[]" class="form-control" rows="1"></textarea></td>
+                                        <td><input type="text" name="data[${index}][type]" class="form-control"></td>
+                                        <td><textarea name="data[${index}][details]" class="form-control" rows="1"></textarea></td>
                                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
                                     </tr>`;
                                     $('#restrictionTable tbody').append(newRow);
@@ -1059,6 +1072,90 @@
                 showConfirmButton: false
             });
         @endif
+    </script>
+    <script>
+        $(document).ready(function() {
+            function setupEditAndSave(step, idSelector, fields) {
+                var id = $(idSelector).val();
+                if (id === null || id === '') {
+                    $('#save-btn-' + step).show();
+                    $('#edit-btn-' + step).hide();
+                } else {
+                    $('#edit-btn-' + step).show();
+                    $('#save-btn-' + step).hide();
+                    fields.forEach(function(field) {
+                        $(field).prop('disabled', true);
+                    });
+                }
+
+                $('#edit-btn-' + step).on('click', function() {
+                    $('#save-btn-' + step).show();
+                    $('#edit-btn-' + step).hide();
+                    fields.forEach(function(field) {
+                        $(field).prop('disabled', false);
+                    });
+                });
+            }
+            setupEditAndSave(1, "#caseRegistryId", [
+                '#date_of_primary_identification',
+                '#date_of_first_visit',
+                '#recurrence',
+                '#duration',
+                '#duration_unit',
+                '#area_of_problem',
+                '#type_of_ailment',
+                '.mast_complaints',
+                '#additional_complaints',
+            ]);
+            setupEditAndSave(2, "#treatmentProfileId", [
+                '#treatmentProfileId',
+                '#doctorName',
+                '#designation',
+                '#chamberAddress',
+                '#lastVisitDate',
+                '#fees',
+                '#comments',
+                '#diseaseDiagnosis',
+                '#prescription',
+
+                '.mast_test_id',
+                '.type',
+                '.mast_organ_id',
+                '.comments',
+                '.cost',
+                '.lab',
+                '.upload_tool',
+            ]);
+            setupEditAndSave(3, "#hasMedicationSchedule", [
+                '.mast_equipment_id',
+                '.full_name',
+                '.mast_power_id',
+                '.duration',
+                '.frequency',
+                '.cost',
+                '.timing',
+                '.antibiotic',
+            ]);
+            setupEditAndSave(4, "#hasSurgicalIntervention", [
+                '.intervention',
+                '.due_time',
+                '.details',
+                '.cost',
+                '.date_line',
+            ]);
+            setupEditAndSave(5, "#optionsalQuestionId", [
+                '#admitted_following_diagnosis',
+                '#hospitalization_duration',
+                '#total_cost_incurred',
+                '#medication_effectiveness',
+                '#satisfied_with_treatment',
+                '#recommend_physician',
+            ]);
+            setupEditAndSave(6, "#hasRestriction", [
+                '.types',
+                '.details',
+            ]);
+        });
     </script>
     @endpush
 

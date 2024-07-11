@@ -94,16 +94,39 @@ Route::group(['middleware' => ['auth']], function() {
  * -------------------------------------------------------------------------
  */
 Route::group(['middleware' => ['auth']], function() {
-    Route::get('/report-patient/user/list', [ReportController::class, 'reportUserIndex'])->name('report-user.index');
+    // Route::get('/report-patient/user/list', [ReportController::class, 'reportUserIndex'])->name('report-user.index');
     Route::get('/report-patient/admin/list', [ReportController::class, 'reportAdminIndex'])->name('report-admin.index'); //Next-use
     
     Route::get('/report/{id}/complete-profile-download', [ReportController::class, 'completeProfile'])->name('complete-profile.report');
-    Route::get('/report/{id}/doctor-visit-download', [ReportController::class, 'doctorVisit'])->name('doctor-visit.report');
-    Route::get('/report/{id}/medicine-list-download', [ReportController::class, 'medicineDownload'])->name('medicine-list.report');
+    Route::get('/report/{id}/doctor-visit-download', [ReportController::class, 'doctorVisit'])->name('doctor-visit.report'); // Report => 5
+    Route::get('/report/{id}/medicine-list-download', [ReportController::class, 'medicineDownload'])->name('medicine-list.report'); // Report => 6
     Route::get('/report/{id}/antibiotic-download', [ReportController::class, 'antibioticDownload'])->name('antibiotic-cost.report');
     Route::get('/report/{id}/test-done-download', [ReportController::class, 'testDownload'])->name('test-done.report');
     Route::get('/report/{id}/doctor-cost-download', [ReportController::class, 'doctorCost'])->name('doctor-cost.report');
     
+
+    /**-------------------------------------------------------------------------
+    * Report for All
+    * -------------------------------------------------------------------------
+    */
+    Route::get('/test-done-report', [ReportController::class, 'testDoneReport'])->name('report-user.index');
+    Route::get('/test-done-download/{id}/report', [ReportController::class, 'testDownload'])->name('test-done.download');
+    Route::get('/medicine-download/{id}/report', [ReportController::class, 'medicineDownload'])->name('medicine.download');
+    Route::get('/antibiotic-download/{id}/report', [ReportController::class, 'antibioticDownload'])->name('antibiotic.download');
+    Route::get('/doctor-cost-download/{id}/report', [ReportController::class, 'doctorCost'])->name('doctor-cost.download');
+    Route::get('/doctor-visit-download/{id}/report', [ReportController::class, 'doctorVisit'])->name('doctor-visit.download');
+
+
+    Route::get('/pathological-download/{id}/report', [ReportController::class, 'pathoLogical'])->name('pathological.download');
+    Route::get('/consume-cost-download/{id}/report', [ReportController::class, 'consumeCost'])->name('consume-cost.download');
+    Route::get('/surgical-cost.download/{id}/report', [ReportController::class, 'surgicalCost'])->name('surgical-cost.download');
+
+    Route::get('/cost-per-year-download',[ReportController::class, 'totalCost'])->name('cost-per-year.download');
+    Route::get('/cost-per-month-download',[ReportController::class, 'perMonth'])->name('cost-per-month.download');
+    Route::get('/vaccination-record-download',[ReportController::class, 'vaccinationRecord'])->name('vaccination-record.download');
+
+    Route::get('/report/{id}/years-record-download', [ReportController::class, 'yearsRecord'])->name('years-record.report');
+
 });
 
 

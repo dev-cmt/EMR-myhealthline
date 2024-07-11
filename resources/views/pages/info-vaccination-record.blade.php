@@ -204,7 +204,7 @@
                                                     <td>{{$row->dose_05}}</td>
                                                     <td>{{$row->booster}}</td>
                                                     <td>
-                                                        <a href="{{route('vaccinesectionthree',$row->id)}}" class="btn btn-soft-info btn-sm">
+                                                        <a href="{{route('vaccination.download',$row->id)}}" class="btn btn-soft-info btn-sm">
                                                             <i class="ri-file-list-3-line align-middle"></i> Download File
                                                         </a>
                                                     </td>
