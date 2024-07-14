@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('disease_vitiligo')->default(false);
             $table->boolean('disease_disability')->default(false);
             $table->boolean('disease_psoriasis')->default(false);
+            $table->boolean('disease_eczema')->default(false);
             $table->text('additional_comments')->nullable();
             $table->timestamps();
             

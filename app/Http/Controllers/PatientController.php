@@ -113,9 +113,9 @@ class PatientController extends Controller
             'religion' => 'required|string|max:255',
             'blood_group' => 'required|string|max:3',
             'height_feet' => 'required|numeric|min:0',
-            'height_inches' => 'required|numeric|min:0',
+            // 'height_inches' => 'required|numeric|min:0',
             'weight_kg' => 'required|numeric|min:0',
-            'weight_pounds' => 'required|numeric|min:0',
+            // 'weight_pounds' => 'required|numeric|min:0',
             'bmi' => 'nullable|numeric|min:0',
             'emergency_contact' => 'required|string|max:255',
             'mast_nationality_id' => 'required',
@@ -259,6 +259,7 @@ class PatientController extends Controller
             'disease_vitiligo' => 'boolean',
             'disease_disability' => 'boolean',
             'disease_psoriasis' => 'boolean',
+            'disease_eczema' => 'boolean',
             'additional_comments' => 'nullable|string',
         ]);
 
@@ -300,7 +301,7 @@ class PatientController extends Controller
             'pregnancy_status' => 'nullable|in:Yes,No',
             'menstrual_cycle' => 'nullable|in:Regular,Irregular,Menopaused',
             'activity_status' => 'nullable|in:Immobile/Paralyzed,Disabled,Not Very Active,Moderately Active,Highly Active',
-            'hereditary_disease' => 'nullable|string',
+            'remark' => 'nullable|string',
         ]);
 
         // Assuming you have authenticated user and patient_id

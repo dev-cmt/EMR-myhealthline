@@ -19,6 +19,7 @@ class GeneticDiseaseProfile extends Model
         'disease_vitiligo',
         'disease_disability',
         'disease_psoriasis',
+        'disease_eczema',
         'other_diseases',
         'additional_comments',
         'patient_id',

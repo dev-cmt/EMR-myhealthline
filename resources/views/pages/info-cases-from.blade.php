@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="row">
         <div class="col-lg-12 text-end mb-2">
-            <a href="{{route('info-cases-list')}}" class="btn btn-sm btn-danger">
+            <a href="{{route('info-cases-list')}}" class="btn btn-sm btn-dark">
                 <!--<i class="ri-add-line align-middle me-1"></i>--> Back
             </a>
         </div>
@@ -27,7 +27,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ Session::has('step4') ? 'active' : '' }}" id="section4" data-bs-toggle="tab" href="#nav-border-step4" role="tab" aria-selected="false">
-                        <i class="ri-question-answer-line align-middle me-1"></i>Surgical Intervention(s)
+                        <i class="ri-question-answer-line align-middle me-1"></i>Surgical Intervention(Optional)
                     </a>
                 </li>
                 <li class="nav-item">
@@ -222,7 +222,7 @@
                                         <div class="row mb-1">
                                             <label for="comments" class="form-label col-lg-5">Doctor's Comment</label>
                                             <div class="col-lg-7">
-                                                <textarea class="form-control" name="comments" id="comments" rows="1" placeholder="Enter your message">{{ $treatmentProfile->comments ?? '' }}</textarea>
+                                                <textarea class="form-control" name="comments" id="comments" rows="1" placeholder="Enter final comments from the last visit">{{ $treatmentProfile->comments ?? '' }}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -278,6 +278,7 @@
                                                         <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
                                                         <td>
                                                             <select class="form-select mast_test_id" name="data[{{ $key }}][mast_test_id]" disabled>
+                                                                <option value="">-- Select Test --</option>
                                                                 @foreach ($tests as $item)
                                                                     <option value="{{ $item->id }}" {{ $row->mast_test_id == $item->id ? 'selected' : '' }}>{{ $item->test_name }}</option>
                                                                 @endforeach
@@ -285,6 +286,7 @@
                                                         </td>
                                                         <td>
                                                             <select class="form-select type" name="data[{{ $key }}][type]" disabled>
+                                                                <option value="">-- Select Test --</option>
                                                                 <option value="1" {{ $row->type == 1 ? 'selected' : '' }}>Blood sample</option>
                                                                 <option value="2" {{ $row->type == 2 ? 'selected' : '' }}>Urine Sample</option>
                                                                 <option value="3" {{ $row->type == 3 ? 'selected' : '' }}>Stool Sample</option>
@@ -295,6 +297,7 @@
                                                         </td>
                                                         <td>
                                                             <select class="form-select mast_organ_id" name="data[{{ $key }}][mast_organ_id]" disabled>
+                                                                <option value="">-- Select Test --</option>
                                                                 @foreach ($organs as $item)
                                                                     <option value="{{ $item->id }}" {{ $row->mast_organ_id == $item->id ? 'selected' : '' }}>{{ $item->organ_name }}</option>
                                                                 @endforeach
@@ -348,17 +351,35 @@
                             });
 
                             function addRowLabTest(index){
-                                var newRow = '<tr>' +
-                                    '<th scope="row">' + (index + 1) + '</th>' +
-                                    '<td><select class="form-select" name="data[' + index + '][mast_test_id]">@foreach ($tests as $item)<option value="{{ $item->id }}">{{ $item->test_name }}</option>@endforeach</select></td>' +
-                                    '<td><select class="form-select" name="data[' + index + '][type]"><option value="1">Blood sample</option><option value="2">Urine Sample</option><option value="3">Stool Sample</option><option value="4">Imaging</option><option value="5">Genetic</option><option value="6">Biopsy</option></select></td>' +
-                                    '<td><select class="form-select" name="data[' + index + '][mast_organ_id]">@foreach ($organs as $item)<option value="{{ $item->id }}">{{ $item->organ_name }}</option>@endforeach</select></td>' +
-                                    '<td><textarea name="data[' + index + '][comments]" rows="1" class="form-control"></textarea></td>' +
-                                    '<td><input type="number" name="data[' + index + '][cost]" class="form-control"></td>' +
-                                    '<td><input type="text" name="data[' + index + '][lab]" class="form-control"></td>' +
-                                    '<td><input type="file" name="data[' + index + '][upload_tool]" class="form-control"></td>' +
-                                    '<td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button>' +
-                                    '</tr>';
+                                var newRow = `<tr>
+                                    <th scope="row">${index + 1}</th>
+                                    <td><select class="form-select" name="data[${index}][mast_test_id]">
+                                        <option value="">-- Select Test --</option>
+                                        @foreach ($tests as $item)
+                                            <option value="{{ $item->id }}">{{ $item->test_name }}</option>
+                                        @endforeach
+                                    </select></td>
+                                    <td><select class="form-select" name="data[${index}][type]">
+                                        <option value="">-- Select Type --</option>
+                                        <option value="1">Blood sample</option>
+                                        <option value="2">Urine Sample</option>
+                                        <option value="3">Stool Sample</option>
+                                        <option value="4">Imaging</option>
+                                        <option value="5">Genetic</option>
+                                        <option value="6">Biopsy</option>
+                                    </select></td>
+                                    <td><select class="form-select" name="data[${index}][mast_organ_id]">
+                                        <option value="">-- Select Organ --</option>
+                                        @foreach ($organs as $item)
+                                            <option value="{{ $item->id }}">{{ $item->organ_name }}</option>
+                                        @endforeach
+                                    </select></td>
+                                    <td><textarea name="data[${index}][comments]" rows="1" class="form-control"></textarea></td>
+                                    <td><input type="number" name="data[${index}][cost]" class="form-control"></td>
+                                    <td><input type="text" name="data[${index}][lab]" class="form-control"></td>
+                                    <td><input type="file" name="data[${index}][upload_tool]" class="form-control"></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                                </tr>`;
 
                                 $('#dataTableLabTests tbody').append(newRow);
                                 updateRowIndices();
@@ -398,7 +419,7 @@
                             <form action="{{ route('medication-schedule.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
-                                <input type="hidden" value="{{ count($surgicalIntervention) > 0 ? '1' : '' }}" id="hasMedicationSchedule">
+                                <input type="hidden" value="{{ count($medicationSchedule ?? []) > 0 ? '1' : '' }}" id="hasMedicationSchedule">
 
                                 <div class="table-responsive table-card">
                                     <table id="medicationTable" class="table table-nowrap table-striped mb-0">
@@ -410,7 +431,7 @@
                                                 <th scope="col">Power</th>
                                                 <th scope="col">Duration</th>
                                                 <th scope="col">Frequency</th>
-                                                <th scope="col">Cost (Total)</th>
+                                                <th scope="col">Total Cost (Full course)</th>
                                                 <th scope="col">Timing</th>
                                                 <th scope="col">Anti-Biotic</th>
                                                 <th scope="col">Action</th>
@@ -447,10 +468,13 @@
                                                     <td>
                                                         <select class="form-select frequency" name="data[{{ $key }}][frequency]">
                                                             <option value="">-- Select --</option>
-                                                            <option value="0.0.1" {{ isset($row['frequency']) && $row['frequency'] == '0.0.1' ? 'selected' : '' }}>0.0.1</option>
-                                                            <option value="0.1.0" {{ isset($row['frequency']) && $row['frequency'] == '0.1.0' ? 'selected' : '' }}>0.1.0</option>
-                                                            <option value="1.0.0" {{ isset($row['frequency']) && $row['frequency'] == '1.0.0' ? 'selected' : '' }}>1.0.0</option>
-                                                            <option value="1.0.1" {{ isset($row['frequency']) && $row['frequency'] == '1.0.1' ? 'selected' : '' }}>1.0.1</option>
+                                                            <option value="0+0+1" {{ isset($row['frequency']) && $row['frequency'] == '0+0+1' ? 'selected' : '' }}>0+0+1</option>
+                                                            <option value="0+1+0" {{ isset($row['frequency']) && $row['frequency'] == '0+1+0' ? 'selected' : '' }}>0+1+0</option>
+                                                            <option value="1+0+0" {{ isset($row['frequency']) && $row['frequency'] == '1+0+0' ? 'selected' : '' }}>1+0+0</option>
+                                                            <option value="1+0+1" {{ isset($row['frequency']) && $row['frequency'] == '1+0+1' ? 'selected' : '' }}>1+0+1</option>
+                                                            <option value="0+1+1" {{ isset($row['frequency']) && $row['frequency'] == '0+1+1' ? 'selected' : '' }}>0+1+1</option>
+                                                            <option value="1+1+0" {{ isset($row['frequency']) && $row['frequency'] == '1+1+0' ? 'selected' : '' }}>1+1+0</option>
+                                                            <option value="1+1+1" {{ isset($row['frequency']) && $row['frequency'] == '1+1+1' ? 'selected' : '' }}>1+1+1</option>
                                                         </select>
                                                     </td>
                                                     <td><input type="number" name="data[{{ $key }}][cost]" class="form-control cost" value="{{ $row['cost'] ?? '' }}"></td>
@@ -509,6 +533,7 @@
                                             <th scope="row">${index}</th>
                                             <td>
                                                 <select class="form-select" name="data[${index}][mast_equipment_id]">
+                                                    <option value="">--Select--</option>
                                                     @foreach($equipments as $equipment)
                                                     <option value="{{ $equipment->id }}">{{ $equipment->name }}</option>
                                                     @endforeach
@@ -524,6 +549,7 @@
                                             </td>
                                             <td>
                                                 <select class="form-select" name="data[${index}][duration]">
+                                                    <option value="">--Select--</option>
                                                     @foreach(['3 Days', '7 Days', '10 Days', '14 Days', '21 Days', '28 Days', '1 Month', '2 Months', '3 Months', '6 Months', 'Extensive (Undecided)'] as $duration)
                                                         <option value="{{ $duration }}">{{ $duration }}</option>
                                                     @endforeach
@@ -532,17 +558,20 @@
                                             <td>
                                                 <select class="form-select" name="data[${index}][frequency]">
                                                     <option value="">-- Select --</option>
-                                                    <option value="0.0.1">0.0.1</option>
-                                                    <option value="0.1.0">0.1.0</option>
-                                                    <option value="1.0.0">1.0.0</option>
-                                                    <option value="1.0.1">1.0.1</option>
+                                                    <option value="0+0+1">0+0+1</option>
+                                                    <option value="0+1+0">0+1+0</option>
+                                                    <option value="1+0+0">1+0+0</option>
+                                                    <option value="1+0+1">1+0+1</option>
+                                                    <option value="0+1+1">0+1+1</option>
+                                                    <option value="1+1+0">1+1+0</option>
+                                                    <option value="1+1+1">1+1+1</option>
                                                 </select>
                                                 <!-- Bootstrap Modal for Data Input -->
                                                 <div class="modal fade" id="dataModal${index}" tabindex="-1" aria-labelledby="dataModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="dataModalLabel">Enter Data</h5>
+                                                                <h5 class="modal-title" id="dataModalLabel">Enter intended medication intake time</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
@@ -560,7 +589,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Save and Close</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -569,6 +598,7 @@
                                             <td><input type="number" name="data[${index}][cost]" class="form-control"></td>
                                             <td>
                                                 <select class="form-select" name="data[${index}][timing]">
+                                                    <option value="">--Select--</option>
                                                     @foreach(['Before meal', 'After meal', 'On Empty Stomach'] as $timing)
                                                         <option value="{{ $timing }}">{{ $timing }}</option>
                                                     @endforeach
@@ -595,21 +625,33 @@
                                             var modalId = `#dataModal${index}`;
                                             if (selectedValue !== "") {
                                                 $(modalId).modal('show');
-                                                if (selectedValue == "0.0.1") {
+                                                if (selectedValue == "0+0+1") {
                                                     $(`.morningInput${index}`).hide();
                                                     $(`.noonInput${index}`).hide();
                                                     $(`.nightInput${index}`).show();
-                                                } else if (selectedValue == "0.1.0") {
+                                                } else if (selectedValue == "0+1+0") {
                                                     $(`.morningInput${index}`).hide();
                                                     $(`.noonInput${index}`).show();
                                                     $(`.nightInput${index}`).hide();
-                                                } else if (selectedValue == "1.0.0") {
+                                                } else if (selectedValue == "1+0+0") {
                                                     $(`.morningInput${index}`).show();
                                                     $(`.noonInput${index}`).hide();
                                                     $(`.nightInput${index}`).hide();
-                                                } else if (selectedValue == "1.0.1") {
+                                                } else if (selectedValue == "1+0+1") {
                                                     $(`.morningInput${index}`).show();
                                                     $(`.noonInput${index}`).hide();
+                                                    $(`.nightInput${index}`).show();
+                                                } else if (selectedValue == "0+1+1") {
+                                                    $(`.morningInput${index}`).hide();
+                                                    $(`.noonInput${index}`).show();
+                                                    $(`.nightInput${index}`).show();
+                                                } else if (selectedValue == "1+1+0") {
+                                                    $(`.morningInput${index}`).show();
+                                                    $(`.noonInput${index}`).show();
+                                                    $(`.nightInput${index}`).hide();
+                                                } else if (selectedValue == "1+1+1") {
+                                                    $(`.morningInput${index}`).show();
+                                                    $(`.noonInput${index}`).show();
                                                     $(`.nightInput${index}`).show();
                                                 }
                                             } else {
@@ -644,7 +686,7 @@
                             <form action="{{ route('surgical-intervention.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
-                                <input type="hidden" value="{{ count($surgicalIntervention) > 0 ? '1' : '' }}" id="hasSurgicalIntervention">
+                                <input type="hidden" value="{{ count($surgicalIntervention ?? []) > 0 ? '1' : '' }}" id="hasSurgicalIntervention">
 
                                 <div class="table-responsive table-card">
                                     <table id="surgicalTable" class="table table-nowrap table-striped mb-0">
@@ -950,26 +992,35 @@
                                     <form id="restrictionForm" action="{{ route('restriction.store') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="case_registry_id" value="{{ $caseRegistry->id ?? '' }}">
-                                        <input type="hidden" value="{{ count($restriction) > 0 ? '1' : '' }}" id="hasRestriction">
+                                        <input type="hidden" value="{{ count($restriction ?? []) > 0 ? '1' : '' }}" id="hasRestriction">
 
                                         <div class="table-responsive table-card">
                                             <table id="restrictionTable" class="table table-nowrap table-striped mb-0">
-                                                <thead class="table-light">
+                                                <thead class="thead-light">
                                                     <tr>
-                                                        <th scope="col">SL</th>
-                                                        <th scope="col">Type</th>
-                                                        <th scope="col">Details</th>
-                                                        <th scope="col">Action</th>
+                                                        <th scope="col" style="width: 5%;">SL</th>
+                                                        <th scope="col" style="width: 25%;">Type</th>
+                                                        <th scope="col" style="width: 60%;">Details</th>
+                                                        <th scope="col" style="width: 10%;">Action</th>
                                                     </tr>
-                                                </thead>
+                                                </thead>                                                
                                                 <tbody>
                                                     @if(isset($restriction) && count($restriction) > 0)
                                                         @foreach ($restriction as $key => $row)
                                                             <tr>
                                                                 <td>{{++$key }}</td>
                                                                 <input type="hidden" name="data[{{ $key }}][id]" value="{{$row->id}}">
-                                                                <td><input type="text" name="data[{{$key}}][type]" class="form-control types" value="{{$row->type}}" disabled></td>
+                                                                <td>
+                                                                    <select name="data[{{$key}}][type]" id="restriction" class="form-control types" disabled>
+                                                                        <option value="">-- Select --</option>
+                                                                        <option value="Dietary" {{ isset($row) && $row->type == 'Dietary' ? 'selected' : '' }}>Dietary</option>
+                                                                        <option value="Mobility" {{ isset($row) && $row->type == 'Mobility' ? 'selected' : '' }}>Mobility</option>
+                                                                        <option value="Other(s)" {{ isset($row) && $row->type == 'Other(s)' ? 'selected' : '' }}>Other(s)</option>
+                                                                        <option value="Cognitive" {{ isset($row) && $row->type == 'Cognitive' ? 'selected' : '' }}>Cognitive</option>
+                                                                    </select>                                                                    
+                                                                </td>
                                                                 <td><textarea name="data[{{$key}}][details]" class="form-control details" rows="1" disabled>{{$row->details}}</textarea></td>
+                                                                <td></td>
                                                             </tr>
                                                         @endforeach
                                                     @endif
@@ -1013,7 +1064,15 @@
                                 function addRowRestriction(index){
                                     var newRow = `<tr>
                                         <td>${index}</td>
-                                        <td><input type="text" name="data[${index}][type]" class="form-control"></td>
+                                        <td>
+                                            <select name="data[${index}][type]" id="restriction" class="form-control" required>
+                                                <option value="">-- Select --</option>
+                                                <option value="Dietary">Dietary</option>
+                                                <option value="Mobility">Mobility</option>
+                                                <option value="Other(s)">Other(s)</option>
+                                                <option value="Cognitive">Cognitive</option>
+                                            </select>
+                                        </td>
                                         <td><textarea name="data[${index}][details]" class="form-control" rows="1"></textarea></td>
                                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
                                     </tr>`;

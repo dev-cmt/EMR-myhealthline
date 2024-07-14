@@ -116,8 +116,8 @@
                         <input type="hidden" id="setId" name="appointment_id">
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label for="full_name" class="form-label">Full Name</label>
-                                <input type="text" name="full_name" class="form-control" id="full_name" placeholder="Enter Doctor Full Name" value="{{ old('full_name') }}">
+                                <label for="full_name" class="form-label">Doctor’s Full Name</label>
+                                <input type="text" name="full_name" class="form-control" id="full_name" placeholder="Enter doctor name..." value="{{ old('full_name') }}">
                                 @error('full_name')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -130,7 +130,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="contact_number" class="form-label">Contact Number</label>
+                                <label for="contact_number" class="form-label">Doctor’s Contact Number</label>
                                 <input type="text" class="form-control" id="contact_number" name="contact_number" placeholder="Enter your number" value="{{ old('contact_number') }}">
                                 @error('contact_number')
                                     <div class="text-danger">{{ $message }}</div>

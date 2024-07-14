@@ -26,7 +26,7 @@ return new class extends Migration
             $table->enum('pregnancy_status', ['Yes', 'No'])->nullable();
             $table->enum('menstrual_cycle', ['Regular', 'Irregular', 'Menopaused'])->nullable();
             $table->enum('activity_status', ['Immobile/Paralyzed', 'Disabled', 'Not Very Active', 'Moderately Active', 'Highly Active'])->nullable();
-            $table->text('hereditary_disease')->nullable();
+            $table->text('remark')->nullable();
             $table->timestamps();
 
             // Foreign key

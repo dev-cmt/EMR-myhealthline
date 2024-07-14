@@ -19,7 +19,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ Session::has('step3') ? 'active' : '' }}" id="section3" data-bs-toggle="tab" href="#nav-border-step3" role="tab" aria-selected="false">
-                                <i class="ri-question-answer-line align-middle me-1"></i>Genetic Disease Profile
+                                <i class="ri-question-answer-line align-middle me-1"></i>Genetic/Auto Immune Disease
                             </a>
                         </li>
                         <li class="nav-item">
@@ -52,7 +52,7 @@
                                     <div class="col-md-6">
                                         <div class="row mb-2">
                                             <div class="col-lg-3">
-                                                <label for="emergencyContact" class="form-label">Emergency Contact</label>
+                                                <label for="emergencyContact" class="form-label">Emergency Contact Details</label>
                                             </div>
                                             <div class="col-lg-9">
                                                 <input type="text" class="form-control" id="emergencyContact" name="emergency_contact" placeholder="Enter emergency contact" value="{{ $user->emergency_contact ?? old('emergency_contact') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
@@ -318,7 +318,7 @@
                                 </div> <!--end row-->
         
                                 <div class="col-12 text-center">
-                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light" {{ isset($user) && $user->id ? 'disabled' : '' }}><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light  {{ isset($user) && $user->id ? 'd-none' : '' }}"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                 </div>
                             </form>
                         </div>
@@ -609,7 +609,7 @@
 
                             </div>
                         </div>
-                        <!--Genetic Disease Profile-->
+                        <!--Genetic/Auto Immune Disease-->
                         <div class="tab-content text-muted">
                             <div class="tab-pane {{ Session::has('step3') ? 'active show' : '' }}" id="nav-border-step3" role="tabpanel">
                                 <form action="{{ route('genetic-disease-profile.store') }}" method="POST">
@@ -674,6 +674,12 @@
                                                     Psoriasis
                                                 </label>
                                             </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="eczemaCheckbox" name="disease_eczema" value="1" {{ $geneticDiseaseProfile->disease_eczema ?? false ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="eczemaCheckbox">
+                                                    Eczema
+                                                </label>
+                                            </div>
                                         </div>
                                         <div class="col-md-8">
                                             <label for="additional_comments" class="form-label mt-3">Please mention in case if you have a hereditary disease which is not included in the list</label>
@@ -734,7 +740,7 @@
                                                 <div class="col-md-6">
                                                     <div class="row mb-2">
                                                         <div class="col-lg-5">
-                                                            <label for="emailAddress" class="form-label">Email Address</label>
+                                                            <label for="emailAddress" class="form-label">Alternative Email Address</label>
                                                         </div>
                                                         <div class="col-lg-7">
                                                             <input type="email" class="form-control" id="emailAddress" name="email_address" placeholder="Enter your email address" value="{{ $otherPersonalInformation->email_address ?? ''}}">
@@ -747,7 +753,7 @@
                                                 <div class="col-md-6">
                                                     <div class="row mb-2">
                                                         <div class="col-lg-5">
-                                                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                                                            <label for="phoneNumber" class="form-label">Alternative Phone Number</label>
                                                         </div>
                                                         <div class="col-lg-7">
                                                             <input type="text" class="form-control" id="phoneNumber" name="phone_number" placeholder="Enter your phone number" value="{{ $otherPersonalInformation->phone_number ?? ''}}">
@@ -826,7 +832,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 {{ $user->gender != 'Female' ? 'd-none' : '' }}">
                                                     <div class="row mb-2">
                                                         <div class="col-lg-5">
                                                             <label for="menstrualCycle" class="form-label">Menstrual Cycle</label>
@@ -844,7 +850,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 {{ $user->gender != 'Female' ? 'd-none' : '' }}">
+                                                <div class="col-md-6">
                                                     <div class="row mb-2">
                                                         <div class="col-lg-5">
                                                             <label for="activityStatus" class="form-label">Activity Status</label>
@@ -867,9 +873,9 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label for="hereditaryDisease" class="form-label">Please mention if you have a hereditary disease not listed above</label>
-                                            <textarea class="form-control" id="hereditaryDisease" name="hereditary_disease" rows="10" placeholder="Enter your hereditary disease other's information">{{$otherPersonalInformation->hereditary_disease ?? ''}}</textarea>
-                                            @error('hereditary_disease')
+                                            <label for="remark" class="form-label">Any other comment or sharing with regards to Personal Health</label>
+                                            <textarea class="form-control" id="remark" name="remark" rows="10" placeholder="Sharing with regards to Personal Health">{{$otherPersonalInformation->remark ?? ''}}</textarea>
+                                            @error('remark')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>

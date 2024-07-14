@@ -62,7 +62,7 @@
                                                         <td>{{$row->dose_05}}</td>
                                                         <td>{{$row->booster}}</td>
                                                         <td>
-                                                            <a href="{{ route('vaccination.download', $row->id) }}" class="btn btn-soft-info btn-sm">
+                                                            <a href="{{ route('vaccination.download', $row->id) }}" class="btn btn-soft-info btn-sm {{$row->upload_tool ?? 'd-none'}}">
                                                                 <i class="ri-file-list-3-line align-middle"></i> Download File
                                                             </a>
                                                         </td>
@@ -77,7 +77,6 @@
 
                         </div>
                         <div class="tab-pane {{ Session::has('step2') ? 'active show' : '' }}" id="nav-border-justified-profile" role="tabpanel">
-
                             <!--Grid Data-->
                             <div class="card-header align-items-center d-flex">
                                 <h4 class="card-title mb-0 flex-grow-1">Section-02 (Covid-19)</h4>
@@ -126,7 +125,31 @@
                                                     <tr>
                                                         <td>{{ $covidcirtificate->certificate_number }}</td>
                                                         <td>
-                                                            <img src="{{ asset('public/' . $covidcirtificate->upload_tool) }}" width="60">
+                                                            @php
+                                                                $filePath = $covidcirtificate->upload_tool;
+                                                                $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                                                $fileType = '';
+
+                                                                switch(strtolower($extension)) {
+                                                                    case 'pdf':
+                                                                        $fileType = 'PDF File';
+                                                                        break;
+                                                                    case 'doc':
+                                                                    case 'docx':
+                                                                        $fileType = 'Word File';
+                                                                        break;
+                                                                    case 'jpg':
+                                                                    case 'jpeg':
+                                                                    case 'png':
+                                                                        $fileType = 'JPG File';
+                                                                        break;
+                                                                    default:
+                                                                        $fileType = 'Unknown File Type';
+                                                                }
+                                                            @endphp
+
+                                                            <span>{{ $fileType }}</span>
+                                                            {{-- <img src="{{ asset('public/' . $covidcirtificate->upload_tool) }}" width="60"> --}}
                                                         </td>
                                                         <td>
                                                             <a href="{{ route('covid_file_download') }}" class="btn btn-success">
@@ -150,7 +173,7 @@
                                                 </div>
                                             @endif
                                             <div>
-                                                <input type="file" name="upload_tool" id="upload_tool" class="form-control mb-2">
+                                                <input type="file" name="upload_tool" id="upload_tool" class="form-control mb-2"  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" >
                                             </div>
                                             <div class="text-end">
                                                 <button type="submit" class="btn btn-primary">File Upload</button>
@@ -227,12 +250,12 @@
     </div>
 
 
-    <!-- create modal open -->
+    <!-- Modal open Section 1, 3 -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Enter Vaccine Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -349,11 +372,12 @@
         </div>
     </div>
 
+    <!-- Modal open Section 2-->
     <div class="modal fade" id="exampleModalcovid" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create Covid-19</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Enter Covid-19 Vaccination Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -362,7 +386,7 @@
                         <div class="row mt-2">
                             <label for="" class="col-md-4">Dose Name</label>
                             <div class="col-md-8">
-                                <select name="vaccine_name" id="dose_name" class="form-control">
+                                <select name="vaccine_name" id="dose_name" class="form-control" required>
                                     <option value="" selected disabled>Select</option>
                                     <option value="Dose 01">Dose 01</option>
                                     <option value="Dose 02">Dose 02</option>
@@ -376,7 +400,17 @@
                         <div class="row mt-2">
                             <label for="manufacturer" class="col-md-4">Manufacturer</label>
                             <div class="col-md-8">
-                                <input type="text" value="" name="manufacturer" id="manufacturer" class="form-control">
+                                <select name="manufacturer" id="manufacturer" class="form-control" required>
+                                    <option value="">-- Select Vaccine --</option>
+                                    <option value="Pfizer-BioNTech">Pfizer-BioNTech</option>
+                                    <option value="Moderna">Moderna</option>
+                                    <option value="Janssen">Janssen</option>
+                                    <option value="AstraZeneca/Covishield">AstraZeneca/Covishield</option>
+                                    <option value="SinoFarm/Verocel">SinoFarm/Verocel</option>
+                                    <option value="Sputnik V">Sputnik V</option>
+                                    <option value="Covaxin">Covaxin</option>
+                                    <option value="Others">Others</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row mt-2">

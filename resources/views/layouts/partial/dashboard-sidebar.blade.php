@@ -12,7 +12,7 @@
             </span>
         </a>
         <!-- Light Logo-->
-        <a href="{{route('/')}}" class="logo logo-light">
+        <a href="{{route('dashboard')}}" class="logo logo-light">
             <span class="logo-sm">
                 <h4 class="text-black py-4">my<span class="text-success">HEALTH</span>Line</h4>
                 {{-- <img src="{{asset('public/backend')}}/images/logo-sm.png" alt="" height="22"> --}}

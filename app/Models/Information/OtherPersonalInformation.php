@@ -22,7 +22,7 @@ class OtherPersonalInformation extends Model
         'pregnancy_status',
         'menstrual_cycle',
         'activity_status',
-        'hereditary_disease',
+        'remark',
         'patient_id',
     ];
 }
