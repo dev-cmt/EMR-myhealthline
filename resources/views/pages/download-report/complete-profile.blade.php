@@ -1,14 +1,48 @@
-<x-report-layout>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Cost Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px 12px; border: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        .header { margin-bottom: 20px; }
+        .total { font-weight: bold; text-align: right; }
+        .align { text-align: right; }
+        .right-align { text-align: right; } /* Add this class */
+        h1 {
+            text-align: center;
+            font-weight: bold;
+        }
+        .health {
+            color: #139713; /* Change this to your desired color */
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            margin: 10px;
+            font-size: 0.9em;
+            color: #000000;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1><u>my<span class="health">Health</span>Line</u></h1>
+    <h2>Complete Profile</h2>
+
     <div class="card col-8 pl-4">
         <!--GENAREL PROFILE--->
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Unique Patient ID</strong></label>
                     <label class="form-label col-6">{{$user->unique_patient_id ?? ''}}</label>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Email</strong></label>
                     <label class="form-label col-6">{{$user->email ?? ''}}</label>
@@ -23,13 +57,13 @@
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Date Of Birth</strong></label>
-                    <label class="form-label col-6">{{$user->dob ?? ''}}</label>
+                    <label class="form-label col-6">{{$generalProfile->dob ?? ''}}</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Age</strong></label>
-                    <label class="form-label col-6">{{$user->age ?? ''}}</label>
+                    <label class="form-label col-6">{{$generalProfile->age ?? ''}}</label>
                 </div>
             </div>
             <div class="col-md-4">
@@ -53,46 +87,46 @@
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Nationality</strong></label>
-                    <label class="form-label col-6">{{$user->mastNationality->name ?? ''}}</label>
+                    <label class="form-label col-6">{{$generalProfile->mastNationality->name ?? ''}}</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Height</strong></label>
-                    <label class="form-label col-6">{{$user->height_feet ?? ''}}Feet {{$user->height_inches ?? ''}}Inches</label>
+                    <label class="form-label col-6">{{$generalProfile->height_feet ?? ''}}Feet {{$generalProfile->height_inches ?? ''}}Inches</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Weight</strong></label>
-                    <label class="form-label col-6">{{$user->weight_kg ?? ''}}KGs {{$user->weight_pounds ?? ''}}Pounds</label>
+                    <label class="form-label col-6">{{$generalProfile->weight_kg ?? ''}}KGs {{$generalProfile->weight_pounds ?? ''}}Pounds</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>BMI</strong></label>
-                    <label class="form-label col-6">{{$user->bmi ?? ''}}</label>
+                    <label class="form-label col-6">{{$generalProfile->bmi ?? ''}}</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Religion</strong></label>
-                    <label class="form-label col-6">{{$user->religion ?? ''}}</label>
+                    <label class="form-label col-6">{{$generalProfile->religion ?? ''}}</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Emergency Contact</strong></label>
-                    <label class="form-label col-6">{{$user->emergency_contact ?? ''}}</label>
+                    <label class="form-label col-6">{{$generalProfile->emergency_contact ?? ''}}</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="row mb-2">
                     <label class="form-label col-6"><strong>Address</strong></label>
-                    <label class="form-label col-6">{{$user->address ?? ''}}</label>
+                    <label class="form-label col-6">{{$generalProfile->address ?? ''}}</label>
                 </div>
             </div>
-            
+
         </div>
 
         <hr>
@@ -166,7 +200,7 @@
                     <label class="form-label col-6">{{$sensitiveInformation->drug_abuse_details ?? ''}}</label>
                 </div>
             </div>
-            
+
         </div>
 
 
@@ -287,7 +321,7 @@
                 <div class="col-md-4">
                     <div class="row mb-2">
                         <label class="form-label col-6"><strong>Duration of Suffering (Prior to Physician Visit)</strong></label>
-                        <label class="form-label col-6">{{$caseRegistry->duration ?? ''}} {{$user->duration_unit ?? ''}}</label>
+                        <label class="form-label col-6">{{$caseRegistry->duration ?? ''}} {{$caseRegistry->duration_unit ?? ''}}</label>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -306,11 +340,11 @@
             @php
                 $complaints = DB::select("
                     SELECT m.id, m.name
-                    FROM mast_complaints m  JOIN case_complaints c 
+                    FROM mast_complaints m  JOIN case_complaints c
                     ON c.mast_complaint_id = m.id  AND c.case_registry_id = $caseRegistry->id
                 ");
             @endphp
-            
+
 
             <hr>
             <h3>Complaint(s) - Click all that applies</h3>
@@ -502,7 +536,7 @@
                             @foreach ($caseRegistry->surgicalIntervention as $key => $row)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td> 
+                                    <td>
                                         <select class="form-select" name="data[{{ $key }}][intervention]" disabled>
                                             <option value="Prosthesis" {{ $row->intervention == "Prosthesis" ? 'selected' : '' }}>Prosthesis</option>
                                             <option value="Orthosis" {{ $row->intervention == "Orthosis" ? 'selected' : '' }}>Orthosis</option>
@@ -557,7 +591,7 @@
                         @if (($caseRegistry->optionsalQuestion->admitted_following_diagnosis ?? '') == 'Yes')
                         <label class="form-label col-6"><strong>A. If the answer is yes for Q1, how long?</strong></label>
                             <label class="form-label col-6">{{$caseRegistry->optionsalQuestion->hospitalization_duration ?? ''}}</label>
-                            
+
                             <label class="form-label col-6"><strong>B. Total Costs incurred during hospitalization</strong></label>
                             <label class="form-label col-6">{{$caseRegistry->optionsalQuestion->total_cost_incurred ?? ''}}</label>
                         @endif
@@ -622,9 +656,9 @@
                         <th scope="col">Count</th>
                         <th scope="col">Time</th>
                         <th scope="col">Reading</th>
-                        <th scope="col">Dietary Information</th>   
-                        <th scope="col">Remark</th>   
-                        <th scope="col">Additional Note</th>   
+                        <th scope="col">Dietary Information</th>
+                        <th scope="col">Remark</th>
+                        <th scope="col">Additional Note</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -698,7 +732,7 @@
                         }
                     @endphp --}}
                     @foreach($pressureData as $key =>  $row)
-                    
+
                         <tr>
                             {{-- <td><h6 class="mt-2">{{ ordinal($key + 1) }}</h6></td> --}}
                             <td><input type="time" class="form-control" name="time[]" value="{{$row->time}}" disabled></td>
@@ -768,7 +802,6 @@
                             </tr>
                         @endif
                     @endforeach
-
                 </tbody>
             </table>
         </div>
@@ -835,10 +868,8 @@
                             </tr>
                         @endif
                     @endforeach
-
                 </tbody>
             </table>
-
         </div>
 
         <!--DOCTOR APPOINTMENT--->
@@ -912,4 +943,6 @@
 
     </div>
     <!--end card-->
-</x-report-layout>
+</body>
+</html>
+    

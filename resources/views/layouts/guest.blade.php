@@ -44,7 +44,7 @@
                         <div class="col-lg-12">
                             <div class="text-center">
                                 <p class="mb-0">&copy;
-                                    <script>document.write(new Date().getFullYear())</script> Velzon. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+                                    <script>document.write(new Date().getFullYear())</script> ICON ISL. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand
                                 </p>
                             </div>
                         </div>
@@ -62,8 +62,8 @@
         <script src="{{asset('public/backend')}}/libs/feather-icons/feather.min.js"></script>
         <script src="{{asset('public/backend')}}/js/pages/plugins/lord-icon-2.1.0.js"></script>
         <script src="{{asset('public/backend')}}/js/plugins.js"></script>
-
+        
         <!-- password-addon init -->
-        <script src="{{asset('public/backend')}}/js/pages/password-addon.init.js"></script>
+        <script src="{{asset('public/backend')}}/js/pages/passowrd-create.init.js"></script>
     </body>
 </html>

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Auth\Events\Registered;
 
 use App\Models\Master\MastComplaint;
 use App\Models\Master\MastTest;
@@ -20,6 +21,7 @@ use App\Models\Master\MastPower;
 use App\Models\Master\MastNationality;
 use App\Models\User;
 
+use App\Models\Information\GeneralProfile;
 use App\Models\Information\SensitiveInformation;
 use App\Models\Information\GeneticDiseaseProfile;
 use App\Models\Information\OtherPersonalInformation;
@@ -42,6 +44,7 @@ use App\Models\Information\Restriction;
 use App\Models\Information\DoctorAppointment;
 use App\Models\Information\DoctorAppointmentDetails;
 use Exception;
+use Carbon\Carbon;
 
 class PatientController extends Controller
 {
@@ -78,125 +81,68 @@ class PatientController extends Controller
     }
 
 
-
-
-
     public function generalProfile()
     {
         $nationalities = MastNationality::all();
 
         $user = Auth::user();
+        $generalProfile = null;
         $sensitiveInformation = null;
         $geneticDiseaseProfile = null;
         $otherPersonalInformation = null;
 
         if ($user) {
+            $generalProfile = GeneralProfile::where('patient_id', $user->id)->first();
             $sensitiveInformation = SensitiveInformation::where('patient_id', $user->id)->first();
             $geneticDiseaseProfile = GeneticDiseaseProfile::where('patient_id', $user->id)->first();
             $otherPersonalInformation = OtherPersonalInformation::where('patient_id', $user->id)->first();
         }
-        return view('pages.info-general', compact('nationalities', 'user', 'sensitiveInformation', 'geneticDiseaseProfile', 'otherPersonalInformation'));
+        return view('pages.info-general', compact('nationalities', 'user', 'generalProfile', 'sensitiveInformation', 'geneticDiseaseProfile', 'otherPersonalInformation'));
     }
     /**-----------------------
      * Store Patient Registry
      */
     public function patientRegistry(Request $request)
     {
-        // Validate request data
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required_if:id,null|email|unique:users,email,' . $request->id,
-            'password' => 'required_if:id,null|string|min:8',
+        // Validate the request
+        $validatedData = $request->validate([
             'age' => 'required|integer|min:0',
-            'dob' => 'required|date',
-            'gender' => 'required|string|in:Male,Female,Other',
+            'dob' => 'required|date_format:d-m-Y',
             'religion' => 'required|string|max:255',
-            'blood_group' => 'required|string|max:3',
             'height_feet' => 'required|numeric|min:0',
-            // 'height_inches' => 'required|numeric|min:0',
+            'height_inches' => 'nullable|numeric|min:0',
             'weight_kg' => 'required|numeric|min:0',
-            // 'weight_pounds' => 'required|numeric|min:0',
+            'weight_pounds' => 'nullable|numeric|min:0',
             'bmi' => 'nullable|numeric|min:0',
             'emergency_contact' => 'required|string|max:255',
             'mast_nationality_id' => 'required',
-            'marital_status' => 'required|string|in:Single,Married,Married with Kids,Divorced,Widowed,Unwilling to Disclose',
+            'address' => 'nullable|string',
         ]);
 
-        // Check if validation fails
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput()->with('error', 'Validation failed. Please check the input data.');
-        }
+        // Convert dob to Y-m-d format before saving
+        $validatedData['dob'] = Carbon::createFromFormat('d-m-Y', $validatedData['dob'])->format('Y-m-d');
 
+
+        // Add the authenticated user's ID as patient_id
+        $validatedData['patient_id'] = auth()->user()->id;
+
+        // Determine if it's an update or create operation
         if ($request->id) {
             // Update existing record
-            $user = User::find($request->id);
-            if (!$user) {
-                return redirect()->back()->withErrors(['user' => 'User not found.'])->withInput()->with('error', 'User not found.');
-            }
+            GeneralProfile::where('id', $request->id)->update($validatedData);
         } else {
             // Create new record
-            $user = new User();
-            $user->email = $request->input('email');
-            $user->password = Hash::make($request->input('password'));
+            GeneralProfile::create($validatedData);
         }
-
-        // Populate user fields
-        $user->unique_patient_id = $this->generateUniquePatientId($request);
-        $user->name = $request->input('name');
-        $user->dob = $request->input('dob');
-        $user->age = $request->input('age');
-        $user->gender = $request->input('gender');
-        $user->religion = $request->input('religion');
-        $user->blood_group = $request->input('blood_group');
-        $user->height_feet = $request->input('height_feet');
-        $user->height_inches = $request->input('height_inches');
-        $user->weight_kg = $request->input('weight_kg');
-        $user->weight_pounds = $request->input('weight_pounds');
-        $user->bmi = $request->input('bmi');
-        $user->emergency_contact = $request->input('emergency_contact');
-        $user->marital_status = $request->input('marital_status');
-        $user->mast_nationality_id = $request->input('mast_nationality_id');
-        $user->address = $request->input('address');
 
         // Save the user
         try {
-            $user->save();
-            Auth::login($user);
-            return redirect()->back()->with(['success' => 'User created successfully.', 'step1' => '1']);
+            return redirect()->back()->with(['success' => 'General Profile created successfully.', 'step1' => '1']);
         } catch (\Exception $e) {
-            return redirect()->back()->with(['error' => 'Failed to save user. Please try again.', 'step1' => '1'])->withInput();
+            return redirect()->back()->with(['error' => 'Failed to save General Profile. Please try again.', 'step1' => '1'])->withInput();
         }
     }
-
-
-    private function generateUniquePatientId($request)
-    {
-        $arrayName =  explode(" ", $request->input('name'));
-        if(count($arrayName) > 1){
-            $firstNameInitial = strtoupper(substr($arrayName[0], 0, 1)) . strtoupper(substr($arrayName[count($arrayName) - 1], 0, 1));
-        }else{
-            $firstNameInitial = strtoupper(substr($arrayName[0], 0, 1));
-        }
-        $genderInitial = strtoupper(substr($request->input('gender'), 0, 1));
-        $bloodGroupConnotation = strtoupper(substr($request->input('blood_group'), 0, 1));
-        if(strstr($request->input('blood_group') ,"+")){
-            $bloodGroupConnotation = $bloodGroupConnotation . "P";
-        }else{
-            $bloodGroupConnotation = $bloodGroupConnotation . "N";
-        }
-        $getValue = User::count();
-        $sevenNo = str_pad( $getValue, 7 - Str::length($getValue), "0", STR_PAD_LEFT);
-
-        $maritalStatusInitial = strtoupper(substr($request->input('marital_status'), 0, 1));
-        $uniquePatientId = $firstNameInitial . $genderInitial . $bloodGroupConnotation . $sevenNo . $maritalStatusInitial;
-
-        return $uniquePatientId;
-    }
-    private function calculateBMI($feet, $inches, $weightKg)
-    {
-        $heightInMeters = (($feet * 12) + $inches) * 0.0254;
-        return $weightKg / ($heightInMeters * $heightInMeters);
-    }
+    
 
     /**------------------------------
      * Store => sensitive_information

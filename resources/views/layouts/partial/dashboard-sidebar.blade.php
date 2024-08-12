@@ -12,7 +12,7 @@
             </span>
         </a>
         <!-- Light Logo-->
-        <a href="{{route('dashboard')}}" class="logo logo-light">
+        <a href="{{ auth()->check() ? route('dashboard') : route('/') }}" class="logo logo-light">
             <span class="logo-sm">
                 <h4 class="text-black py-4">my<span class="text-success">HEALTH</span>Line</h4>
                 {{-- <img src="{{asset('public/backend')}}/images/logo-sm.png" alt="" height="22"> --}}
@@ -84,7 +84,7 @@
                 </li>
                 <!-- End Report Menu -->
 
-                <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Web Setting</span></li>
+                {{-- <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Web Setting</span></li>
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAuth">
                         <i class="bx bx-user-circle"></i> <span data-key="t-authentication">Authentication</span>
@@ -126,26 +126,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarLanding" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLanding">
-                        <i class="ri-rocket-line"></i> <span data-key="t-landing">Landing</span>
-                    </a>
-                    <div class="collapse menu-dropdown" id="sidebarLanding">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="landing.html" class="nav-link" data-key="t-one-page"> One Page </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="nft-landing.html" class="nav-link" data-key="t-nft-landing"> NFT Landing </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="job-landing.html" class="nav-link" data-key="t-job">Job</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+                </li> --}}
                 <!-- end Web Portal Menu -->
                 @endauth
                 

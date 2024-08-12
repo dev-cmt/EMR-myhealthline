@@ -114,6 +114,12 @@
         <!-- Sweet Alerts js -->
         <script src="{{asset('public/backend')}}/libs/sweetalert2/sweetalert2.min.js"></script>
     
+        <!-- cleave.js -->
+        <script src="{{asset('public/backend')}}/libs/cleave.js/cleave.min.js"></script>
+        <!-- form masks init -->
+        <script src="{{asset('public/backend')}}/js/pages/form-masks.init.js"></script>
+
+
         <!-- App js -->
         <script src="{{asset('public/backend')}}/js/app.js"></script>
         

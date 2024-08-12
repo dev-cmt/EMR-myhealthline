@@ -20,20 +20,12 @@ return new class extends Migration
             $table->rememberToken();
 
             $table->string('unique_patient_id')->unique()->nullable();
-            $table->date('dob')->nullable();
-            $table->integer('age')->nullable();
             $table->string('gender')->nullable();
-            $table->string('religion')->nullable();
             $table->string('blood_group')->nullable();
-            $table->decimal('height_feet', 3, 1)->nullable();
-            $table->decimal('height_inches', 3, 1)->nullable();
-            $table->decimal('weight_kg', 6, 2)->nullable();
-            $table->decimal('weight_pounds', 6, 2)->nullable();
-            $table->decimal('bmi', 5, 2)->nullable();
-            $table->string('emergency_contact')->nullable();
             $table->string('marital_status')->nullable();
-            $table->unsignedBigInteger('mast_nationality_id')->nullable();
-            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('profile_images')->nullable();
+            $table->tinyInteger('status')->default(true);
             $table->timestamps();
         });
     }

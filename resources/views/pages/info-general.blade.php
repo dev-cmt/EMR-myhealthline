@@ -35,7 +35,7 @@
                         <div class="tab-pane {{ Session::has('step2') || Session::has('step3') || Session::has('step4') ? '' : 'active show' }}" id="nav-border-step1" role="tabpanel">
                             <form action="{{ route('patient-registry.store') }}" method="POST">
                                 @csrf
-                                <input type="hidden" value="{{ $user->id ?? '' }}" name="id">
+                                <input type="hidden" value="{{ $generalProfile->id ?? '' }}" name="id" id="generalProfileId">
                                 
                                 <div class="row">
                                     <div class="col-md-6">
@@ -55,36 +55,8 @@
                                                 <label for="emergencyContact" class="form-label">Emergency Contact Details</label>
                                             </div>
                                             <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="emergencyContact" name="emergency_contact" placeholder="Enter emergency contact" value="{{ $user->emergency_contact ?? old('emergency_contact') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control" id="emergencyContact" name="emergency_contact" placeholder="Enter emergency contact" value="{{ $generalProfile->emergency_contact ?? old('emergency_contact') }}">
                                                 @error('emergency_contact')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row {{ isset($user) && $user->id ? 'd-none' : '' }}">
-                                    <div class="col-md-6">
-                                        <div class="row mb-2">
-                                            <div class="col-lg-3">
-                                                <label for="email" class="form-label">Email</label>
-                                            </div>
-                                            <div class="col-lg-9">
-                                                <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" value="{{ isset($user) ? ($user->email ?? old('email')) : old('email') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
-                                                @error('email')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row mb-2">
-                                            <div class="col-lg-3">
-                                                <label for="password" class="form-label">Password</label>
-                                            </div>
-                                            <div class="col-lg-9">
-                                                <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" {{ isset($user) && $user->id ? 'disabled' : '' }}>
-                                                @error('password')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -95,22 +67,10 @@
                                     <div class="col-md-6">
                                         <div class="row mb-2">
                                             <div class="col-lg-3">
-                                                <label for="name" class="form-label">Full Name</label>
-                                            </div>
-                                            <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" value="{{ $user->name ?? old('name') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
-                                                @error('name')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-        
-                                        <div class="row mb-2">
-                                            <div class="col-lg-3">
                                                 <label for="dob_display" class="form-label">Date Of Birth</label>
                                             </div>
                                             <div class="col-lg-9">
-                                                <input type="date" class="form-control" id="dob" name="dob" value="{{ $user->dob ?? old('dob') }}" onchange="calculateAge(this.value)" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control" name="dob" value="{{ $generalProfile->dob ?? old('dob') }}" onchange="calculateAge(this.value)" placeholder="DD-MM-YYYY" id="cleave-date">
                                                 @error('dob')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -121,90 +81,75 @@
                                                 <label for="age" class="form-label">Age</label>
                                             </div>
                                             <div class="col-lg-9">
-                                                <input type="number" class="form-control" id="age" name="age" placeholder="Enter your age" value="{{ $user->age ?? old('age') }}" readonly {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                <input type="number" class="form-control" id="age" name="age" placeholder="Enter your age" value="{{ $generalProfile->age ?? old('age') }}" readonly>
                                                 @error('age')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
                                         
+                                        
                                         <script>
                                             function calculateAge(dob) {
+                                                // Split the input date string into components (day, month, year)
+                                                const [day, month, year] = dob.split('-');
+                                                
+                                                // Create a new Date object using the parsed components
+                                                const birthDate = new Date(year, month - 1, day); // JavaScript Date month is 0-indexed (0 = January, 11 = December)
                                                 const today = new Date();
-                                                const birthDate = new Date(dob);
                                                 let age = today.getFullYear() - birthDate.getFullYear();
                                                 const monthDiff = today.getMonth() - birthDate.getMonth();
                                                 
                                                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                                                     age--;
                                                 }
+                                                
                                                 document.getElementById('age').value = age;
                                             }
                                             
                                             // Calculate age on page load if DOB is already set
                                             document.addEventListener('DOMContentLoaded', function() {
-                                                const dobInput = document.getElementById('dob');
+                                                const dobInput = document.getElementById('cleave-date');
                                                 if (dobInput.value) {
                                                     calculateAge(dobInput.value);
                                                 }
                                             });
                                         </script>
-        
-        
-                                        <div class="row mb-2">
-                                            <div class="col-lg-3">
-                                                <label for="gender" class="form-label">Gender</label>
-                                            </div>
-                                            <div class="col-lg-9">
-                                                <select class="form-select" id="gender" name="gender" {{ isset($user) && $user->id ? 'disabled' : '' }}>
-                                                    <option value="">-- Select --</option>
-                                                    <option value="Male" {{ ($user->gender ?? old('gender')) == 'Male' ? 'selected' : '' }}>Male</option>
-                                                    <option value="Female" {{ ($user->gender ?? old('gender')) == 'Female' ? 'selected' : '' }}>Female</option>
-                                                    <option value="Other" {{ ($user->gender ?? old('gender')) == 'Other' ? 'selected' : '' }}>Other</option>
-                                                </select>
-                                                @error('gender')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-lg-3">
-                                                <label for="bloodGroup" class="form-label">Blood Group</label>
-                                            </div>
-                                            <div class="col-lg-9">
-                                                <select class="form-select" id="bloodGroup" name="blood_group" {{ isset($user) && $user->id ? 'disabled' : '' }}>
-                                                    <option value="">-- Select --</option>
-                                                    <option value="A+" {{ $user->blood_group ?? old('blood_group') == 'A+' ? 'selected' : '' }}>A+</option>
-                                                    <option value="A-" {{ ($user->blood_group ?? old('blood_group')) == 'A-' ? 'selected' : '' }}>A-</option>
-                                                    <option value="B+" {{ ($user->blood_group ?? old('blood_group')) == 'B+' ? 'selected' : '' }}>B+</option>
-                                                    <option value="B-" {{ ($user->blood_group ?? old('blood_group')) == 'B-' ? 'selected' : '' }}>B-</option>
-                                                    <option value="O+" {{ ($user->blood_group ?? old('blood_group')) == 'O+' ? 'selected' : '' }}>O+</option>
-                                                    <option value="O-" {{ ($user->blood_group ?? old('blood_group')) == 'O-' ? 'selected' : '' }}>O-</option>
-                                                    <option value="K+" {{ ($user->blood_group ?? old('blood_group')) == 'K+' ? 'selected' : '' }}>K+</option>
-                                                    <option value="K-" {{ ($user->blood_group ?? old('blood_group')) == 'K-' ? 'selected' : '' }}>K-</option>
-                                                    <option value="AB+" {{ ($user->blood_group ?? old('blood_group')) == 'AB+' ? 'selected' : '' }}>AB+</option>
-                                                    <option value="AB-" {{ ($user->blood_group ?? old('blood_group')) == 'AB-' ? 'selected' : '' }}>AB-</option>
-                                                    <option value="Unknown" {{ ($user->blood_group ?? old('blood_group')) == 'Unknown' ? 'selected' : '' }}>Unknown</option>
-                                                </select>
-                                                @error('blood_group')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        
+
                                         <div class="row mb-2">
                                             <div class="col-lg-3">
                                                 <label for="mastNationalityId" class="form-label">Nationality</label>
                                             </div>
                                             <div class="col-lg-9">
-                                                <select class="form-control" id="mastNationalityId" name="mast_nationality_id" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                <select class="form-control" id="mastNationalityId" name="mast_nationality_id">
                                                     <option value="">-- Select --</option>
                                                     @foreach ($nationalities as $row)
-                                                        <option value="{{ $row->id }}" {{ ($user->mast_nationality_id ?? old('mast_nationality_id')) == $row->id ? 'selected' : '' }}>
+                                                        <option value="{{ $row->id }}" {{ ($generalProfile->mast_nationality_id ?? old('mast_nationality_id')) == $row->id ? 'selected' : '' }}>
                                                             {{ $row->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>                                                
                                                 @error('mast_nationality_id')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-lg-3">
+                                                <label for="religion" class="form-label">Religion</label>
+                                            </div>
+                                            <div class="col-lg-9">
+                                                <select class="form-select" id="religion" name="religion">
+                                                    <option value="">-- Select --</option>
+                                                    <option value="Islam" {{ ($generalProfile->religion ?? old('religion')) == 'Islam' ? 'selected' : '' }}>Islam</option>
+                                                    <option value="Christianity" {{ ($generalProfile->religion ?? old('religion')) == 'Christianity' ? 'selected' : '' }}>Christianity</option>
+                                                    <option value="Hinduism" {{ ($generalProfile->religion ?? old('religion')) == 'Hinduism' ? 'selected' : '' }}>Hinduism</option>
+                                                    <option value="Buddhism" {{ ($generalProfile->religion ?? old('religion')) == 'Buddhism' ? 'selected' : '' }}>Buddhism</option>
+                                                    <option value="Other" {{ ($generalProfile->religion ?? old('religion')) == 'Other' ? 'selected' : '' }}>Other</option>
+                                                    <option value="Non-Religious" {{ ($generalProfile->religion ?? old('religion')) == 'Non-Religious' ? 'selected' : '' }}>Non-Religious</option>
+                                                </select>
+                                                @error('religion')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -219,9 +164,9 @@
                                             <div class="col-lg-9">
                                                 <!-- Multiple Inputs -->
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control" id="heightFeet" name="height_feet" placeholder="Feet" value="{{ $user->height_feet ?? old('height_feet') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                    <input type="number" class="form-control" id="heightFeet" name="height_feet" placeholder="Feet" value="{{ $generalProfile->height_feet ?? old('height_feet') }}">
                                                     <span class="input-group-text">Feet</span>
-                                                    <input type="number" class="form-control" id="heightInches" name="height_inches" placeholder="Inches" value="{{ $user->height_inches ?? old('height_inches') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                    <input type="number" class="form-control" id="heightInches" name="height_inches" placeholder="Inches" value="{{ $generalProfile->height_inches ?? old('height_inches') }}">
                                                     <span class="input-group-text">Inches</span>
                                                 </div>
                                                 @error('height_feet')
@@ -239,9 +184,9 @@
                                             <div class="col-lg-9">
                                                 <!-- Multiple Inputs -->
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control" id="weightKg" name="weight_kg" placeholder="KGs" value="{{ $user->weight_kg ?? old('weight_kg') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                    <input type="number" class="form-control" id="weightKg" name="weight_kg" placeholder="KGs" value="{{ $generalProfile->weight_kg ?? old('weight_kg') }}">
                                                     <span class="input-group-text">KGs</span>
-                                                    <input type="number" class="form-control" id="weightPounds" name="weight_pounds" placeholder="Pounds" value="{{ $user->weight_pounds ?? old('weight_pounds') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                    <input type="number" class="form-control" id="weightPounds" name="weight_pounds" placeholder="Pounds" value="{{ $generalProfile->weight_pounds ?? old('weight_pounds') }}">
                                                     <span class="input-group-text">Pounds</span>
                                                 </div>
                                                 @error('weight_kg')
@@ -257,46 +202,8 @@
                                                 <label for="bmi" class="form-label">BMI (Optional)</label>
                                             </div>
                                             <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="bmi" name="bmi" placeholder="Input BMI" value="{{ $user->bmi ?? old('bmi') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control" id="bmi" name="bmi" placeholder="Input BMI" value="{{ $generalProfile->bmi ?? old('bmi') }}">
                                                 @error('bmi')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-lg-3">
-                                                <label for="religion" class="form-label">Religion</label>
-                                            </div>
-                                            <div class="col-lg-9">
-                                                <select class="form-select" id="religion" name="religion" {{ isset($user) && $user->id ? 'disabled' : '' }}>
-                                                    <option value="">-- Select --</option>
-                                                    <option value="Islam" {{ ($user->religion ?? old('religion')) == 'Islam' ? 'selected' : '' }}>Islam</option>
-                                                    <option value="Christianity" {{ ($user->religion ?? old('religion')) == 'Christianity' ? 'selected' : '' }}>Christianity</option>
-                                                    <option value="Hinduism" {{ ($user->religion ?? old('religion')) == 'Hinduism' ? 'selected' : '' }}>Hinduism</option>
-                                                    <option value="Buddhism" {{ ($user->religion ?? old('religion')) == 'Buddhism' ? 'selected' : '' }}>Buddhism</option>
-                                                    <option value="Other" {{ ($user->religion ?? old('religion')) == 'Other' ? 'selected' : '' }}>Other</option>
-                                                    <option value="Non-Religious" {{ ($user->religion ?? old('religion')) == 'Non-Religious' ? 'selected' : '' }}>Non-Religious</option>
-                                                </select>
-                                                @error('religion')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-lg-3">
-                                                <label for="maritalStatus" class="form-label">Marital Status</label>
-                                            </div>
-                                            <div class="col-lg-9">
-                                                <select class="form-select" id="maritalStatus" name="marital_status" {{ isset($user) && $user->id ? 'disabled' : '' }}>
-                                                    <option value="">-- Select --</option>
-                                                    <option value="Single" {{ ($user->marital_status ?? old('marital_status')) == "Single" ? 'selected': ''}}>Single</option>
-                                                    <option value="Married" {{ ($user->marital_status ?? old('marital_status')) == "Married" ? 'selected': ''}}>Married</option>
-                                                    <option value="Married with Kids" {{ ($user->marital_status ?? old('marital_status')) == "Married with Kids" ? 'selected': ''}}>Married with Kids</option>
-                                                    <option value="Divorced" {{ ($user->marital_status ?? old('marital_status')) == "Divorced" ? 'selected': ''}}>Divorced</option>
-                                                    <option value="Widowed" {{ ($user->marital_status ?? old('marital_status')) == "Widowed" ? 'selected': ''}}>Widowed</option>
-                                                    <option value="Unwilling to Disclose" {{ ($user->marital_status ?? old('marital_status')) == "Unwilling to Disclose" ? 'selected': ''}}>Unwilling to Disclose</option>
-                                                </select>  
-                                                @error('marital_status')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -307,7 +214,7 @@
                                                 <label for="emergencyContact" class="form-label">Address (Optional)</label>
                                             </div>
                                             <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="address" name="address" placeholder="Enter address" value="{{ $user->address ?? old('address') }}" {{ isset($user) && $user->id ? 'disabled' : '' }}>
+                                                <textarea id="address" name="address" rows="1" class="form-control" placeholder="Enter address">{{ $generalProfile->address ?? old('address') }}</textarea>
                                                 @error('address')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -316,9 +223,9 @@
                                     </div> <!--end col-->
         
                                 </div> <!--end row-->
-        
                                 <div class="col-12 text-center">
-                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light  {{ isset($user) && $user->id ? 'd-none' : '' }}"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
+                                    <button type="button" class="btn btn-info btn-label waves-effect waves-light" id="edit-btn-1"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Edit</button>
+                                    <button type="submit" class="btn btn-success btn-label waves-effect waves-light" id="save-btn-1"><i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> Save</button>
                                 </div>
                             </form>
                         </div>
@@ -615,7 +522,6 @@
                                 <form action="{{ route('genetic-disease-profile.store') }}" method="POST">
                                     @csrf
                                     <input type="hidden" value="{{ $geneticDiseaseProfile->id ?? '' }}" name="id" id="geneticDiseaseProfileId">
-            
             
                                     <div class="row mb-3">
                                         <div class="col-md-4">
@@ -955,6 +861,11 @@
                 });
             }
 
+            setupEditAndSave(1, "#generalProfileId", [
+                'emergencyContact', 'cleave-date', 'age', 'mastNationalityId', 'religion',
+                'heightFeet', 'heightInches', 'weightKg', 'weightPounds', 'bmi', 'address',
+            ]);
+
             setupEditAndSave(2, "#sensitiveInformationId", [
                 'sexually_active', 'diabetic', 'allergies', 'allergy_details', 'thyroid', 'thyroid_details', 
                 'hypertension', 'cholesterol', 'cholesterol_details', 's_creatinine', 's_creatinine_details', 
@@ -965,13 +876,13 @@
             setupEditAndSave(3, "#geneticDiseaseProfileId", [
                 'diabetesCheckbox', 'strokeCheckbox', 'heartDiseasesCheckbox', 'hyperExcitationCheckbox', 
                 'bloodPressureCheckbox', 'baldingCheckbox', 'vitiligoCheckbox', 'disabilityCheckbox', 
-                'psoriasisCheckbox', 'additional_comments'
+                'psoriasisCheckbox', 'eczemaCheckbox', 'additional_comments'
             ]);
 
             setupEditAndSave(4, "#otherPersonalInformationId", [
                 'homeAddress', 'officeAddress', 'emailAddress', 'phoneNumber', 'lastBloodDonated', 
                 'healthInsurance', 'familyPhysician', 'physicianContact', 'pregnancyStatus', 
-                'menstrualCycle', 'activityStatus', 'hereditaryDisease'
+                'menstrualCycle', 'activityStatus', 'remark'
             ]);
         });
 

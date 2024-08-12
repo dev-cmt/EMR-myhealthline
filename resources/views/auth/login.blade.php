@@ -46,7 +46,7 @@
                         <div class="p-lg-5 p-4">
                             <div>
                                 <h5 class="text-primary">Welcome Back !</h5>
-                                <p class="text-muted">Sign in to continue to Velzon.</p>
+                                <p class="text-muted">Sign in to continue to myHealthLine.</p>
                             </div>
 
                             <div class="mt-4">
@@ -100,7 +100,7 @@
                             </div>
 
                             <div class="mt-5 text-center">
-                                <p class="mb-0">Don't have an account ? <a href="{{ route('info-general') }}" class="fw-semibold text-primary text-decoration-underline"> Signup</a> </p>
+                                <p class="mb-0">Don't have an account ? <a href="{{ route('register') }}" class="fw-semibold text-primary text-decoration-underline"> Signup</a> </p>
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 11, 2024 at 04:13 PM
+-- Generation Time: Jul 16, 2024 at 09:13 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.0
 
@@ -163,6 +163,30 @@ CREATE TABLE `failed_jobs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `general_profiles`
+--
+
+CREATE TABLE `general_profiles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `patient_id` bigint(20) UNSIGNED NOT NULL,
+  `dob` date DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `religion` varchar(255) DEFAULT NULL,
+  `height_feet` decimal(3,1) DEFAULT NULL,
+  `height_inches` decimal(3,1) DEFAULT NULL,
+  `weight_kg` decimal(6,2) DEFAULT NULL,
+  `weight_pounds` decimal(6,2) DEFAULT NULL,
+  `bmi` decimal(5,2) DEFAULT NULL,
+  `emergency_contact` varchar(255) DEFAULT NULL,
+  `mast_nationality_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `genetic_disease_profiles`
 --
 
@@ -178,6 +202,7 @@ CREATE TABLE `genetic_disease_profiles` (
   `disease_vitiligo` tinyint(1) NOT NULL DEFAULT 0,
   `disease_disability` tinyint(1) NOT NULL DEFAULT 0,
   `disease_psoriasis` tinyint(1) NOT NULL DEFAULT 0,
+  `disease_eczema` tinyint(1) NOT NULL DEFAULT 0,
   `additional_comments` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -614,25 +639,26 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2024_06_26_074622_create_mast_equipment_table', 1),
 (10, '2024_06_26_105548_create_mast_tests_table', 1),
 (11, '2024_06_26_105604_create_mast_organs_table', 1),
-(12, '2024_06_27_044850_create_sensitive_information_table', 1),
-(13, '2024_06_27_044950_create_genetic_disease_profiles_table', 1),
-(14, '2024_06_27_045026_create_other_personal_information_table', 1),
-(15, '2024_06_27_045311_create_case_registries_table', 1),
-(16, '2024_06_27_045345_create_case_complaints_table', 1),
-(17, '2024_06_27_045433_create_treatment_profiles_table', 1),
-(18, '2024_06_27_045542_create_lab_tests_table', 1),
-(19, '2024_06_27_045629_create_medication_schedules_table', 1),
-(20, '2024_06_27_045724_create_surgical_interventions_table', 1),
-(21, '2024_06_27_045829_create_optionsal_questions_table', 1),
-(22, '2024_06_27_045905_create_restrictions_table', 1),
-(23, '2024_06_27_050120_create_blood_sugar_profilings_table', 1),
-(24, '2024_06_27_050214_create_blood_pressure_profilings_table', 1),
-(25, '2024_06_27_050428_create_random_uploader_tools_table', 1),
-(26, '2024_06_27_050621_create_doctor_appointments_table', 1),
-(27, '2024_06_27_050630_create_doctor_appointment_details_table', 1),
-(28, '2024_06_27_105229_create_vaccinations_table', 1),
-(29, '2024_07_01_094855_create_vaccination_covids_table', 1),
-(30, '2024_07_01_094856_create_covid_certificates_table', 1);
+(12, '2024_06_27_044849_create_general_profiles_table', 1),
+(13, '2024_06_27_044850_create_sensitive_information_table', 1),
+(14, '2024_06_27_044950_create_genetic_disease_profiles_table', 1),
+(15, '2024_06_27_045026_create_other_personal_information_table', 1),
+(16, '2024_06_27_045311_create_case_registries_table', 1),
+(17, '2024_06_27_045345_create_case_complaints_table', 1),
+(18, '2024_06_27_045433_create_treatment_profiles_table', 1),
+(19, '2024_06_27_045542_create_lab_tests_table', 1),
+(20, '2024_06_27_045629_create_medication_schedules_table', 1),
+(21, '2024_06_27_045724_create_surgical_interventions_table', 1),
+(22, '2024_06_27_045829_create_optionsal_questions_table', 1),
+(23, '2024_06_27_045905_create_restrictions_table', 1),
+(24, '2024_06_27_050120_create_blood_sugar_profilings_table', 1),
+(25, '2024_06_27_050214_create_blood_pressure_profilings_table', 1),
+(26, '2024_06_27_050428_create_random_uploader_tools_table', 1),
+(27, '2024_06_27_050621_create_doctor_appointments_table', 1),
+(28, '2024_06_27_050630_create_doctor_appointment_details_table', 1),
+(29, '2024_06_27_105229_create_vaccinations_table', 1),
+(30, '2024_07_01_094855_create_vaccination_covids_table', 1),
+(31, '2024_07_01_094856_create_covid_certificates_table', 1);
 
 -- --------------------------------------------------------
 
@@ -705,7 +731,7 @@ CREATE TABLE `other_personal_information` (
   `pregnancy_status` enum('Yes','No') DEFAULT NULL,
   `menstrual_cycle` enum('Regular','Irregular','Menopaused') DEFAULT NULL,
   `activity_status` enum('Immobile/Paralyzed','Disabled','Not Very Active','Moderately Active','Highly Active') DEFAULT NULL,
-  `hereditary_disease` text DEFAULT NULL,
+  `remark` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -741,36 +767,36 @@ CREATE TABLE `permissions` (
 --
 
 INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'user-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(2, 'user-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(3, 'user-edit', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(4, 'user-show', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(5, 'user-delete', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(6, 'role-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(7, 'role-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(8, 'role-show', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(9, 'role-edit', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(10, 'role-delete', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(11, 'category-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(12, 'category-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(13, 'category-edit', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(14, 'category-delete', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(15, 'category-show', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(16, 'subcategory-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(17, 'subcategory-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(18, 'subcategory-edit', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(19, 'subcategory-delete', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(20, 'subcategory-show', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(21, 'product-list', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(22, 'product-create', 'web', '2024-07-11 08:13:27', '2024-07-11 08:13:27'),
-(23, 'product-edit', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(24, 'product-show', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(25, 'product-delete', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(26, 'order-list', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(27, 'order-create', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(28, 'order-edit', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(29, 'order-delete', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(30, 'order-show', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28');
+(1, 'user-list', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(2, 'user-create', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(3, 'user-edit', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(4, 'user-show', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(5, 'user-delete', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(6, 'role-list', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(7, 'role-create', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(8, 'role-show', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(9, 'role-edit', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(10, 'role-delete', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(11, 'category-list', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(12, 'category-create', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(13, 'category-edit', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(14, 'category-delete', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(15, 'category-show', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(16, 'subcategory-list', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(17, 'subcategory-create', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(18, 'subcategory-edit', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(19, 'subcategory-delete', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(20, 'subcategory-show', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(21, 'product-list', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(22, 'product-create', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(23, 'product-edit', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(24, 'product-show', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(25, 'product-delete', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(26, 'order-list', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(27, 'order-create', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(28, 'order-edit', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(29, 'order-delete', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(30, 'order-show', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32');
 
 -- --------------------------------------------------------
 
@@ -843,9 +869,9 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'SuperAdmin', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(2, 'Administrator', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28'),
-(3, 'Member', 'web', '2024-07-11 08:13:28', '2024-07-11 08:13:28');
+(1, 'SuperAdmin', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(2, 'Administrator', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32'),
+(3, 'Member', 'web', '2024-07-16 01:12:32', '2024-07-16 01:12:32');
 
 -- --------------------------------------------------------
 
@@ -977,20 +1003,12 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
   `unique_patient_id` varchar(255) DEFAULT NULL,
-  `dob` date DEFAULT NULL,
-  `age` int(11) DEFAULT NULL,
   `gender` varchar(255) DEFAULT NULL,
-  `religion` varchar(255) DEFAULT NULL,
   `blood_group` varchar(255) DEFAULT NULL,
-  `height_feet` decimal(3,1) DEFAULT NULL,
-  `height_inches` decimal(3,1) DEFAULT NULL,
-  `weight_kg` decimal(6,2) DEFAULT NULL,
-  `weight_pounds` decimal(6,2) DEFAULT NULL,
-  `bmi` decimal(5,2) DEFAULT NULL,
-  `emergency_contact` varchar(255) DEFAULT NULL,
   `marital_status` varchar(255) DEFAULT NULL,
-  `mast_nationality_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `profile_images` varchar(255) DEFAULT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -999,8 +1017,8 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `unique_patient_id`, `dob`, `age`, `gender`, `religion`, `blood_group`, `height_feet`, `height_inches`, `weight_kg`, `weight_pounds`, `bmi`, `emergency_contact`, `marital_status`, `mast_nationality_id`, `address`, `created_at`, `updated_at`) VALUES
-(1, 'Super Admin', 'super@gmail.com', NULL, '$2y$10$ThcFgKdn3JTuNrdO4MeZMug3tUCSdlrI9YoV/BC1eKVf1sPJz6g.G', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-07-11 08:13:28', '2024-07-11 08:13:28');
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `unique_patient_id`, `gender`, `blood_group`, `marital_status`, `phone`, `profile_images`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Super Admin', 'super@gmail.com', NULL, '$2y$10$AOOfqrtOyy2X3AeBZPIWNOpKssgIETinFPD2suNP3EiJU3Yd5EEzK', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2024-07-16 01:12:32', '2024-07-16 01:12:32');
 
 -- --------------------------------------------------------
 
@@ -1108,6 +1126,13 @@ ALTER TABLE `doctor_appointment_details`
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
+
+--
+-- Indexes for table `general_profiles`
+--
+ALTER TABLE `general_profiles`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `general_profiles_patient_id_foreign` (`patient_id`);
 
 --
 -- Indexes for table `genetic_disease_profiles`
@@ -1355,6 +1380,12 @@ ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `general_profiles`
+--
+ALTER TABLE `general_profiles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `genetic_disease_profiles`
 --
 ALTER TABLE `genetic_disease_profiles`
@@ -1412,7 +1443,7 @@ ALTER TABLE `medication_schedules`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `optionsal_questions`
@@ -1538,6 +1569,12 @@ ALTER TABLE `doctor_appointments`
 --
 ALTER TABLE `doctor_appointment_details`
   ADD CONSTRAINT `doctor_appointment_details_doctor_appointment_id_foreign` FOREIGN KEY (`doctor_appointment_id`) REFERENCES `doctor_appointments` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `general_profiles`
+--
+ALTER TABLE `general_profiles`
+  ADD CONSTRAINT `general_profiles_patient_id_foreign` FOREIGN KEY (`patient_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `genetic_disease_profiles`

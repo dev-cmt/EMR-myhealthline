@@ -1,261 +1,370 @@
 <x-app-layout>
-    <div class="position-relative mx-n4 mt-n4">
-        <div class="profile-wid-bg profile-setting-img">
-            <img src="{{asset('public/backend')}}/images/profile-bg.jpg" class="profile-wid-img" alt="">
-            <div class="overlay-content">
-                <div class="text-end p-3">
-                    <div class="p-0 ms-auto rounded-circle profile-photo-edit">
-                        <input id="profile-foreground-img-file-input" type="file"
-                            class="profile-foreground-img-file-input">
-                        <label for="profile-foreground-img-file-input"
-                            class="profile-photo-edit btn btn-light">
-                            <i class="ri-image-edit-line align-bottom me-1"></i> Change Cover
-                        </label>
+    <div class="profile-foreground position-relative mx-n4 mt-n4">
+        <div class="profile-wid-bg">
+            <img src="{{asset('public/backend')}}/images/profile-bg.jpg" alt="" class="profile-wid-img" />
+        </div>
+    </div>
+    <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
+        <div class="row g-4">
+            <div class="col-auto">
+                <div class="avatar-lg">
+                    <img src="{{ asset('public/' . Auth::user()->profile_images) }}" alt="user-img" class="img-thumbnail rounded-circle" />
+                </div>
+            </div>
+            <!--end col-->
+            <div class="col">
+                <div class="p-2">
+                    <h3 class="text-white mb-1">{{Auth::user()->name}}</h3>
+                    <p class="text-white text-opacity-75">Joining Data: {{date("j F, Y", strtotime(Auth::user()->created_at))}}</p>
+                    <div class="hstack text-white-50 gap-1">
+                        <div class="me-2"><i class="ri-map-pin-user-line me-1 text-white text-opacity-75 fs-16 align-middle"></i>{{Auth::user()->generalProfile->address}}</div>
                     </div>
                 </div>
             </div>
+
         </div>
+        <!--end row-->
     </div>
 
     <div class="row">
-        <div class="col-xxl-3">
-            <div class="card mt-n5">
-                <div class="card-body p-4">
-                    <div class="text-center">
-                        <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
-                            <img src="{{asset('public/backend')}}/images/users/avatar-1.jpg"
-                                class="rounded-circle avatar-xl img-thumbnail user-profile-image"
-                                alt="user-profile-image">
-                            <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
-                                <input id="profile-img-file-input" type="file"
-                                    class="profile-img-file-input">
-                                <label for="profile-img-file-input"
-                                    class="profile-photo-edit avatar-xs">
-                                    <span class="avatar-title rounded-circle bg-light text-body">
-                                        <i class="ri-camera-fill"></i>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        <h5 class="fs-16 mb-1">Anna Adame</h5>
-                        <p class="text-muted mb-0">Lead Designer / Developer</p>
-                    </div>
-                </div>
-            </div>
-            <!--end card-->
-
-        </div>
-        <!--end col-->
-        <div class="col-xxl-9">
-            <div class="card mt-xxl-n5">
-                <div class="card-header">
-                    <ul class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0"
-                        role="tablist">
+        <div class="col-lg-12">
+            <div>
+                <div class="d-flex profile-wrapper">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link text-body active" data-bs-toggle="tab"
-                                href="#personalDetails" role="tab">
-                                <i class="fas fa-home"></i>
-                                Personal Details
+                            <a class="nav-link fs-14 active" data-bs-toggle="tab" href="#step1" role="tab">
+                                <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">General Profile</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-body" data-bs-toggle="tab" href="#changePassword"
-                                role="tab">
-                                <i class="far fa-user"></i>
-                                Change Password
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#step2" role="tab">
+                                <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Case(s)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#step3" role="tab">
+                                <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Profiling Tool</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#step4" role="tab">
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Vaccination Record</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#step5" role="tab">
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Doctor's Appointment</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#step6" role="tab">
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Uploader Tool</span>
                             </a>
                         </li>
                     </ul>
-                </div>
-                <div class="card-body p-4">
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="personalDetails" role="tabpanel">
-                            <form action="javascript:void(0);">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="firstnameInput" class="form-label">First
-                                                Name</label>
-                                            <input type="text" class="form-control" id="firstnameInput"
-                                                placeholder="Enter your firstname" value="Dave">
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="lastnameInput" class="form-label">Last
-                                                Name</label>
-                                            <input type="text" class="form-control" id="lastnameInput"
-                                                placeholder="Enter your lastname" value="Adame">
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="phonenumberInput" class="form-label">Phone
-                                                Number</label>
-                                            <input type="text" class="form-control"
-                                                id="phonenumberInput"
-                                                placeholder="Enter your phone number"
-                                                value="+(1) 987 6543">
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="emailInput" class="form-label">Email
-                                                Address</label>
-                                            <input type="email" class="form-control" id="emailInput"
-                                                placeholder="Enter your email"
-                                                value="daveadame@velzon.com">
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-12">
-                                        <div class="mb-3 pb-2">
-                                            <label for="exampleFormControlTextarea"
-                                                class="form-label">Description</label>
-                                            <textarea class="form-control"
-                                                id="exampleFormControlTextarea"
-                                                placeholder="Enter your description"
-                                                rows="3">Hi I'm Anna Adame,It will be as simple as Occidental; in fact, it will be Occidental. To an English person, it will seem like simplified English, as a skeptical Cambridge friend of mine told me what Occidental is European languages are members of the same family.</textarea>
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-12">
-                                        <div class="hstack gap-2 justify-content-end">
-                                            <button type="submit"
-                                                class="btn btn-primary">Updates</button>
-                                            <button type="button"
-                                                class="btn btn-soft-success">Cancel</button>
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                </div>
-                                <!--end row-->
-                            </form>
-                        </div>
-                        <!--end tab-pane-->
-                        <div class="tab-pane" id="changePassword" role="tabpanel">
-                            <form action="javascript:void(0);">
-                                <div class="row g-2">
-                                    <div class="col-lg-4">
-                                        <div>
-                                            <label for="oldpasswordInput" class="form-label">Old
-                                                Password*</label>
-                                            <input type="password" class="form-control"
-                                                id="oldpasswordInput"
-                                                placeholder="Enter current password">
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-4">
-                                        <div>
-                                            <label for="newpasswordInput" class="form-label">New
-                                                Password*</label>
-                                            <input type="password" class="form-control"
-                                                id="newpasswordInput" placeholder="Enter new password">
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-4">
-                                        <div>
-                                            <label for="confirmpasswordInput" class="form-label">Confirm
-                                                Password*</label>
-                                            <input type="password" class="form-control"
-                                                id="confirmpasswordInput"
-                                                placeholder="Confirm password">
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-12">
-                                        <div class="mb-3">
-                                            <a href="javascript:void(0);"
-                                                class="link-primary text-decoration-underline">Forgot
-                                                Password ?</a>
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                    <div class="col-lg-12">
-                                        <div class="text-end">
-                                            <button type="submit" class="btn btn-success">Change
-                                                Password</button>
-                                        </div>
-                                    </div>
-                                    <!--end col-->
-                                </div>
-                                <!--end row-->
-                            </form>
-                            <div class="mt-4 mb-3 border-bottom pb-2">
-                                <div class="float-end">
-                                    <a href="javascript:void(0);" class="link-primary">All Logout</a>
-                                </div>
-                                <h5 class="card-title">Login History</h5>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="flex-shrink-0 avatar-sm">
-                                    <div class="avatar-title bg-light text-primary rounded-3 fs-18">
-                                        <i class="ri-smartphone-line"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>iPhone 12 Pro</h6>
-                                    <p class="text-muted mb-0">Los Angeles, United States - March 16 at
-                                        2:47PM</p>
-                                </div>
-                                <div>
-                                    <a href="javascript:void(0);">Logout</a>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="flex-shrink-0 avatar-sm">
-                                    <div class="avatar-title bg-light text-primary rounded-3 fs-18">
-                                        <i class="ri-tablet-line"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>Apple iPad Pro</h6>
-                                    <p class="text-muted mb-0">Washington, United States - November 06
-                                        at 10:43AM</p>
-                                </div>
-                                <div>
-                                    <a href="javascript:void(0);">Logout</a>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="flex-shrink-0 avatar-sm">
-                                    <div class="avatar-title bg-light text-primary rounded-3 fs-18">
-                                        <i class="ri-smartphone-line"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>Galaxy S21 Ultra 5G</h6>
-                                    <p class="text-muted mb-0">Conneticut, United States - June 12 at
-                                        3:24PM</p>
-                                </div>
-                                <div>
-                                    <a href="javascript:void(0);">Logout</a>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 avatar-sm">
-                                    <div class="avatar-title bg-light text-primary rounded-3 fs-18">
-                                        <i class="ri-macbook-line"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>Dell Inspiron 14</h6>
-                                    <p class="text-muted mb-0">Phoenix, United States - July 26 at
-                                        8:10AM</p>
-                                </div>
-                                <div>
-                                    <a href="javascript:void(0);">Logout</a>
-                                </div>
-                            </div>
-                        </div>
-                        <!--end tab-pane-->
+                    <div class="flex-shrink-0">
+                        <a href="{{route('profile.settings')}}" class="btn btn-success"><i class="ri-edit-box-line align-bottom"></i> Edit Profile</a>
                     </div>
                 </div>
+                <!-- Tab panes -->
+                <div class="tab-content pt-4 text-muted">
+                    <div class="tab-pane active" id="step1" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Overview</h5>
+                                
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <div class="tab-pane fade" id="step2" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Activities</h5>
+                                
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end tab-pane-->
+                    <div class="tab-pane fade" id="step3" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Projects</h5>
+                               
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end tab-pane-->
+                    <div class="tab-pane fade" id="step4" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Projects</h5>
+                               
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end tab-pane-->
+                    <div class="tab-pane fade" id="step5" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Projects</h5>
+                               
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <div class="tab-pane fade" id="step6" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4">
+                                    <h5 class="card-title flex-grow-1 mb-0">Documents</h5>
+                                    <div class="flex-shrink-0">
+                                        <input class="form-control d-none" type="file" id="formFile">
+                                        <label for="formFile" class="btn btn-danger"><i class="ri-upload-2-fill me-1 align-bottom"></i> Upload
+                                            File</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless align-middle mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th scope="col">File Name</th>
+                                                        <th scope="col">Type</th>
+                                                        <th scope="col">Size</th>
+                                                        <th scope="col">Upload Date</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div class="avatar-title bg-primary-subtle text-primary rounded fs-20">
+                                                                        <i class="ri-file-zip-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-14 mb-0"><a href="javascript:void(0)" class="text-body">Artboard-step4.zip</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>Zip File</td>
+                                                        <td>4.57 MB</td>
+                                                        <td>12 Dec 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink15" data-bs-toggle="dropdown" aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink15">
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-eye-fill me-2 align-middle text-muted"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a>
+                                                                    </li>
+                                                                    <li class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div class="avatar-title bg-danger-subtle text-danger rounded fs-20">
+                                                                        <i class="ri-file-pdf-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-14 mb-0"><a href="javascript:void(0);" class="text-body">Bank
+                                                                            Management System</a></h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>PDF File</td>
+                                                        <td>8.89 MB</td>
+                                                        <td>24 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink3" data-bs-toggle="dropdown" aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink3">
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-eye-fill me-2 align-middle text-muted"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a>
+                                                                    </li>
+                                                                    <li class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div class="avatar-title bg-secondary-subtle text-secondary rounded fs-20">
+                                                                        <i class="ri-video-line"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-14 mb-0"><a href="javascript:void(0);" class="text-body">Tour-video.mp4</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>MP4 File</td>
+                                                        <td>14.62 MB</td>
+                                                        <td>19 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink4" data-bs-toggle="dropdown" aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink4">
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-eye-fill me-2 align-middle text-muted"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a>
+                                                                    </li>
+                                                                    <li class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div class="avatar-title bg-success-subtle text-success rounded fs-20">
+                                                                        <i class="ri-file-excel-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-14 mb-0"><a href="javascript:void(0);" class="text-body">Account-statement.xsl</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>XSL File</td>
+                                                        <td>2.38 KB</td>
+                                                        <td>14 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink5" data-bs-toggle="dropdown" aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink5">
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-eye-fill me-2 align-middle text-muted"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a>
+                                                                    </li>
+                                                                    <li class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div class="avatar-title bg-info-subtle text-info rounded fs-20">
+                                                                        <i class="ri-folder-line"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-14 mb-0"><a href="javascript:void(0);" class="text-body">Project
+                                                                            Screenshots Collection</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>Floder File</td>
+                                                        <td>87.24 MB</td>
+                                                        <td>08 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink6" data-bs-toggle="dropdown" aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink6">
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-eye-fill me-2 align-middle"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-download-2-fill me-2 align-middle"></i>Download</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-5-line me-2 align-middle"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div class="avatar-title bg-danger-subtle text-danger rounded fs-20">
+                                                                        <i class="ri-image-2-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-14 mb-0"><a href="javascript:void(0);" class="text-body">Velzon-logo.png</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>PNG File</td>
+                                                        <td>879 KB</td>
+                                                        <td>02 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink7" data-bs-toggle="dropdown" aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink7">
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-eye-fill me-2 align-middle"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-download-2-fill me-2 align-middle"></i>Download</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-5-line me-2 align-middle"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <a href="javascript:void(0);" class="text-success "><i class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"></i>
+                                                Load more </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                </div>
+                <!--end tab-content-->
             </div>
         </div>
         <!--end col-->
